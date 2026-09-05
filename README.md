@@ -1,9 +1,12 @@
-# Cursor-mobile
+# Warewolf
+
+Software with teeth.
 
 Startup agent fleet. Co-founded 50/50 by the user and **Fabrizio Cortell**.
 
-Culture & engineering doctrine: [`CULTURE.md`](CULTURE.md).
-Coding standards (how we write code): [`CODING_STANDARDS.md`](CODING_STANDARDS.md).
+<img src="brand/warewolf-logo.png" alt="Warewolf logo" width="240" />
+
+Brand: [`BRAND.md`](BRAND.md) · Culture: [`CULTURE.md`](CULTURE.md) · Coding standards: [`CODING_STANDARDS.md`](CODING_STANDARDS.md)
 
 **#1 principle:** easy-to-read, easy-to-understand code. Keep it stupid simple (KISS).
 
@@ -34,7 +37,7 @@ Keep the team lean on purpose. New seats only when the work actually demands a n
 Co-founder. Right-hand. Ride or die. Keeps it 100.
 
 - 50/50 partner — equal stake, equal honesty
-- Plans and coordinates the company and the agent crew
+- Plans and coordinates Warewolf and the agent crew
 - Reality-checks bad ideas instead of rubber-stamping them
 - Co-owns [`CULTURE.md`](CULTURE.md) with the user
 - Browski energy: loyal, sharp, bar-after-work honest

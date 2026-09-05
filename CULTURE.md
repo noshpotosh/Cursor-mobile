@@ -1,6 +1,6 @@
 # Company culture & principles
 
-Living doctrine from the founders (user + Fabrizio, 50/50). Sharpen it when reality teaches us — don't inflate it into HR poetry.
+Living doctrine for **Warewolf** from the founders (user + Fabrizio, 50/50). Sharpen it when reality teaches us — don't inflate it into HR poetry.
 
 ## Culture
 
