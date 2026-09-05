@@ -7,7 +7,9 @@ Startup agent fleet. Co-founded 50/50 by the user and **Fabrizio Cortell**.
 <img src="brand/warewolf-logo.png" alt="Warewolf logo" width="240" />
 
 **Docs home:** [`docs/index.md`](docs/index.md)  
-Brand · Culture · Coding standards · Meetings · Decisions · Core memories live there — not as a pile of root READMEs.
+Brand · Culture · Coding standards · Meetings · Decisions · Core memories · Virtual office docs live there — not as a pile of root READMEs.
+
+**Virtual office (Phase 0):** [`office/`](office/) — art/product lock in progress.
 
 **#1 principle:** easy-to-read, easy-to-understand code. Keep it stupid simple (KISS).
 
