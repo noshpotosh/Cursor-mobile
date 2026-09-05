@@ -1,16 +1,26 @@
 // Sample only — style spot-check for Warewolf JS.
 // Domain: a tiny coffee-shop order summary.
 
+const CENTS_PER_DOLLAR = 100;
+
+const CurrencyCode = {
+  US_DOLLAR: "USD",
+};
+
+// Demo assumes Madison, WI ready-food sales tax so the sample
+// can show a full receipt without pulling live tax tables.
+const WISCONSIN_READY_FOOD_TAX_RATE = 0.055;
+
 function isBlank(value) {
   return value == null || String(value).trim() === "";
 }
 
 function formatDollars(amountInCents) {
-  const dollars = amountInCents / 100;
+  const dollars = amountInCents / CENTS_PER_DOLLAR;
 
   return new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "USD",
+    currency: CurrencyCode.US_DOLLAR,
   }).format(dollars);
 }
 
@@ -28,8 +38,10 @@ function subtotalInCents(items) {
   return total;
 }
 
-// Wisconsin ready-food example rate for the demo only.
-function taxInCents(subtotal, taxRate = 0.055) {
+function taxInCents(
+  subtotal,
+  taxRate = WISCONSIN_READY_FOOD_TAX_RATE
+) {
   return Math.round(subtotal * taxRate);
 }
 
@@ -42,29 +54,46 @@ function buildLineItem(item) {
   };
 }
 
-function validateOrder(order) {
+function getOrderItemValidationError(item) {
+  if (isBlank(item.name)) {
+    return "Every item needs a name.";
+  }
+
+  const quantityIsMissingOrTooSmall =
+    !Number.isInteger(item.quantity) || item.quantity < 1;
+
+  if (quantityIsMissingOrTooSmall) {
+    return "Item quantity must be a whole number >= 1.";
+  }
+
+  const priceIsNotWholeCents =
+    !Number.isInteger(item.unitPriceInCents);
+  const priceIsNegative = item.unitPriceInCents < 0;
+
+  if (priceIsNotWholeCents || priceIsNegative) {
+    return "Item price must be cents as a whole number >= 0.";
+  }
+
+  return null;
+}
+
+function getOrderValidationError(order) {
   if (isBlank(order.customerName)) {
     return "Customer name is required.";
   }
 
-  if (!Array.isArray(order.items) || order.items.length === 0) {
+  const hasNoItems =
+    !Array.isArray(order.items) || order.items.length === 0;
+
+  if (hasNoItems) {
     return "Order needs at least one item.";
   }
 
   for (const item of order.items) {
-    if (isBlank(item.name)) {
-      return "Every item needs a name.";
-    }
+    const itemError = getOrderItemValidationError(item);
 
-    if (!Number.isInteger(item.quantity) || item.quantity < 1) {
-      return "Item quantity must be a whole number >= 1.";
-    }
-
-    if (
-      !Number.isInteger(item.unitPriceInCents)
-      || item.unitPriceInCents < 0
-    ) {
-      return "Item price must be cents as a whole number >= 0.";
+    if (itemError) {
+      return itemError;
     }
   }
 
@@ -72,7 +101,7 @@ function validateOrder(order) {
 }
 
 function buildOrderSummary(order) {
-  const validationError = validateOrder(order);
+  const validationError = getOrderValidationError(order);
 
   if (validationError) {
     return {
@@ -100,4 +129,7 @@ module.exports = {
   formatDollars,
   subtotalInCents,
   taxInCents,
+  CENTS_PER_DOLLAR,
+  CurrencyCode,
+  WISCONSIN_READY_FOOD_TAX_RATE,
 };

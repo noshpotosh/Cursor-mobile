@@ -3,7 +3,9 @@
 Small sample so you can judge readability **before** we build product #1.
 
 **Author:** Dex Harlan  
-**Sandwich rating:** 9/10 turkey club — boring on purpose.
+**Sandwich rating:** 9.5/10 turkey club — still boring; less mysterious after founder red-pen.
+
+Founder + Reed feedback folded in: named constants (no mystery `100` / `0.055` / `"USD"`), why-comment on tax, decomposed validation expressions.
 
 ## What to look for
 

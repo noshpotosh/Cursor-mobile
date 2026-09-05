@@ -65,6 +65,27 @@ count = count + 1
 - Group common functionality together at a smaller level.
 - A module should have one clear reason to change.
 
+## 9. No mystery numbers or mystery strings
+
+- Magic numbers/strings make the reader guess. Give them a **named constant**.
+- The name should answer *what this value is* in domain language
+  (`CENTS_PER_DOLLAR`, `WISCONSIN_READY_FOOD_TAX_RATE`).
+- Values that may grow into a set (currency codes, statuses) get a
+  small constant map / enum-like object — not a raw `"USD"` at the
+  call site.
+- A comment on a literal is usually a smell; prefer a name. If you
+  still need a comment, it must explain **why this value**, not
+  restate what the literal is.
+
+## 10. Decompose complex expressions
+
+- If a condition or expression needs a pause to parse, pull pieces
+  into **well-named booleans or intermediates**.
+- The `if` should read like English after that
+  (`if (priceIsNotWholeCents || priceIsNegative)`).
+- This is the same instinct as the 80-col rule: name the parts so a
+  cold reader doesn't do mental algebra.
+
 ## Quick checklist (before you call it done)
 
 - [ ] Names read like the business, not like the compiler
@@ -74,5 +95,9 @@ count = count + 1
 - [ ] Logical blocks separated by whitespace
 - [ ] Nesting flattened (guards / early returns / extraction)
 - [ ] File not turning into a 800+ line junk drawer
+- [ ] No mystery numbers/strings — constants/enums named in domain language
+- [ ] Complex expressions decomposed into named parts
 
 Violations are real review findings — Dex should avoid them while building, Cal should flag them when they block understanding, and **Reed** owns the final readability gate before "shipped."
+
+**JS exemplar (style spot-check):** [`samples/dex-style-check/`](../samples/dex-style-check/)
