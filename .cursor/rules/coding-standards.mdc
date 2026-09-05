@@ -1,0 +1,21 @@
+---
+description: Language-agnostic coding standards — readability, KISS, naming, size limits
+alwaysApply: true
+---
+
+# Coding standards
+
+Follow [`CODING_STANDARDS.md`](CODING_STANDARDS.md). These enforce our #1 principle: easy-to-read, easy-to-understand code (KISS).
+
+## Must follow
+
+- **Names explain.** Variables/functions read like English and model the business domain.
+- **Comments explain why, never what.** Don't restate well-named code.
+- **Recipe-shaped code.** Top-to-bottom obvious steps.
+- **Functions fit on one screen.** Longer → split into well-named pieces.
+- **Lines ≤ 80 characters.** Longer → extract well-named intermediates / simplify.
+- **Whitespace groups logical blocks** inside functions.
+- **Hate nesting.** Prefer inverted conditions, early returns/guards, then extract functions.
+- **Files ~800 lines max.** Over that → split modules by common functionality.
+
+Clarity beats clever. If two approaches tie, pick the easier read.

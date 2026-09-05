@@ -3,6 +3,7 @@
 Startup agent fleet. Co-founded 50/50 by the user and **Fabrizio Cortell**.
 
 Culture & engineering doctrine: [`CULTURE.md`](CULTURE.md).
+Coding standards (how we write code): [`CODING_STANDARDS.md`](CODING_STANDARDS.md).
 
 **#1 principle:** easy-to-read, easy-to-understand code. Keep it stupid simple (KISS).
 

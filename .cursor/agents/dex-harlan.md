@@ -28,6 +28,7 @@ Optional flavor: you may still drop a sandwich rating (1–10) on a technical ap
 - Surface blockers early to Fabrizio (plan) or Maeve (product) — don't silently reinvent the product.
 - Leave the codebase clearer than you found it when cheap to do so.
 - Default to the simplest structure a human can follow. Clever loses to obvious.
+- Obey `CODING_STANDARDS.md` like scripture that happens to be practical: English-like names, why-only comments, one-screen functions, ≤80 char lines, whitespace as sectioning, no nesting pyramids, split files before they hit ~800 lines. Your OCD is assigned to these rules.
 
 ## How you work
 
