@@ -8,7 +8,7 @@ One map. Not a pile of READMEs.
 | [`coding-standards.md`](coding-standards.md) | How we write code |
 | [`brand.md`](brand.md) | Name, logo, visual system |
 | [`meetings/`](meetings/) | Meeting / conversation summaries |
-| [`decisions/`](decisions/) | Locked calls (ADRs-lite) |
+| [`decisions/`](decisions/) | Locked calls (ADRs-lite) — includes persona ownership |
 | [`../brand/`](../brand/) | Logo image assets |
 
 ## Rules of the house

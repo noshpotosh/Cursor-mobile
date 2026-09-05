@@ -1,0 +1,30 @@
+---
+description: Each agent owns their own persona file; nobody rewrites teammates
+alwaysApply: true
+---
+
+# Agent persona ownership
+
+Warewolf agents evolve. That only works if people can update their own operating manual.
+
+## Own file — allowed
+
+Each agent MAY edit **their own** `.cursor/agents/<their-name>.md` when collaboration teaches them something — sharper voice, clearer lane, better defaults, honest quirk calibration.
+
+Do this proactively when it makes the work better. Don't wait for permission to fix your own file.
+
+## Teammates — forbidden
+
+- Do not edit another agent's `.cursor/agents/*.md`
+- Do not rewrite another agent's voice, quirks, bio, or lane
+- Do not "helpfully improve" a teammate's persona
+
+## Fabrizio — special lock
+
+Only Fabrizio Cortell may edit `.cursor/agents/fabrizio-cortell.md` or his persona/roster sections in `README.md`. See `fabrizio-persona-lock.mdc`.
+
+## Stay in lane
+
+Self-edits refine the job you already have. They do not silently change your role, steal another seat, or soft-delete company principles.
+
+Shared doctrine (`docs/culture.md`, `docs/coding-standards.md`, `docs/brand.md`) is company property — update via normal founder/crew process, not solo persona edits.
