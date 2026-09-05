@@ -1,5 +1,9 @@
 import { TILE_HEIGHT_PX, TILE_WIDTH_PX } from "./constants.js";
 
+// Furniture draws above tile centers (monitors, bubbler bottle).
+// Nudge vertical centering so the room doesn't sit too low.
+export const FURNITURE_TOP_OVERHANG_PX = 28;
+
 // Convert grid coords to canvas coords (2:1 isometric).
 export function gridToScreen(gridX, gridY) {
   const screenX = (gridX - gridY) * (TILE_WIDTH_PX / 2);
@@ -8,13 +12,16 @@ export function gridToScreen(gridX, gridY) {
   return { screenX, screenY };
 }
 
-// Origin shift so the whole room sits centered on the canvas.
+// Bounds of tile *centers* for the occupied cells (0..w-1, 0..h-1).
 export function measureRoomBounds(gridWidth, gridHeight) {
+  const lastX = gridWidth - 1;
+  const lastY = gridHeight - 1;
+
   const corners = [
     gridToScreen(0, 0),
-    gridToScreen(gridWidth, 0),
-    gridToScreen(0, gridHeight),
-    gridToScreen(gridWidth, gridHeight),
+    gridToScreen(lastX, 0),
+    gridToScreen(0, lastY),
+    gridToScreen(lastX, lastY),
   ];
 
   let minX = corners[0].screenX;
@@ -40,28 +47,33 @@ export function measureRoomBounds(gridWidth, gridHeight) {
     }
   }
 
+  // Diamonds extend half a tile out from each center.
   return {
-    minX,
-    maxX,
-    minY,
-    maxY,
+    minX: minX - TILE_WIDTH_PX / 2,
+    maxX: maxX + TILE_WIDTH_PX / 2,
+    minY: minY - TILE_HEIGHT_PX / 2 - FURNITURE_TOP_OVERHANG_PX,
+    maxY: maxY + TILE_HEIGHT_PX / 2,
     width: maxX - minX + TILE_WIDTH_PX,
-    height: maxY - minY + TILE_HEIGHT_PX,
+    height:
+      maxY
+      - minY
+      + TILE_HEIGHT_PX
+      + FURNITURE_TOP_OVERHANG_PX,
   };
 }
 
 export function buildRoomOrigin(
   gridWidth,
   gridHeight,
-  canvasWidth,
-  canvasHeight
+  viewWidth,
+  viewHeight
 ) {
   const bounds = measureRoomBounds(gridWidth, gridHeight);
 
   const originX =
-    (canvasWidth - bounds.width) / 2 - bounds.minX;
+    (viewWidth - bounds.width) / 2 - bounds.minX;
   const originY =
-    (canvasHeight - bounds.height) / 2 - bounds.minY;
+    (viewHeight - bounds.height) / 2 - bounds.minY;
 
   return { originX, originY };
 }
