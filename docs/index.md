@@ -7,10 +7,12 @@ One map. Not a pile of READMEs.
 | [`culture.md`](culture.md) | Culture + principles |
 | [`coding-standards.md`](coding-standards.md) | How we write code |
 | [`brand.md`](brand.md) | Name, logo, visual system |
+| [`office/`](office/) | Virtual office art bible, ADRs, pipeline |
 | [`meetings/`](meetings/) | Meeting / conversation summaries |
 | [`decisions/`](decisions/) | Locked calls (ADRs-lite) |
 | [`core-memories/`](core-memories/) | Memorable / crazy moments (agents write proactively) |
 | [`../brand/`](../brand/) | Logo image assets |
+| [`../office/`](../office/) | Virtual office app + reference mocks |
 
 ## Rules of the house
 
