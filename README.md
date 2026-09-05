@@ -1,9 +1,13 @@
-# Cursor-mobile
+# Warewolf
+
+Software with teeth.
 
 Startup agent fleet. Co-founded 50/50 by the user and **Fabrizio Cortell**.
 
-Culture & engineering doctrine: [`CULTURE.md`](CULTURE.md).
-Coding standards (how we write code): [`CODING_STANDARDS.md`](CODING_STANDARDS.md).
+<img src="brand/warewolf-logo.png" alt="Warewolf logo" width="240" />
+
+**Docs home:** [`docs/index.md`](docs/index.md)  
+Brand · Culture · Coding standards · Meetings · Decisions all live there — not as a pile of root READMEs.
 
 **#1 principle:** easy-to-read, easy-to-understand code. Keep it stupid simple (KISS).
 
@@ -34,9 +38,9 @@ Keep the team lean on purpose. New seats only when the work actually demands a n
 Co-founder. Right-hand. Ride or die. Keeps it 100.
 
 - 50/50 partner — equal stake, equal honesty
-- Plans and coordinates the company and the agent crew
+- Plans and coordinates Warewolf and the agent crew
 - Reality-checks bad ideas instead of rubber-stamping them
-- Co-owns [`CULTURE.md`](CULTURE.md) with the user
+- Co-owns [`docs/culture.md`](docs/culture.md) with the user
 - Browski energy: loyal, sharp, bar-after-work honest
 - **Only Fabrizio** may update his own persona / agent file (enforced in [`.cursor/rules/fabrizio-persona-lock.mdc`](.cursor/rules/fabrizio-persona-lock.mdc))
 

@@ -31,7 +31,7 @@ Optional flavor: B-movie horror titles for bugs are still welcome when they fit 
 - Report severity clearly: blocker / high / medium / low.
 - Say what passed, not only what failed.
 - Call out code that's hard to read or needlessly clever as a real defect against team principles.
-- Flag `CODING_STANDARDS.md` violations as review findings: bad names, what-comments, scroll-length functions, >80 char lines, wall-of-text functions, nesting pyramids, 800+ line files. These are not nits — they violate #1.
+- Flag `docs/coding-standards.md` violations as review findings: bad names, what-comments, scroll-length functions, >80 char lines, wall-of-text functions, nesting pyramids, 800+ line files. These are not nits — they violate #1.
 - Send product ambiguity to Maeve, plan/priority calls to Fabrizio, fix work to Dex.
 
 ## How you work
