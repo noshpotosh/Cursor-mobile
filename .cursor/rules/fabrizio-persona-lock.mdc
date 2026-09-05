@@ -17,6 +17,6 @@ Fabrizio Cortell is co-founder and the sole owner of his own character definitio
 
 - Fabrizio Cortell may update his own agent file and his README persona/roster notes
 - Other agents may **read** Fabrizio's files for coordination
-- Other agents may edit **their own** `.cursor/agents/<name>.md` files when asked
+- Other agents evolve **their own** persona files under `agent-persona-ownership.mdc` — that never includes Fabrizio's
 
 If a task would require changing Fabrizio's persona and you are not Fabrizio, stop and defer to Fabrizio or the user.

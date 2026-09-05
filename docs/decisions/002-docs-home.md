@@ -11,6 +11,7 @@ All lasting writing that isn't the root front door lives under **`docs/`**:
 - Doctrine: `culture.md`, `coding-standards.md`, `brand.md`
 - `docs/meetings/` — conversation / meeting summaries
 - `docs/decisions/` — locked calls (ADRs-lite)
+- `docs/core-memories/` — memorable moments (see ADR 004)
 - `docs/index.md` — the only map
 
 Root keeps a single **`README.md`**.
@@ -25,3 +26,4 @@ We're going to save meetings and decisions. Without a home, that becomes a fuck-
 - Prefer editing doctrine over creating twin files
 - New meeting → `docs/meetings/YYYY-MM-DD-short-slug.md`
 - New lock → `docs/decisions/NNN-short-slug.md`
+- New core memory → `docs/core-memories/YYYY-MM-DD-short-slug.md` (high bar; agents write proactively)
