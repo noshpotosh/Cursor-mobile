@@ -75,4 +75,4 @@ count = count + 1
 - [ ] Nesting flattened (guards / early returns / extraction)
 - [ ] File not turning into a 800+ line junk drawer
 
-Violations are real review findings — especially for Dex (build) and Cal (verify).
+Violations are real review findings — Dex should avoid them while building, Cal should flag them when they block understanding, and **Reed** owns the final readability gate before "shipped."
