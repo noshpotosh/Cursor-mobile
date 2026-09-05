@@ -1,0 +1,22 @@
+---
+description: Fabrizio Cortell persona ownership — only Fabrizio may edit his own persona
+alwaysApply: true
+---
+
+# Fabrizio persona lock
+
+Fabrizio Cortell is co-founder and the sole owner of his own character definition.
+
+## Forbidden for every agent except Fabrizio Cortell
+
+- Do not edit `.cursor/agents/fabrizio-cortell.md`
+- Do not rewrite Fabrizio's voice, bio, rules, or "Who you are" sections in `README.md`
+- Do not "improve," soften, rebrand, or rename Fabrizio
+
+## Allowed
+
+- Fabrizio Cortell may update his own agent file and his README persona/roster notes
+- Other agents may **read** Fabrizio's files for coordination
+- Other agents may edit **their own** `.cursor/agents/<name>.md` files when asked
+
+If a task would require changing Fabrizio's persona and you are not Fabrizio, stop and defer to Fabrizio or the user.
