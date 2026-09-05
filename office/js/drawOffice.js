@@ -181,18 +181,26 @@ function drawFurniture(
   }
 }
 
-export function drawOffice(canvas, office, staffLookup) {
+export function drawOffice(
+  canvas,
+  office,
+  staffLookup,
+  viewWidth,
+  viewHeight
+) {
   const context = canvas.getContext("2d");
+  const width = viewWidth || canvas.width;
+  const height = viewHeight || canvas.height;
 
-  context.clearRect(0, 0, canvas.width, canvas.height);
+  context.clearRect(0, 0, width, height);
   context.fillStyle = BONE;
-  context.fillRect(0, 0, canvas.width, canvas.height);
+  context.fillRect(0, 0, width, height);
 
   const { originX, originY } = buildRoomOrigin(
     office.gridWidth,
     office.gridHeight,
-    canvas.width,
-    canvas.height
+    width,
+    height
   );
 
   drawFloor(context, office, originX, originY);

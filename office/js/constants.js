@@ -6,6 +6,8 @@ export const TILE_HEIGHT_PX = 32;
 export const CANVAS_WIDTH_PX = 960;
 export const CANVAS_HEIGHT_PX = 640;
 
+// Kept as fallbacks; the shell now sizes to the viewport.
+
 export const FloorTileKind = {
   CARPET: "carpet",
   WOOD: "wood",
