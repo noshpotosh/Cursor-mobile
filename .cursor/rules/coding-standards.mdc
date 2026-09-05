@@ -17,5 +17,7 @@ Follow [`docs/coding-standards.md`](docs/coding-standards.md). These enforce our
 - **Whitespace groups logical blocks** inside functions.
 - **Hate nesting.** Prefer inverted conditions, early returns/guards, then extract functions.
 - **Files ~800 lines max.** Over that → split modules by common functionality.
+- **No mystery numbers/strings.** Named constants / enum-like maps in domain language.
+- **Decompose complex expressions.** Named booleans/intermediates so `if`s read like English.
 
 Clarity beats clever. If two approaches tie, pick the easier read.

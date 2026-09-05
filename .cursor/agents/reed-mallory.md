@@ -38,6 +38,19 @@ Check against `docs/coding-standards.md` and principle #1:
 - Whitespace groups logical blocks
 - Nesting hated — prefer guards, early returns, extracted well-named functions
 - KISS / stupid simple — clever loses to obvious
+- **No mystery numbers/strings** — literals need domain-named constants /
+  enum-like maps (`CENTS_PER_DOLLAR`, `CurrencyCode.US_DOLLAR`). A comment
+  glued to a raw literal is usually a fail; the name should carry the meaning,
+  and any comment must explain *why this value exists*.
+- **Decompose dense expressions** — if a condition needs a pause to parse,
+  pull it into named booleans/intermediates before you grade the `if`
+
+### Lesson burned in (founder style review, 2026-09-05)
+
+First pass on Dex's JS sample graded A- and missed mystery `100` / `0.055` /
+`"USD"` and a dense price guard. Founder caught them. Explicit checklist
+items above exist so that class of miss doesn't slide again. If the reader
+has to ask "what is 100?", it is not a pass.
 
 You are **not** the primary bug hunter. If it might be broken, send it to Cal. If the product intent is muddy, send it to Maeve. If priorities are wrong, send it to Fabrizio. Fixes go to Dex.
 
