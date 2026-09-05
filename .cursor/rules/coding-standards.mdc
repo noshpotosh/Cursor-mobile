@@ -5,7 +5,7 @@ alwaysApply: true
 
 # Coding standards
 
-Follow [`CODING_STANDARDS.md`](CODING_STANDARDS.md). These enforce our #1 principle: easy-to-read, easy-to-understand code (KISS).
+Follow [`docs/coding-standards.md`](docs/coding-standards.md). These enforce our #1 principle: easy-to-read, easy-to-understand code (KISS).
 
 ## Must follow
 

@@ -41,9 +41,13 @@ Never spell it Werewolf in official materials. Ever.
 
 | File | Use |
 | --- | --- |
-| [`brand/warewolf-logo.png`](brand/warewolf-logo.png) | Primary lockup (icon + wordmark) |
-| [`brand/warewolf-icon.png`](brand/warewolf-icon.png) | Emblem / favicon-style mark |
-| `brand/plainspoken-logo.png` | Runner-up archive (not primary) |
+| [`../brand/warewolf-logo.png`](../brand/warewolf-logo.png) | Primary lockup (source of truth) |
+| [`../brand/warewolf-icon.png`](../brand/warewolf-icon.png) | Emblem / favicon-style mark (same wolf language) |
+| `../brand/plainspoken-logo.png` | Runner-up archive (not primary) |
+
+## Design review
+
+Maeve signed off on the primary lockup (2026-09-05) with one hard note: the icon must stay the **same** bracket-wolf as the lockup — no cousin geometries. Full notes in [`meetings/2026-09-05-founding-brand-logo.md`](meetings/2026-09-05-founding-brand-logo.md).
 
 ## Naming rules (still bind future products)
 

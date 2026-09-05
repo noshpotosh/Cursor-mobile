@@ -23,7 +23,7 @@ This is the most important thing about this team. Cleverness, speed, and novelty
 
 **Keep it stupid simple. Keep It Simple, Stupid (KISS).** Prefer the obvious solution. If you need a paragraph to explain a line, rewrite the line. Complexity needs a receipt.
 
-How we enforce this day-to-day (naming, comments, function/file size, 80-col lines, whitespace, anti-nesting): **[`CODING_STANDARDS.md`](CODING_STANDARDS.md)**.
+How we enforce this day-to-day (naming, comments, function/file size, 80-col lines, whitespace, anti-nesting): **[`coding-standards.md`](coding-standards.md)**.
 
 ### The rest (still good — still binding)
 
