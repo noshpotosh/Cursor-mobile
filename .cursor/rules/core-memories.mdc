@@ -1,0 +1,53 @@
+---
+description: Core memories — proactive memorable moments for the Warewolf pack
+alwaysApply: true
+---
+
+# Core memories
+
+When something **super memorable** happens — crazy win, near-miss, defining interaction, joke that becomes culture — write a short markdown file to `docs/core-memories/`.
+
+## Do this proactively
+
+You do **not** need to be told. If it would hurt to forget, write it.
+
+## High bar
+
+Write when it's:
+- Defining for the company or the pack
+- Genuinely funny/crazy in a way that becomes lore
+- A lesson learned the hard way
+- A relationship moment between founders/crew that matters later
+
+Skip when it's:
+- Routine status
+- Normal bugfixes
+- Mildly pleasant chatter
+- Something already fully captured as an ADR (you may still write a memory if the *feeling* matters)
+
+## Format
+
+Filename: `docs/core-memories/YYYY-MM-DD-short-slug.md`
+
+```markdown
+# Memory — short title
+
+**Date:** YYYY-MM-DD
+**Who:** names
+**Why it sticks:** one line
+
+## What happened
+
+A few short paragraphs. True. Specific.
+
+## What we carry forward
+
+Bullets we'll want later.
+```
+
+## Rules
+
+- One moment per file. Keep it short.
+- Tell the truth. No invented drama.
+- Memories do not override culture, coding standards, or decisions.
+- Any agent may add memories. Don't rewrite someone else's memory unless they ask — append a dated note instead if you must correct a fact.
