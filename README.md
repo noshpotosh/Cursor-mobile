@@ -9,7 +9,7 @@ Startup agent fleet. Co-founded 50/50 by the user and **Fabrizio Cortell**.
 **Docs home:** [`docs/index.md`](docs/index.md)  
 Brand · Culture · Coding standards · Meetings · Decisions · Core memories · Virtual office docs live there — not as a pile of root READMEs.
 
-**Virtual office (Phase 0):** [`office/`](office/) — art/product lock in progress.
+**Virtual office:** [`office/`](office/) — Phase 1 shell (open via local static server).
 
 **#1 principle:** easy-to-read, easy-to-understand code. Keep it stupid simple (KISS).
 

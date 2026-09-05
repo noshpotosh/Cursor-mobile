@@ -1,8 +1,22 @@
 # Warewolf Virtual Office
 
-Internal isometric pixel office. **Phase 0 — art/product lock.**
+Internal isometric pixel office for Warewolf.
 
-Playable shell comes in Phase 1+. For now this folder holds reference art and staff data.
+## Status
+
+- **Phase 0:** art + product lock — done
+- **Phase 1:** dead office shell — HTML + isometric floor + desk placeholders
+
+## Run
+
+Serve this folder over HTTP (ES modules + `fetch` need it):
+
+```bash
+cd office
+python3 -m http.server 8765
+```
+
+Open [http://127.0.0.1:8765](http://127.0.0.1:8765).
 
 ## Docs
 

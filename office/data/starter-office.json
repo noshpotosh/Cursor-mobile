@@ -1,0 +1,72 @@
+{
+  "id": "starter-loft",
+  "displayName": "Starter Loft",
+  "gridWidth": 10,
+  "gridHeight": 8,
+  "floorTile": "carpet",
+  "borderTile": "wood",
+  "furniture": [
+    {
+      "id": "bubbler",
+      "kind": "bubbler",
+      "gridX": 1,
+      "gridY": 7,
+      "blocksWalk": true,
+      "interactable": true
+    },
+    {
+      "id": "desk-nosh",
+      "kind": "desk",
+      "gridX": 2,
+      "gridY": 2,
+      "blocksWalk": true,
+      "isPlayerDesk": true,
+      "staffId": "nosh"
+    },
+    {
+      "id": "desk-fabrizio",
+      "kind": "desk",
+      "gridX": 5,
+      "gridY": 2,
+      "blocksWalk": true,
+      "isPlayerDesk": false,
+      "staffId": "fabrizio-cortell"
+    },
+    {
+      "id": "desk-maeve",
+      "kind": "desk",
+      "gridX": 8,
+      "gridY": 2,
+      "blocksWalk": true,
+      "isPlayerDesk": false,
+      "staffId": "maeve-quinn"
+    },
+    {
+      "id": "desk-dex",
+      "kind": "desk",
+      "gridX": 2,
+      "gridY": 5,
+      "blocksWalk": true,
+      "isPlayerDesk": false,
+      "staffId": "dex-harlan"
+    },
+    {
+      "id": "desk-cal",
+      "kind": "desk",
+      "gridX": 5,
+      "gridY": 5,
+      "blocksWalk": true,
+      "isPlayerDesk": false,
+      "staffId": "cal-rook"
+    },
+    {
+      "id": "desk-reed",
+      "kind": "desk",
+      "gridX": 8,
+      "gridY": 5,
+      "blocksWalk": true,
+      "isPlayerDesk": false,
+      "staffId": "reed-mallory"
+    }
+  ]
+}
