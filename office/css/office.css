@@ -39,6 +39,12 @@ button:focus-visible, input:focus-visible {
 #office-phaser canvas {
   image-rendering: pixelated;
 }
+body.desktop-open .loft-chrome,
+body.desktop-open .office-controls,
+body.desktop-open .interact-prompt {
+  visibility: hidden;
+}
+
 .loft-chrome {
   position: absolute;
   top: 18px;
