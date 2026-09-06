@@ -473,3 +473,89 @@
   filter: brightness(1.05);
   outline: none;
 }
+
+.loft-glyph {
+  background: var(--sage);
+  color: var(--bone);
+}
+
+.loft-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  height: 100%;
+  min-height: 0;
+  padding: 0.9rem 1rem 1rem;
+}
+
+.loft-summary {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.loft-list {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  overflow: auto;
+  padding-right: 0.2rem;
+}
+
+.loft-card {
+  padding: 0.7rem 0.8rem;
+  border: 2px solid var(--clay);
+  background: rgba(244, 239, 230, 0.9);
+}
+
+.loft-card.is-owned {
+  border-color: var(--sage);
+  opacity: 0.85;
+}
+
+.loft-title {
+  margin: 0 0 0.35rem;
+  font-size: 0.95rem;
+}
+
+.loft-description,
+.loft-meta,
+.loft-status {
+  margin: 0 0 0.45rem;
+  font-size: 0.84rem;
+  line-height: 1.4;
+}
+
+.loft-meta {
+  color: #6a635c;
+}
+
+.loft-status {
+  margin-bottom: 0;
+  font-weight: 700;
+  color: #2f6b44;
+}
+
+.loft-buy-button {
+  padding: 0.4rem 0.7rem;
+  border: 2px solid var(--ink);
+  background: var(--amber);
+  color: var(--ink);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+}
+
+.loft-buy-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  background: #d4cfc4;
+}
+
+.loft-buy-button:not(:disabled):hover,
+.loft-buy-button:not(:disabled):focus-visible {
+  filter: brightness(1.05);
+  outline: none;
+}

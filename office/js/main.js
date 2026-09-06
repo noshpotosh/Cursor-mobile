@@ -1,6 +1,7 @@
 import {
   InteractKind,
   TOAST_VISIBLE_MS,
+  UpgradeId,
 } from "./constants.js";
 import {
   createDesktopOs,
@@ -12,6 +13,7 @@ import { drawOffice } from "./drawOffice.js";
 import {
   createEconomy,
   formatCompanyBucks,
+  ownsUpgrade,
   subscribeEconomy,
 } from "./economy.js";
 import { findNearbyInteractable } from "./interact.js";
@@ -104,6 +106,23 @@ function refreshBucksHud(bucksHud, economy) {
   );
 }
 
+function loftUpgradesFromEconomy(economy) {
+  return {
+    [UpgradeId.DESK_PLANTS]: ownsUpgrade(
+      economy,
+      UpgradeId.DESK_PLANTS
+    ),
+    [UpgradeId.BETTER_CHAIRS]: ownsUpgrade(
+      economy,
+      UpgradeId.BETTER_CHAIRS
+    ),
+    [UpgradeId.AMBER_NEON]: ownsUpgrade(
+      economy,
+      UpgradeId.AMBER_NEON
+    ),
+  };
+}
+
 async function startOfficeShell() {
   const stage = document.getElementById("office-stage");
   const canvas = document.getElementById("office-canvas");
@@ -116,10 +135,10 @@ async function startOfficeShell() {
     throw new Error("Missing office stage, canvas, or desktop");
   }
 
-  const { office, staff, goals } =
+  const { office, staff, goals, upgrades } =
     await loadStarterOfficeBundle();
   const staffLookup = staffById(staff);
-  const economy = createEconomy(goals);
+  const economy = createEconomy(goals, upgrades);
   const walkMap = buildWalkMap(office);
   const spawn = findSpawnNearPlayerDesk(office, walkMap);
   const player = createPlayer(spawn.gridX, spawn.gridY);
@@ -137,6 +156,14 @@ async function startOfficeShell() {
 
   let toastTimerId = null;
 
+  function showEconomyToast(text) {
+    if (toastTimerId !== null) {
+      window.clearTimeout(toastTimerId);
+    }
+
+    toastTimerId = showToast(toastEl, text);
+  }
+
   const desktop = createDesktopOs({
     root: desktopRoot,
     staffList: staff,
@@ -145,13 +172,13 @@ async function startOfficeShell() {
       setPromptText(promptEl, "");
     },
     onGoalComplete(result) {
-      if (toastTimerId !== null) {
-        window.clearTimeout(toastTimerId);
-      }
-
-      toastTimerId = showToast(
-        toastEl,
+      showEconomyToast(
         `+${result.rewardBucks} bucks — ${result.title}`
+      );
+    },
+    onUpgradePurchase(result) {
+      showEconomyToast(
+        `Installed ${result.title} (−${result.costBucks})`
       );
     },
   });
@@ -191,7 +218,8 @@ async function startOfficeShell() {
       player,
       npcs,
       stage.clientWidth,
-      stage.clientHeight
+      stage.clientHeight,
+      loftUpgradesFromEconomy(economy)
     );
 
     window.requestAnimationFrame(renderFrame);
