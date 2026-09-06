@@ -166,6 +166,199 @@ function buildOccupancyMap(npcs, desktopOpen) {
   return occupancy;
 }
 
+function wireDesktopCallbacks(shell) {
+  return {
+    getOccupancy() {
+      return buildOccupancyMap(shell.npcs, true);
+    },
+    onClose() {
+      setPromptText(shell.promptEl, "");
+    },
+    onGoalComplete(result) {
+      shell.showEconomyToast(
+        `+${result.rewardBucks} bucks — ${result.title}`
+      );
+      playUiBlip(shell.audio, "message");
+    },
+    onUpgradePurchase(result) {
+      shell.showEconomyToast(
+        `Installed ${result.title} (−${result.costBucks})`
+      );
+      playUiBlip(shell.audio, "click");
+    },
+    onOfficeChange(result) {
+      shell.applyOfficeLayout(result.officeId);
+      shell.showEconomyToast(`Moved into ${result.title}`);
+      playUiBlip(shell.audio, "click");
+    },
+    onMessageSent() {
+      playUiBlip(shell.audio, "message");
+    },
+  };
+}
+
+function triggerInteract(shell, target) {
+  if (!target) {
+    return;
+  }
+
+  if (target.kind === InteractKind.USE_PC) {
+    openDesktopOs(shell.desktop);
+    playUiBlip(shell.audio, "click");
+    return;
+  }
+
+  if (shell.toastTimerId !== null) {
+    window.clearTimeout(shell.toastTimerId);
+  }
+
+  let toastText = target.toastText;
+
+  if (target.kind === InteractKind.READ_BOARD) {
+    toastText = target.readNote();
+  }
+
+  shell.toastTimerId = showToast(shell.toastEl, toastText);
+
+  const drinkLike =
+    target.kind === InteractKind.DRINK
+    || target.kind === InteractKind.SIP_COFFEE;
+
+  playUiBlip(shell.audio, drinkLike ? "drink" : "click");
+}
+
+function handleCanvasClick(event, shell) {
+  if (isDesktopOsOpen(shell.desktop)) {
+    return;
+  }
+
+  const { clickX, clickY } = readClickInStage(
+    event,
+    shell.stage
+  );
+  const localX = clickX - shell.roomOrigin.originX;
+  const localY = clickY - shell.roomOrigin.originY;
+  const { gridX, gridY } = screenToGrid(localX, localY);
+  const furniture = findFurnitureAt(
+    shell.office,
+    gridX,
+    gridY
+  );
+
+  if (furniture) {
+    const target = buildInteractTargetForPiece(
+      furniture,
+      shell.staffLookup
+    );
+
+    if (!target) {
+      return;
+    }
+
+    const standTile = findAdjacentWalkable(
+      shell.walkMap,
+      furniture.gridX,
+      furniture.gridY
+    );
+
+    if (!standTile) {
+      return;
+    }
+
+    requestPlayerWalk(
+      shell.player,
+      shell.walkMap,
+      standTile.gridX,
+      standTile.gridY,
+      () => {
+        triggerInteract(shell, target);
+      }
+    );
+    return;
+  }
+
+  if (!isWalkable(shell.walkMap, gridX, gridY)) {
+    return;
+  }
+
+  requestPlayerWalk(
+    shell.player,
+    shell.walkMap,
+    gridX,
+    gridY
+  );
+}
+
+function handleOfficeKeydown(event, shell) {
+  if (handleDesktopOsKeydown(shell.desktop, event)) {
+    return;
+  }
+
+  if (event.key === "m" || event.key === "M") {
+    toggleAudioMuted(shell.audio);
+    refreshMuteButton(shell.muteButton, shell.audio);
+    return;
+  }
+
+  if (event.key !== "e" && event.key !== "E") {
+    return;
+  }
+
+  if (!shell.nearbyTarget) {
+    return;
+  }
+
+  triggerInteract(shell, shell.nearbyTarget);
+}
+
+function startRenderLoop(shell) {
+  function renderFrame(nowMs) {
+    const deltaSeconds = Math.min(
+      (nowMs - shell.lastFrameMs) / 1000,
+      0.05
+    );
+    shell.lastFrameMs = nowMs;
+
+    if (!isDesktopOsOpen(shell.desktop)) {
+      updatePlayer(shell.player, deltaSeconds);
+      updateNpcs(
+        shell.npcs,
+        shell.office,
+        shell.walkMap,
+        deltaSeconds
+      );
+      shell.nearbyTarget = findNearbyInteractable(
+        shell.player,
+        shell.office,
+        shell.staffLookup
+      );
+      setPromptText(
+        shell.promptEl,
+        shell.nearbyTarget ? shell.nearbyTarget.prompt : ""
+      );
+    } else {
+      shell.nearbyTarget = null;
+      setPromptText(shell.promptEl, "");
+    }
+
+    sizeCanvasToStage(shell.canvas, shell.stage);
+    shell.roomOrigin = drawOffice(
+      shell.canvas,
+      shell.office,
+      shell.staffLookup,
+      shell.player,
+      shell.npcs,
+      shell.stage.clientWidth,
+      shell.stage.clientHeight,
+      loftUpgradesFromEconomy(shell.economy)
+    );
+
+    window.requestAnimationFrame(renderFrame);
+  }
+
+  window.requestAnimationFrame(renderFrame);
+}
+
 async function startOfficeShell() {
   const stage = document.getElementById("office-stage");
   const canvas = document.getElementById("office-canvas");
@@ -197,11 +390,63 @@ async function startOfficeShell() {
   let npcs = createNpcs(office, staffLookup);
   const title = document.querySelector(".office-title");
 
+  const shell = {
+    stage,
+    canvas,
+    promptEl,
+    toastEl,
+    bucksHud,
+    muteButton,
+    staffLookup,
+    economy,
+    audio,
+    office,
+    walkMap,
+    player,
+    npcs,
+    desktop: null,
+    toastTimerId: null,
+    lastFrameMs: performance.now(),
+    roomOrigin: { originX: 0, originY: 0 },
+    nearbyTarget: null,
+    showEconomyToast: null,
+    applyOfficeLayout: null,
+  };
+
   function syncOfficeTitle() {
-    if (title && office.displayName) {
-      title.textContent = `Warewolf · ${office.displayName}`;
+    if (title && shell.office.displayName) {
+      title.textContent =
+        `Warewolf · ${shell.office.displayName}`;
     }
   }
+
+  shell.showEconomyToast = function showEconomyToast(text) {
+    if (shell.toastTimerId !== null) {
+      window.clearTimeout(shell.toastTimerId);
+    }
+
+    shell.toastTimerId = showToast(toastEl, text);
+  };
+
+  shell.applyOfficeLayout = function applyOfficeLayout(
+    officeId
+  ) {
+    const nextOffice = bundle.layouts[officeId];
+
+    if (!nextOffice) {
+      return;
+    }
+
+    shell.office = nextOffice;
+    shell.walkMap = buildWalkMap(shell.office);
+    spawn = findSpawnNearPlayerDesk(
+      shell.office,
+      shell.walkMap
+    );
+    shell.player = createPlayer(spawn.gridX, spawn.gridY);
+    shell.npcs = createNpcs(shell.office, staffLookup);
+    syncOfficeTitle();
+  };
 
   syncOfficeTitle();
   refreshBucksHud(bucksHud, economy);
@@ -210,207 +455,20 @@ async function startOfficeShell() {
     refreshBucksHud(bucksHud, economy);
   });
 
-  let toastTimerId = null;
-
-  function showEconomyToast(text) {
-    if (toastTimerId !== null) {
-      window.clearTimeout(toastTimerId);
-    }
-
-    toastTimerId = showToast(toastEl, text);
-  }
-
-  function applyOfficeLayout(officeId) {
-    const nextOffice = bundle.layouts[officeId];
-
-    if (!nextOffice) {
-      return;
-    }
-
-    office = nextOffice;
-    walkMap = buildWalkMap(office);
-    spawn = findSpawnNearPlayerDesk(office, walkMap);
-    player = createPlayer(spawn.gridX, spawn.gridY);
-    npcs = createNpcs(office, staffLookup);
-    syncOfficeTitle();
-  }
-
-  const desktop = createDesktopOs({
+  shell.desktop = createDesktopOs({
     root: desktopRoot,
     staffList: bundle.staff,
     economy,
     agentBus,
-    getOccupancy() {
-      return buildOccupancyMap(npcs, true);
-    },
-    onClose() {
-      setPromptText(promptEl, "");
-    },
-    onGoalComplete(result) {
-      showEconomyToast(
-        `+${result.rewardBucks} bucks — ${result.title}`
-      );
-      playUiBlip(audio, "message");
-    },
-    onUpgradePurchase(result) {
-      showEconomyToast(
-        `Installed ${result.title} (−${result.costBucks})`
-      );
-      playUiBlip(audio, "click");
-    },
-    onOfficeChange(result) {
-      applyOfficeLayout(result.officeId);
-      showEconomyToast(`Moved into ${result.title}`);
-      playUiBlip(audio, "click");
-    },
-    onMessageSent() {
-      playUiBlip(audio, "message");
-    },
+    ...wireDesktopCallbacks(shell),
   });
 
-  function triggerInteract(target) {
-    if (!target) {
-      return;
-    }
-
-    if (target.kind === InteractKind.USE_PC) {
-      openDesktopOs(desktop);
-      playUiBlip(audio, "click");
-      return;
-    }
-
-    if (toastTimerId !== null) {
-      window.clearTimeout(toastTimerId);
-    }
-
-    let toastText = target.toastText;
-
-    if (target.kind === InteractKind.READ_BOARD) {
-      toastText = target.readNote();
-    }
-
-    toastTimerId = showToast(toastEl, toastText);
-
-    const drinkLike =
-      target.kind === InteractKind.DRINK
-      || target.kind === InteractKind.SIP_COFFEE;
-
-    playUiBlip(audio, drinkLike ? "drink" : "click");
-  }
-
-  let lastFrameMs = performance.now();
-  let roomOrigin = { originX: 0, originY: 0 };
-  let nearbyTarget = null;
-
-  function renderFrame(nowMs) {
-    const deltaSeconds = Math.min(
-      (nowMs - lastFrameMs) / 1000,
-      0.05
-    );
-    lastFrameMs = nowMs;
-
-    if (!isDesktopOsOpen(desktop)) {
-      updatePlayer(player, deltaSeconds);
-      updateNpcs(npcs, office, walkMap, deltaSeconds);
-      nearbyTarget = findNearbyInteractable(
-        player,
-        office,
-        staffLookup
-      );
-      setPromptText(
-        promptEl,
-        nearbyTarget ? nearbyTarget.prompt : ""
-      );
-    } else {
-      nearbyTarget = null;
-      setPromptText(promptEl, "");
-    }
-
-    sizeCanvasToStage(canvas, stage);
-    roomOrigin = drawOffice(
-      canvas,
-      office,
-      staffLookup,
-      player,
-      npcs,
-      stage.clientWidth,
-      stage.clientHeight,
-      loftUpgradesFromEconomy(economy)
-    );
-
-    window.requestAnimationFrame(renderFrame);
-  }
-
-  canvas.addEventListener("click", (event) => {
-    if (isDesktopOsOpen(desktop)) {
-      return;
-    }
-
-    const { clickX, clickY } = readClickInStage(event, stage);
-    const localX = clickX - roomOrigin.originX;
-    const localY = clickY - roomOrigin.originY;
-    const { gridX, gridY } = screenToGrid(localX, localY);
-    const furniture = findFurnitureAt(office, gridX, gridY);
-
-    if (furniture) {
-      const target = buildInteractTargetForPiece(
-        furniture,
-        staffLookup
-      );
-
-      if (!target) {
-        return;
-      }
-
-      const standTile = findAdjacentWalkable(
-        walkMap,
-        furniture.gridX,
-        furniture.gridY
-      );
-
-      if (!standTile) {
-        return;
-      }
-
-      requestPlayerWalk(
-        player,
-        walkMap,
-        standTile.gridX,
-        standTile.gridY,
-        () => {
-          triggerInteract(target);
-        }
-      );
-      return;
-    }
-
-    if (!isWalkable(walkMap, gridX, gridY)) {
-      return;
-    }
-
-    requestPlayerWalk(player, walkMap, gridX, gridY);
+  shell.canvas.addEventListener("click", (event) => {
+    handleCanvasClick(event, shell);
   });
 
   window.addEventListener("keydown", (event) => {
-    if (handleDesktopOsKeydown(desktop, event)) {
-      return;
-    }
-
-    if (event.key === "m" || event.key === "M") {
-      toggleAudioMuted(audio);
-      refreshMuteButton(muteButton, audio);
-      return;
-    }
-
-    if (event.key !== "e" && event.key !== "E") {
-      return;
-    }
-
-    if (!nearbyTarget) {
-      return;
-    }
-
-    triggerInteract(nearbyTarget);
+    handleOfficeKeydown(event, shell);
   });
 
   if (muteButton) {
@@ -420,18 +478,18 @@ async function startOfficeShell() {
     });
   }
 
-  if (economy.currentOfficeId !== office.id) {
-    applyOfficeLayout(economy.currentOfficeId);
+  if (economy.currentOfficeId !== shell.office.id) {
+    shell.applyOfficeLayout(economy.currentOfficeId);
   }
 
-  roomOrigin = buildRoomOrigin(
-    office.gridWidth,
-    office.gridHeight,
+  shell.roomOrigin = buildRoomOrigin(
+    shell.office.gridWidth,
+    shell.office.gridHeight,
     stage.clientWidth,
     stage.clientHeight
   );
 
-  window.requestAnimationFrame(renderFrame);
+  startRenderLoop(shell);
 }
 
 startOfficeShell().catch((error) => {

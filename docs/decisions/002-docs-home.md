@@ -8,7 +8,8 @@
 
 All lasting writing that isn't the root front door lives under **`docs/`**:
 
-- Doctrine: `culture.md`, `coding-standards.md`, `brand.md`
+- Doctrine: `culture.md`, `coding-standards.md`, `pr-discipline.md`,
+  `brand.md`
 - `docs/meetings/` — conversation / meeting summaries
 - `docs/decisions/` — locked calls (ADRs-lite)
 - `docs/core-memories/` — memorable moments (see ADR 004)

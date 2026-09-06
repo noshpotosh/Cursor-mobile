@@ -1,30 +1,114 @@
 import {
+  BETTER_CHAIR_BACK_HEIGHT_PX,
+  BETTER_CHAIR_BACK_Y_OFFSET_PX,
   BETTER_CHAIR_FILL,
+  BETTER_CHAIR_HALF_WIDTH_PX,
+  BETTER_CHAIR_HEIGHT_PX,
+  BETTER_CHAIR_WIDTH_PX,
+  BETTER_CHAIR_Y_OFFSET_PX,
   BONE,
-  CHAIR_FILL,
-  COFFEE_BREW_FILL,
-  COFFEE_POT_FILL,
+  BUBBLER_BOTTLE_RADIUS_PX,
+  BUBBLER_BOTTLE_Y_OFFSET_PX,
+  BUBBLER_HALF_WIDTH_PX,
+  BUBBLER_HEIGHT_PX,
+  BUBBLER_TOP_OFFSET_PX,
+  BUBBLER_WIDTH_PX,
   CAMERA_FOLLOW_BLEND,
+  CHAIR_FILL,
+  CHAIR_HALF_WIDTH_PX,
+  CHAIR_HEIGHT_PX,
+  CHAIR_WIDTH_PX,
+  CHAIR_Y_OFFSET_PX,
+  CHAR_HAIR_Y_OFFSET_PX,
+  CHAR_HEAD_RADIUS_PX,
+  CHAR_HEAD_Y_OFFSET_PX,
+  CHAR_PANTS_HALF_WIDTH_PX,
+  CHAR_PANTS_HEIGHT_PX,
+  CHAR_PANTS_WIDTH_PX,
+  CHAR_PANTS_Y_OFFSET_PX,
+  CHAR_SHOE_HALF_GAP_PX,
+  CHAR_SHOE_HEIGHT_PX,
+  CHAR_SHOE_INNER_X_PX,
+  CHAR_SHOE_WIDTH_PX,
+  CHAR_TORSO_HALF_WIDTH_PX,
+  CHAR_TORSO_HEIGHT_PX,
+  CHAR_TORSO_WIDTH_PX,
+  CHAR_TORSO_Y_OFFSET_PX,
+  COFFEE_BASE_HALF_WIDTH_PX,
+  COFFEE_BASE_HEIGHT_PX,
+  COFFEE_BASE_WIDTH_PX,
+  COFFEE_BASE_Y_OFFSET_PX,
+  COFFEE_BREW_FILL,
+  COFFEE_BREW_HALF_WIDTH_PX,
+  COFFEE_BREW_HEIGHT_PX,
+  COFFEE_BREW_TOP_OFFSET_PX,
+  COFFEE_BREW_WIDTH_PX,
+  COFFEE_POT_FILL,
+  COFFEE_POT_HALF_WIDTH_PX,
+  COFFEE_POT_HEIGHT_PX,
+  COFFEE_POT_TOP_OFFSET_PX,
+  COFFEE_POT_WIDTH_PX,
+  COFFEE_STEAM_BASE_Y_PX,
+  COFFEE_STEAM_MID_Y_PX,
+  COFFEE_STEAM_TOP_Y_PX,
+  COFFEE_STEAM_X_SPREAD_PX,
   DESK_LAMP_FILL,
   DESK_LAMP_GLOW_FILL,
+  DESK_TOP_BOTTOM_OFFSET_PX,
+  DESK_TOP_HALF_WIDTH_PX,
+  DESK_TOP_SIDE_Y_PX,
+  DESK_TOP_TOP_OFFSET_PX,
   FloorFill,
   FloorTileKind,
   FurnitureFill,
   FurnitureKind,
   INK,
+  LAMP_ARM_X_OFFSET_PX,
+  LAMP_ARM_Y_OFFSET_PX,
+  LAMP_BASE_HEIGHT_PX,
+  LAMP_BASE_WIDTH_PX,
+  LAMP_BASE_X_OFFSET_PX,
+  LAMP_BASE_Y_OFFSET_PX,
+  LAMP_GLOW_RADIUS_PX,
+  LAMP_GLOW_X_OFFSET_PX,
+  LAMP_GLOW_Y_OFFSET_PX,
+  LAMP_STEM_TOP_OFFSET_PX,
+  LAMP_STEM_X_OFFSET_PX,
+  MONITOR_HALF_WIDTH_PX,
+  MONITOR_HEIGHT_PX,
+  MONITOR_TOP_OFFSET_PX,
+  MONITOR_WIDTH_PX,
+  NAMEPLATE_Y_OFFSET_PX,
   NEON_SIGN_FILL,
-  PATH_TARGET_FILL,
-  PATH_TARGET_STROKE,
-  PLANT_LEAF_FILL,
-  PLANT_POT_FILL,
-  PLAYER_DESK_ACCENT,
-  PLAYER_HAIR_FILL,
-  PLAYER_JACKET_FILL,
-  PLAYER_PANTS_FILL,
+  NEON_SIGN_Y_OFFSET_PX,
+  NOSH_BODY_Y_OFFSET_PX,
+  NOSH_FEET_Y_OFFSET_PX,
+  NOSH_WALK_BOB_AMPLITUDE_PX,
+  NPC_BODY_Y_OFFSET_PX,
+  NPC_FEET_Y_OFFSET_PX,
   NPC_HAIR_FILL,
   NPC_PANTS_FILL,
   NPC_SHOE_FILL,
   NPC_SKIN_FILL,
+  PATH_TARGET_FILL,
+  PATH_TARGET_STROKE,
+  PLANT_LEAF_FILL,
+  PLANT_LEAF_RADIUS_PX,
+  PLANT_LEAF_X_OFFSET_PX,
+  PLANT_LEAF_Y_OFFSET_PX,
+  PLANT_POT_FILL,
+  PLANT_POT_HEIGHT_PX,
+  PLANT_POT_WIDTH_PX,
+  PLANT_POT_X_OFFSET_PX,
+  PLANT_POT_Y_OFFSET_PX,
+  PLAYER_ACCENT_HALF_WIDTH_PX,
+  PLAYER_ACCENT_HEIGHT_PX,
+  PLAYER_ACCENT_WIDTH_PX,
+  PLAYER_ACCENT_Y_OFFSET_PX,
+  PLAYER_DESK_ACCENT,
+  PLAYER_HAIR_FILL,
+  PLAYER_JACKET_FILL,
+  PLAYER_PANTS_FILL,
   PLAYER_SHOE_FILL,
   PLAYER_SKIN_FILL,
   SCREEN_FILL,
@@ -32,7 +116,21 @@ import {
   TILE_WIDTH_PX,
   UpgradeId,
   WHITEBOARD_FRAME_FILL,
+  WHITEBOARD_HALF_WIDTH_PX,
+  WHITEBOARD_HEIGHT_PX,
   WHITEBOARD_INK_FILL,
+  WHITEBOARD_LINE_LEFT_PX,
+  WHITEBOARD_LINE_RIGHT_1_PX,
+  WHITEBOARD_LINE_RIGHT_2_PX,
+  WHITEBOARD_LINE_RIGHT_3_PX,
+  WHITEBOARD_LINE_Y1_PX,
+  WHITEBOARD_LINE_Y2_PX,
+  WHITEBOARD_LINE_Y3_PX,
+  WHITEBOARD_PAD_HEIGHT_PX,
+  WHITEBOARD_PAD_INSET_PX,
+  WHITEBOARD_PAD_WIDTH_PX,
+  WHITEBOARD_TOP_OFFSET_PX,
+  WHITEBOARD_WIDTH_PX,
 } from "./constants.js";
 import { buildRoomOrigin, gridToScreen } from "./isoMath.js";
 import {
@@ -98,12 +196,28 @@ function drawDeskPlant(context, centerX, centerY) {
   context.fillStyle = PLANT_POT_FILL;
   context.strokeStyle = INK;
   context.lineWidth = 1;
-  context.fillRect(centerX + 12, centerY - 8, 8, 7);
-  context.strokeRect(centerX + 12, centerY - 8, 8, 7);
+  context.fillRect(
+    centerX + PLANT_POT_X_OFFSET_PX,
+    centerY - PLANT_POT_Y_OFFSET_PX,
+    PLANT_POT_WIDTH_PX,
+    PLANT_POT_HEIGHT_PX
+  );
+  context.strokeRect(
+    centerX + PLANT_POT_X_OFFSET_PX,
+    centerY - PLANT_POT_Y_OFFSET_PX,
+    PLANT_POT_WIDTH_PX,
+    PLANT_POT_HEIGHT_PX
+  );
 
   context.fillStyle = PLANT_LEAF_FILL;
   context.beginPath();
-  context.arc(centerX + 16, centerY - 12, 5, 0, Math.PI * 2);
+  context.arc(
+    centerX + PLANT_LEAF_X_OFFSET_PX,
+    centerY - PLANT_LEAF_Y_OFFSET_PX,
+    PLANT_LEAF_RADIUS_PX,
+    0,
+    Math.PI * 2
+  );
   context.fill();
   context.stroke();
 }
@@ -112,16 +226,41 @@ function drawDeskLamp(context, centerX, centerY) {
   context.fillStyle = DESK_LAMP_FILL;
   context.strokeStyle = INK;
   context.lineWidth = 1;
-  context.fillRect(centerX - 18, centerY - 8, 5, 8);
-  context.strokeRect(centerX - 18, centerY - 8, 5, 8);
+  context.fillRect(
+    centerX - LAMP_BASE_X_OFFSET_PX,
+    centerY - LAMP_BASE_Y_OFFSET_PX,
+    LAMP_BASE_WIDTH_PX,
+    LAMP_BASE_HEIGHT_PX
+  );
+  context.strokeRect(
+    centerX - LAMP_BASE_X_OFFSET_PX,
+    centerY - LAMP_BASE_Y_OFFSET_PX,
+    LAMP_BASE_WIDTH_PX,
+    LAMP_BASE_HEIGHT_PX
+  );
   context.beginPath();
-  context.moveTo(centerX - 15, centerY - 8);
-  context.lineTo(centerX - 15, centerY - 16);
-  context.lineTo(centerX - 9, centerY - 14);
+  context.moveTo(
+    centerX - LAMP_STEM_X_OFFSET_PX,
+    centerY - LAMP_BASE_Y_OFFSET_PX
+  );
+  context.lineTo(
+    centerX - LAMP_STEM_X_OFFSET_PX,
+    centerY - LAMP_STEM_TOP_OFFSET_PX
+  );
+  context.lineTo(
+    centerX - LAMP_ARM_X_OFFSET_PX,
+    centerY - LAMP_ARM_Y_OFFSET_PX
+  );
   context.stroke();
   context.fillStyle = DESK_LAMP_GLOW_FILL;
   context.beginPath();
-  context.arc(centerX - 10, centerY - 12, 5, 0, Math.PI * 2);
+  context.arc(
+    centerX - LAMP_GLOW_X_OFFSET_PX,
+    centerY - LAMP_GLOW_Y_OFFSET_PX,
+    LAMP_GLOW_RADIUS_PX,
+    0,
+    Math.PI * 2
+  );
   context.fill();
 }
 
@@ -140,15 +279,45 @@ function drawDeskChair(
   context.lineWidth = 1;
 
   if (betterChairs) {
-    context.fillRect(centerX - 9, centerY + 6, 18, 14);
-    context.strokeRect(centerX - 9, centerY + 6, 18, 14);
-    context.fillRect(centerX - 9, centerY + 2, 18, 5);
-    context.strokeRect(centerX - 9, centerY + 2, 18, 5);
+    context.fillRect(
+      centerX - BETTER_CHAIR_HALF_WIDTH_PX,
+      centerY + BETTER_CHAIR_Y_OFFSET_PX,
+      BETTER_CHAIR_WIDTH_PX,
+      BETTER_CHAIR_HEIGHT_PX
+    );
+    context.strokeRect(
+      centerX - BETTER_CHAIR_HALF_WIDTH_PX,
+      centerY + BETTER_CHAIR_Y_OFFSET_PX,
+      BETTER_CHAIR_WIDTH_PX,
+      BETTER_CHAIR_HEIGHT_PX
+    );
+    context.fillRect(
+      centerX - BETTER_CHAIR_HALF_WIDTH_PX,
+      centerY + BETTER_CHAIR_BACK_Y_OFFSET_PX,
+      BETTER_CHAIR_WIDTH_PX,
+      BETTER_CHAIR_BACK_HEIGHT_PX
+    );
+    context.strokeRect(
+      centerX - BETTER_CHAIR_HALF_WIDTH_PX,
+      centerY + BETTER_CHAIR_BACK_Y_OFFSET_PX,
+      BETTER_CHAIR_WIDTH_PX,
+      BETTER_CHAIR_BACK_HEIGHT_PX
+    );
     return;
   }
 
-  context.fillRect(centerX - 8, centerY + 8, 16, 10);
-  context.strokeRect(centerX - 8, centerY + 8, 16, 10);
+  context.fillRect(
+    centerX - CHAIR_HALF_WIDTH_PX,
+    centerY + CHAIR_Y_OFFSET_PX,
+    CHAIR_WIDTH_PX,
+    CHAIR_HEIGHT_PX
+  );
+  context.strokeRect(
+    centerX - CHAIR_HALF_WIDTH_PX,
+    centerY + CHAIR_Y_OFFSET_PX,
+    CHAIR_WIDTH_PX,
+    CHAIR_HEIGHT_PX
+  );
 }
 
 function drawDeskPlaceholder(
@@ -168,10 +337,22 @@ function drawDeskPlaceholder(
   context.strokeStyle = INK;
   context.lineWidth = 1;
   context.beginPath();
-  context.moveTo(centerX, centerY - 18);
-  context.lineTo(centerX + 28, centerY - 4);
-  context.lineTo(centerX, centerY + 10);
-  context.lineTo(centerX - 28, centerY - 4);
+  context.moveTo(
+    centerX,
+    centerY - DESK_TOP_TOP_OFFSET_PX
+  );
+  context.lineTo(
+    centerX + DESK_TOP_HALF_WIDTH_PX,
+    centerY - DESK_TOP_SIDE_Y_PX
+  );
+  context.lineTo(
+    centerX,
+    centerY + DESK_TOP_BOTTOM_OFFSET_PX
+  );
+  context.lineTo(
+    centerX - DESK_TOP_HALF_WIDTH_PX,
+    centerY - DESK_TOP_SIDE_Y_PX
+  );
   context.closePath();
   context.fill();
   context.stroke();
@@ -180,12 +361,27 @@ function drawDeskPlaceholder(
 
   // Monitor
   context.fillStyle = SCREEN_FILL;
-  context.fillRect(centerX - 7, centerY - 14, 14, 10);
-  context.strokeRect(centerX - 7, centerY - 14, 14, 10);
+  context.fillRect(
+    centerX - MONITOR_HALF_WIDTH_PX,
+    centerY - MONITOR_TOP_OFFSET_PX,
+    MONITOR_WIDTH_PX,
+    MONITOR_HEIGHT_PX
+  );
+  context.strokeRect(
+    centerX - MONITOR_HALF_WIDTH_PX,
+    centerY - MONITOR_TOP_OFFSET_PX,
+    MONITOR_WIDTH_PX,
+    MONITOR_HEIGHT_PX
+  );
 
   if (isPlayerDesk) {
     context.fillStyle = PLAYER_DESK_ACCENT;
-    context.fillRect(centerX - 10, centerY - 2, 20, 3);
+    context.fillRect(
+      centerX - PLAYER_ACCENT_HALF_WIDTH_PX,
+      centerY - PLAYER_ACCENT_Y_OFFSET_PX,
+      PLAYER_ACCENT_WIDTH_PX,
+      PLAYER_ACCENT_HEIGHT_PX
+    );
   }
 
   if (deskPlants) {
@@ -201,7 +397,7 @@ function drawAmberNeon(context, originX, originY, office) {
   const midX = Math.floor(office.gridWidth / 2);
   const { screenX, screenY } = gridToScreen(midX, 0);
   const centerX = originX + screenX;
-  const centerY = originY + screenY - 28;
+  const centerY = originY + screenY - NEON_SIGN_Y_OFFSET_PX;
 
   context.font = "bold 14px \"IBM Plex Sans\", sans-serif";
   context.textAlign = "center";
@@ -219,12 +415,28 @@ function drawBubblerPlaceholder(context, centerX, centerY) {
   context.fillStyle = fill;
   context.strokeStyle = INK;
   context.lineWidth = 1;
-  context.fillRect(centerX - 8, centerY - 22, 16, 28);
-  context.strokeRect(centerX - 8, centerY - 22, 16, 28);
+  context.fillRect(
+    centerX - BUBBLER_HALF_WIDTH_PX,
+    centerY - BUBBLER_TOP_OFFSET_PX,
+    BUBBLER_WIDTH_PX,
+    BUBBLER_HEIGHT_PX
+  );
+  context.strokeRect(
+    centerX - BUBBLER_HALF_WIDTH_PX,
+    centerY - BUBBLER_TOP_OFFSET_PX,
+    BUBBLER_WIDTH_PX,
+    BUBBLER_HEIGHT_PX
+  );
 
   context.fillStyle = BONE;
   context.beginPath();
-  context.arc(centerX, centerY - 26, 7, 0, Math.PI * 2);
+  context.arc(
+    centerX,
+    centerY - BUBBLER_BOTTLE_Y_OFFSET_PX,
+    BUBBLER_BOTTLE_RADIUS_PX,
+    0,
+    Math.PI * 2
+  );
   context.fill();
   context.stroke();
 }
@@ -234,31 +446,62 @@ function drawCoffeePlaceholder(context, centerX, centerY) {
   context.fillStyle = FurnitureFill[FurnitureKind.COFFEE];
   context.strokeStyle = INK;
   context.lineWidth = 1;
-  context.fillRect(centerX - 12, centerY - 4, 24, 14);
-  context.strokeRect(centerX - 12, centerY - 4, 24, 14);
+  context.fillRect(
+    centerX - COFFEE_BASE_HALF_WIDTH_PX,
+    centerY - COFFEE_BASE_Y_OFFSET_PX,
+    COFFEE_BASE_WIDTH_PX,
+    COFFEE_BASE_HEIGHT_PX
+  );
+  context.strokeRect(
+    centerX - COFFEE_BASE_HALF_WIDTH_PX,
+    centerY - COFFEE_BASE_Y_OFFSET_PX,
+    COFFEE_BASE_WIDTH_PX,
+    COFFEE_BASE_HEIGHT_PX
+  );
 
   context.fillStyle = COFFEE_POT_FILL;
-  context.fillRect(centerX - 7, centerY - 26, 14, 20);
-  context.strokeRect(centerX - 7, centerY - 26, 14, 20);
+  context.fillRect(
+    centerX - COFFEE_POT_HALF_WIDTH_PX,
+    centerY - COFFEE_POT_TOP_OFFSET_PX,
+    COFFEE_POT_WIDTH_PX,
+    COFFEE_POT_HEIGHT_PX
+  );
+  context.strokeRect(
+    centerX - COFFEE_POT_HALF_WIDTH_PX,
+    centerY - COFFEE_POT_TOP_OFFSET_PX,
+    COFFEE_POT_WIDTH_PX,
+    COFFEE_POT_HEIGHT_PX
+  );
 
   context.fillStyle = COFFEE_BREW_FILL;
-  context.fillRect(centerX - 5, centerY - 20, 10, 10);
+  context.fillRect(
+    centerX - COFFEE_BREW_HALF_WIDTH_PX,
+    centerY - COFFEE_BREW_TOP_OFFSET_PX,
+    COFFEE_BREW_WIDTH_PX,
+    COFFEE_BREW_HEIGHT_PX
+  );
 
   context.strokeStyle = INK;
   context.beginPath();
-  context.moveTo(centerX - 2, centerY - 28);
-  context.quadraticCurveTo(
-    centerX - 6,
-    centerY - 34,
-    centerX - 1,
-    centerY - 38
+  context.moveTo(
+    centerX - 2,
+    centerY - COFFEE_STEAM_BASE_Y_PX
   );
-  context.moveTo(centerX + 2, centerY - 28);
   context.quadraticCurveTo(
-    centerX + 6,
-    centerY - 34,
+    centerX - COFFEE_STEAM_X_SPREAD_PX,
+    centerY - COFFEE_STEAM_MID_Y_PX,
+    centerX - 1,
+    centerY - COFFEE_STEAM_TOP_Y_PX
+  );
+  context.moveTo(
+    centerX + 2,
+    centerY - COFFEE_STEAM_BASE_Y_PX
+  );
+  context.quadraticCurveTo(
+    centerX + COFFEE_STEAM_X_SPREAD_PX,
+    centerY - COFFEE_STEAM_MID_Y_PX,
     centerX + 1,
-    centerY - 38
+    centerY - COFFEE_STEAM_TOP_Y_PX
   );
   context.stroke();
 }
@@ -267,21 +510,67 @@ function drawWhiteboardPlaceholder(context, centerX, centerY) {
   context.fillStyle = WHITEBOARD_FRAME_FILL;
   context.strokeStyle = INK;
   context.lineWidth = 1;
-  context.fillRect(centerX - 18, centerY - 28, 36, 28);
-  context.strokeRect(centerX - 18, centerY - 28, 36, 28);
+  context.fillRect(
+    centerX - WHITEBOARD_HALF_WIDTH_PX,
+    centerY - WHITEBOARD_TOP_OFFSET_PX,
+    WHITEBOARD_WIDTH_PX,
+    WHITEBOARD_HEIGHT_PX
+  );
+  context.strokeRect(
+    centerX - WHITEBOARD_HALF_WIDTH_PX,
+    centerY - WHITEBOARD_TOP_OFFSET_PX,
+    WHITEBOARD_WIDTH_PX,
+    WHITEBOARD_HEIGHT_PX
+  );
 
   context.fillStyle = FurnitureFill[FurnitureKind.WHITEBOARD];
-  context.fillRect(centerX - 15, centerY - 25, 30, 22);
-  context.strokeRect(centerX - 15, centerY - 25, 30, 22);
+  context.fillRect(
+    centerX
+      - WHITEBOARD_HALF_WIDTH_PX
+      + WHITEBOARD_PAD_INSET_PX,
+    centerY
+      - WHITEBOARD_TOP_OFFSET_PX
+      + WHITEBOARD_PAD_INSET_PX,
+    WHITEBOARD_PAD_WIDTH_PX,
+    WHITEBOARD_PAD_HEIGHT_PX
+  );
+  context.strokeRect(
+    centerX
+      - WHITEBOARD_HALF_WIDTH_PX
+      + WHITEBOARD_PAD_INSET_PX,
+    centerY
+      - WHITEBOARD_TOP_OFFSET_PX
+      + WHITEBOARD_PAD_INSET_PX,
+    WHITEBOARD_PAD_WIDTH_PX,
+    WHITEBOARD_PAD_HEIGHT_PX
+  );
 
   context.strokeStyle = WHITEBOARD_INK_FILL;
   context.beginPath();
-  context.moveTo(centerX - 10, centerY - 18);
-  context.lineTo(centerX + 8, centerY - 18);
-  context.moveTo(centerX - 10, centerY - 12);
-  context.lineTo(centerX + 4, centerY - 12);
-  context.moveTo(centerX - 10, centerY - 6);
-  context.lineTo(centerX + 10, centerY - 6);
+  context.moveTo(
+    centerX - WHITEBOARD_LINE_LEFT_PX,
+    centerY - WHITEBOARD_LINE_Y1_PX
+  );
+  context.lineTo(
+    centerX + WHITEBOARD_LINE_RIGHT_1_PX,
+    centerY - WHITEBOARD_LINE_Y1_PX
+  );
+  context.moveTo(
+    centerX - WHITEBOARD_LINE_LEFT_PX,
+    centerY - WHITEBOARD_LINE_Y2_PX
+  );
+  context.lineTo(
+    centerX + WHITEBOARD_LINE_RIGHT_2_PX,
+    centerY - WHITEBOARD_LINE_Y2_PX
+  );
+  context.moveTo(
+    centerX - WHITEBOARD_LINE_LEFT_PX,
+    centerY - WHITEBOARD_LINE_Y3_PX
+  );
+  context.lineTo(
+    centerX + WHITEBOARD_LINE_RIGHT_3_PX,
+    centerY - WHITEBOARD_LINE_Y3_PX
+  );
   context.stroke();
 }
 
@@ -290,7 +579,11 @@ function drawNameplate(context, centerX, centerY, label) {
   context.textAlign = "center";
   context.textBaseline = "top";
   context.fillStyle = INK;
-  context.fillText(label, centerX, centerY + 22);
+  context.fillText(
+    label,
+    centerX,
+    centerY + NAMEPLATE_Y_OFFSET_PX
+  );
 }
 
 function drawPathTarget(
@@ -332,32 +625,71 @@ function drawNoshPlaceholder(
   centerY,
   walkBobPhase
 ) {
-  const bobOffset = Math.sin(walkBobPhase) * 1.5;
-  const feetY = centerY + 6;
-  const bodyY = centerY - 6 + bobOffset;
+  const bobOffset =
+    Math.sin(walkBobPhase) * NOSH_WALK_BOB_AMPLITUDE_PX;
+  const feetY = centerY + NOSH_FEET_Y_OFFSET_PX;
+  const bodyY =
+    centerY - NOSH_BODY_Y_OFFSET_PX + bobOffset;
 
   context.fillStyle = PLAYER_SHOE_FILL;
-  context.fillRect(centerX - 7, feetY, 5, 3);
-  context.fillRect(centerX + 2, feetY, 5, 3);
+  context.fillRect(
+    centerX - CHAR_SHOE_HALF_GAP_PX,
+    feetY,
+    CHAR_SHOE_WIDTH_PX,
+    CHAR_SHOE_HEIGHT_PX
+  );
+  context.fillRect(
+    centerX + CHAR_SHOE_INNER_X_PX,
+    feetY,
+    CHAR_SHOE_WIDTH_PX,
+    CHAR_SHOE_HEIGHT_PX
+  );
 
   context.fillStyle = PLAYER_PANTS_FILL;
-  context.fillRect(centerX - 6, bodyY + 10, 12, 8);
+  context.fillRect(
+    centerX - CHAR_PANTS_HALF_WIDTH_PX,
+    bodyY + CHAR_PANTS_Y_OFFSET_PX,
+    CHAR_PANTS_WIDTH_PX,
+    CHAR_PANTS_HEIGHT_PX
+  );
 
   context.fillStyle = PLAYER_JACKET_FILL;
-  context.fillRect(centerX - 8, bodyY - 2, 16, 14);
+  context.fillRect(
+    centerX - CHAR_TORSO_HALF_WIDTH_PX,
+    bodyY - CHAR_TORSO_Y_OFFSET_PX,
+    CHAR_TORSO_WIDTH_PX,
+    CHAR_TORSO_HEIGHT_PX
+  );
   context.strokeStyle = INK;
   context.lineWidth = 1;
-  context.strokeRect(centerX - 8, bodyY - 2, 16, 14);
+  context.strokeRect(
+    centerX - CHAR_TORSO_HALF_WIDTH_PX,
+    bodyY - CHAR_TORSO_Y_OFFSET_PX,
+    CHAR_TORSO_WIDTH_PX,
+    CHAR_TORSO_HEIGHT_PX
+  );
 
   context.fillStyle = PLAYER_SKIN_FILL;
   context.beginPath();
-  context.arc(centerX, bodyY - 10, 6, 0, Math.PI * 2);
+  context.arc(
+    centerX,
+    bodyY - CHAR_HEAD_Y_OFFSET_PX,
+    CHAR_HEAD_RADIUS_PX,
+    0,
+    Math.PI * 2
+  );
   context.fill();
   context.stroke();
 
   context.fillStyle = PLAYER_HAIR_FILL;
   context.beginPath();
-  context.arc(centerX, bodyY - 12, 6, Math.PI, 0);
+  context.arc(
+    centerX,
+    bodyY - CHAR_HAIR_Y_OFFSET_PX,
+    CHAR_HEAD_RADIUS_PX,
+    Math.PI,
+    0
+  );
   context.fill();
 }
 
@@ -369,31 +701,68 @@ function drawNpcPlaceholder(
   jacketFill
 ) {
   // Seated cue: slightly lower than a standing walker.
-  const feetY = centerY + 8;
-  const bodyY = centerY - 2;
+  const feetY = centerY + NPC_FEET_Y_OFFSET_PX;
+  const bodyY = centerY - NPC_BODY_Y_OFFSET_PX;
 
   context.fillStyle = NPC_SHOE_FILL;
-  context.fillRect(centerX - 7, feetY, 5, 3);
-  context.fillRect(centerX + 2, feetY, 5, 3);
+  context.fillRect(
+    centerX - CHAR_SHOE_HALF_GAP_PX,
+    feetY,
+    CHAR_SHOE_WIDTH_PX,
+    CHAR_SHOE_HEIGHT_PX
+  );
+  context.fillRect(
+    centerX + CHAR_SHOE_INNER_X_PX,
+    feetY,
+    CHAR_SHOE_WIDTH_PX,
+    CHAR_SHOE_HEIGHT_PX
+  );
 
   context.fillStyle = NPC_PANTS_FILL;
-  context.fillRect(centerX - 6, bodyY + 10, 12, 8);
+  context.fillRect(
+    centerX - CHAR_PANTS_HALF_WIDTH_PX,
+    bodyY + CHAR_PANTS_Y_OFFSET_PX,
+    CHAR_PANTS_WIDTH_PX,
+    CHAR_PANTS_HEIGHT_PX
+  );
 
   context.fillStyle = jacketFill;
-  context.fillRect(centerX - 8, bodyY - 2, 16, 14);
+  context.fillRect(
+    centerX - CHAR_TORSO_HALF_WIDTH_PX,
+    bodyY - CHAR_TORSO_Y_OFFSET_PX,
+    CHAR_TORSO_WIDTH_PX,
+    CHAR_TORSO_HEIGHT_PX
+  );
   context.strokeStyle = INK;
   context.lineWidth = 1;
-  context.strokeRect(centerX - 8, bodyY - 2, 16, 14);
+  context.strokeRect(
+    centerX - CHAR_TORSO_HALF_WIDTH_PX,
+    bodyY - CHAR_TORSO_Y_OFFSET_PX,
+    CHAR_TORSO_WIDTH_PX,
+    CHAR_TORSO_HEIGHT_PX
+  );
 
   context.fillStyle = NPC_SKIN_FILL;
   context.beginPath();
-  context.arc(centerX, bodyY - 10, 6, 0, Math.PI * 2);
+  context.arc(
+    centerX,
+    bodyY - CHAR_HEAD_Y_OFFSET_PX,
+    CHAR_HEAD_RADIUS_PX,
+    0,
+    Math.PI * 2
+  );
   context.fill();
   context.stroke();
 
   context.fillStyle = NPC_HAIR_FILL;
   context.beginPath();
-  context.arc(centerX, bodyY - 12, 6, Math.PI, 0);
+  context.arc(
+    centerX,
+    bodyY - CHAR_HAIR_Y_OFFSET_PX,
+    CHAR_HEAD_RADIUS_PX,
+    Math.PI,
+    0
+  );
   context.fill();
 }
 
