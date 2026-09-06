@@ -6,12 +6,23 @@ import {
   FurnitureFill,
   FurnitureKind,
   INK,
+  PATH_TARGET_FILL,
+  PATH_TARGET_STROKE,
   PLAYER_DESK_ACCENT,
+  PLAYER_HAIR_FILL,
+  PLAYER_JACKET_FILL,
+  PLAYER_PANTS_FILL,
+  PLAYER_SHOE_FILL,
+  PLAYER_SKIN_FILL,
   SCREEN_FILL,
   TILE_HEIGHT_PX,
   TILE_WIDTH_PX,
 } from "./constants.js";
 import { buildRoomOrigin, gridToScreen } from "./isoMath.js";
+import {
+  isPlayerMoving,
+  playerPathTarget,
+} from "./player.js";
 
 function drawDiamond(context, centerX, centerY, fill) {
   const halfWidth = TILE_WIDTH_PX / 2;
@@ -120,12 +131,7 @@ function drawBubblerPlaceholder(context, centerX, centerY) {
   context.stroke();
 }
 
-function drawNameplate(
-  context,
-  centerX,
-  centerY,
-  label
-) {
+function drawNameplate(context, centerX, centerY, label) {
   context.font = "11px \"IBM Plex Sans\", sans-serif";
   context.textAlign = "center";
   context.textBaseline = "top";
@@ -133,23 +139,116 @@ function drawNameplate(
   context.fillText(label, centerX, centerY + 22);
 }
 
-function drawFurniture(
+function drawPathTarget(
+  context,
+  originX,
+  originY,
+  target
+) {
+  if (!target) {
+    return;
+  }
+
+  const { screenX, screenY } = gridToScreen(
+    target.gridX,
+    target.gridY
+  );
+  const centerX = originX + screenX;
+  const centerY = originY + screenY;
+  const halfWidth = TILE_WIDTH_PX / 2;
+  const halfHeight = TILE_HEIGHT_PX / 2;
+
+  context.beginPath();
+  context.moveTo(centerX, centerY - halfHeight + 4);
+  context.lineTo(centerX + halfWidth - 6, centerY);
+  context.lineTo(centerX, centerY + halfHeight - 4);
+  context.lineTo(centerX - halfWidth + 6, centerY);
+  context.closePath();
+  context.fillStyle = PATH_TARGET_FILL;
+  context.fill();
+  context.strokeStyle = PATH_TARGET_STROKE;
+  context.lineWidth = 1.5;
+  context.stroke();
+}
+
+// Amber jacket is the player cue until real sprites land.
+function drawNoshPlaceholder(
+  context,
+  centerX,
+  centerY,
+  walkBobPhase
+) {
+  const bobOffset = Math.sin(walkBobPhase) * 1.5;
+  const feetY = centerY + 6;
+  const bodyY = centerY - 6 + bobOffset;
+
+  context.fillStyle = PLAYER_SHOE_FILL;
+  context.fillRect(centerX - 7, feetY, 5, 3);
+  context.fillRect(centerX + 2, feetY, 5, 3);
+
+  context.fillStyle = PLAYER_PANTS_FILL;
+  context.fillRect(centerX - 6, bodyY + 10, 12, 8);
+
+  context.fillStyle = PLAYER_JACKET_FILL;
+  context.fillRect(centerX - 8, bodyY - 2, 16, 14);
+  context.strokeStyle = INK;
+  context.lineWidth = 1;
+  context.strokeRect(centerX - 8, bodyY - 2, 16, 14);
+
+  context.fillStyle = PLAYER_SKIN_FILL;
+  context.beginPath();
+  context.arc(centerX, bodyY - 10, 6, 0, Math.PI * 2);
+  context.fill();
+  context.stroke();
+
+  context.fillStyle = PLAYER_HAIR_FILL;
+  context.beginPath();
+  context.arc(centerX, bodyY - 12, 6, Math.PI, 0);
+  context.fill();
+}
+
+function drawFurniturePiece(
+  context,
+  piece,
+  staffLookup,
+  centerX,
+  centerY
+) {
+  if (piece.kind === FurnitureKind.BUBBLER) {
+    drawBubblerPlaceholder(context, centerX, centerY);
+    drawNameplate(context, centerX, centerY, "Bubbler");
+    return;
+  }
+
+  if (piece.kind !== FurnitureKind.DESK) {
+    return;
+  }
+
+  drawDeskPlaceholder(
+    context,
+    centerX,
+    centerY,
+    Boolean(piece.isPlayerDesk)
+  );
+
+  const person = staffLookup[piece.staffId];
+  const label = person ? person.displayName : piece.id;
+
+  drawNameplate(context, centerX, centerY, label);
+}
+
+function drawWorldEntities(
   context,
   office,
   staffLookup,
+  player,
   originX,
   originY
 ) {
-  const sortedFurniture = [...office.furniture].sort(
-    (left, right) => {
-      const leftDepth = left.gridX + left.gridY;
-      const rightDepth = right.gridX + right.gridY;
+  const drawables = [];
 
-      return leftDepth - rightDepth;
-    }
-  );
-
-  for (const piece of sortedFurniture) {
+  for (const piece of office.furniture) {
+    const depth = piece.gridX + piece.gridY;
     const { screenX, screenY } = gridToScreen(
       piece.gridX,
       piece.gridY
@@ -157,27 +256,47 @@ function drawFurniture(
     const centerX = originX + screenX;
     const centerY = originY + screenY;
 
-    if (piece.kind === FurnitureKind.BUBBLER) {
-      drawBubblerPlaceholder(context, centerX, centerY);
-      drawNameplate(context, centerX, centerY, "Bubbler");
-      continue;
-    }
+    drawables.push({
+      depth,
+      draw() {
+        drawFurniturePiece(
+          context,
+          piece,
+          staffLookup,
+          centerX,
+          centerY
+        );
+      },
+    });
+  }
 
-    if (piece.kind === FurnitureKind.DESK) {
-      drawDeskPlaceholder(
+  const { screenX, screenY } = gridToScreen(
+    player.gridX,
+    player.gridY
+  );
+  const playerCenterX = originX + screenX;
+  const playerCenterY = originY + screenY;
+  const playerDepth = player.gridX + player.gridY;
+  const bobPhase = isPlayerMoving(player)
+    ? player.walkBobPhase
+    : 0;
+
+  drawables.push({
+    depth: playerDepth,
+    draw() {
+      drawNoshPlaceholder(
         context,
-        centerX,
-        centerY,
-        Boolean(piece.isPlayerDesk)
+        playerCenterX,
+        playerCenterY,
+        bobPhase
       );
+    },
+  });
 
-      const person = staffLookup[piece.staffId];
-      const label = person
-        ? person.displayName
-        : piece.id;
+  drawables.sort((left, right) => left.depth - right.depth);
 
-      drawNameplate(context, centerX, centerY, label);
-    }
+  for (const drawable of drawables) {
+    drawable.draw();
   }
 }
 
@@ -185,6 +304,7 @@ export function drawOffice(
   canvas,
   office,
   staffLookup,
+  player,
   viewWidth,
   viewHeight
 ) {
@@ -204,11 +324,24 @@ export function drawOffice(
   );
 
   drawFloor(context, office, originX, originY);
-  drawFurniture(
+
+  if (isPlayerMoving(player)) {
+    drawPathTarget(
+      context,
+      originX,
+      originY,
+      playerPathTarget(player)
+    );
+  }
+
+  drawWorldEntities(
     context,
     office,
     staffLookup,
+    player,
     originX,
     originY
   );
+
+  return { originX, originY };
 }

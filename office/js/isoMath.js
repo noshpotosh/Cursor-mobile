@@ -12,6 +12,22 @@ export function gridToScreen(gridX, gridY) {
   return { screenX, screenY };
 }
 
+// Inverse of gridToScreen; rounds to the nearest tile center.
+export function screenToGrid(screenX, screenY) {
+  const halfWidth = TILE_WIDTH_PX / 2;
+  const halfHeight = TILE_HEIGHT_PX / 2;
+
+  const gridX =
+    (screenX / halfWidth + screenY / halfHeight) / 2;
+  const gridY =
+    (screenY / halfHeight - screenX / halfWidth) / 2;
+
+  return {
+    gridX: Math.round(gridX),
+    gridY: Math.round(gridY),
+  };
+}
+
 // Bounds of tile *centers* for the occupied cells (0..w-1, 0..h-1).
 export function measureRoomBounds(gridWidth, gridHeight) {
   const lastX = gridWidth - 1;
