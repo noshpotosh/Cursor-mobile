@@ -34,7 +34,31 @@ Open [http://127.0.0.1:8765](http://127.0.0.1:8765).
 - Desk PC → desktop apps (Teams, Directory, Goals, Loft)
 - `Esc` — close window / leave desk
 
-`prefers-reduced-motion: reduce` snaps walks and disables soft camera follow.
+`prefers-reduced-motion: reduce` snaps walks and disables character bobbing.
+The camera fits the full room, including walls, to the viewport.
+
+## Visual implementation
+
+The room uses a 64×32 logical isometric grid and a pixel-resolution canvas.
+Cream walls, timber trim, a central checked rug, CRT desks, seated staff, and small
+personal props follow the original art direction. Static room textures are
+cached; characters and upgrade effects remain live. Desks are staggered
+around an open center in both offices. Accepted runtime PNGs load from
+`assets/furniture/` and `assets/characters/`. The reference PNGs are
+never loaded as game backgrounds.
+
+Teams and Directory use cream patterned wallpaper and dark beveled chrome.
+Directory portraits match the crew sprites; names, roles, search,
+presence, and conversations remain accessible HTML. Goals and Loft stay
+available alongside the two original apps.
+
+Run camera, pointer, and layout reachability checks with Node:
+
+```bash
+node office/tests/artDirection.test.mjs
+```
+
+Run that command from the repository root.
 
 ## Docs
 

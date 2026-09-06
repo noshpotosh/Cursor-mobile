@@ -1,3 +1,4 @@
+import { drawPortrait } from "./drawCharacters.js";
 import {
   DesktopAppId,
   DESKTOP_CLOCK_INTERVAL_MS,
@@ -51,6 +52,8 @@ function paintTeamsThread(log, agentBus, staffId) {
 function buildTeamsRosterRow(person, status, onSelect) {
   const row = createEl("button", "teams-roster-row");
   row.type = "button";
+  row.dataset.staff = person.id;
+  row.setAttribute("aria-pressed", "false");
 
   row.appendChild(
     createEl("span", `presence-dot ${presenceClass(status)}`)
@@ -91,6 +94,7 @@ function renderTeamsApp(body, desktop) {
   );
 
   let activeStaffId = null;
+  roster.appendChild(createEl("h2", "roster-heading", "Your team"));
 
   title.textContent = "Select a teammate";
   typing.hidden = true;
@@ -110,6 +114,12 @@ function renderTeamsApp(body, desktop) {
 
   function showThread(person) {
     activeStaffId = person.id;
+    for (const row of roster.querySelectorAll(".teams-roster-row")) {
+      row.setAttribute(
+        "aria-pressed",
+        String(row.dataset.staff === person.id)
+      );
+    }
     title.textContent = person.displayName;
     typing.hidden = true;
     ensureThreadGreeting(agentBus, person.id);
@@ -117,6 +127,10 @@ function renderTeamsApp(body, desktop) {
   }
 
   subscribeAgentBus(agentBus, (event) => {
+    if (!body.contains(layout)) {
+      return;
+    }
+
     if (!activeStaffId || event.staffId !== activeStaffId) {
       return;
     }
@@ -216,6 +230,17 @@ function renderDirectoryApp(body, desktop) {
 
   function showProfile(person) {
     clearElement(detail);
+    for (const row of list.querySelectorAll(".directory-row")) {
+      row.setAttribute(
+        "aria-pressed",
+        String(row.dataset.staff === person.id)
+      );
+    }
+    const portrait = createEl('canvas', 'directory-portrait');
+    portrait.setAttribute('role', 'img');
+    portrait.setAttribute('aria-label', `${person.displayName} portrait`);
+    drawPortrait(portrait, person.id);
+    detail.appendChild(portrait);
     const status = presenceForPerson(
       person,
       desktop,
@@ -235,6 +260,7 @@ function renderDirectoryApp(body, desktop) {
         status
       )
     );
+    detail.appendChild(createEl('h3', 'directory-about-title', 'About'));
     detail.appendChild(
       createEl("p", "directory-about", person.about)
     );
@@ -247,13 +273,24 @@ function renderDirectoryApp(body, desktop) {
     }
   }
 
+  list.appendChild(createEl("h2", "roster-heading", "Directory"));
+  const search = createEl('input', 'directory-search');
+  search.type = 'search';
+  search.placeholder = 'Search people…';
+  search.setAttribute('aria-label', 'Search people');
+  search.addEventListener('input', () => {
+    const query = search.value.trim().toLowerCase();
+    for (const row of list.querySelectorAll('.directory-row')) {
+      row.hidden = !row.textContent.toLowerCase().includes(query);
+    }
+  });
+  list.appendChild(search);
+
   for (const person of staffList) {
-    const status = presenceForPerson(
-      person,
-      desktop,
-      occupancy
-    );
+    const status = presenceForPerson(person, desktop, occupancy);
     const row = createEl("button", "directory-row");
+    row.dataset.staff = person.id;
+    row.setAttribute('aria-pressed', 'false');
     row.type = "button";
 
     row.appendChild(
@@ -278,6 +315,12 @@ function renderDirectoryApp(body, desktop) {
   layout.appendChild(list);
   layout.appendChild(detail);
   body.appendChild(layout);
+  const initialProfile = staffList.find(
+    (person) => !person.isPlayer
+  ) || staffList[0];
+  if (initialProfile) {
+    showProfile(initialProfile);
+  }
 }
 
 function renderGoalsApp(body, economy) {
@@ -364,6 +407,10 @@ export function createDesktopOs(options) {
   const titleEl = root.querySelector(".window-title");
   const bodyEl = root.querySelector(".window-body");
   const closeButton = root.querySelector(".window-close");
+  const minimizeButton = root.querySelector(".window-minimize");
+  const maximizeButton = root.querySelector(".window-maximize");
+  const soundButton = root.querySelector(".desktop-sound");
+  const muteButton = document.getElementById("mute-button");
   const exitButton = root.querySelector("#desktop-exit");
   const clockEl = root.querySelector(".taskbar-clock");
   const iconButtons = root.querySelectorAll("[data-app]");
@@ -389,16 +436,34 @@ export function createDesktopOs(options) {
     clockTimerId: null,
   };
 
-  function refreshClock() {
+  function refreshTaskbar() {
     if (!clockEl) {
       return;
     }
 
-    clockEl.textContent = formatClock(new Date());
+    const now = new Date();
+    const date = now.toLocaleDateString([], {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+    clockEl.textContent = `${formatClock(now)}\n${date}`;
+    clockEl.dateTime = now.toISOString();
+    if (soundButton && muteButton) {
+      const isMuted = muteButton.getAttribute("aria-pressed") === "true";
+      const label = isMuted ? "Unmute sound" : "Mute sound";
+      soundButton.setAttribute("aria-pressed", String(isMuted));
+      soundButton.setAttribute("aria-label", label);
+      soundButton.title = label;
+    }
   }
 
   function closeWindow() {
     state.activeAppId = null;
+    root.removeAttribute("data-active-app");
+    for (const button of iconButtons) {
+      button.setAttribute('aria-pressed', 'false');
+    }
 
     if (windowEl) {
       windowEl.hidden = true;
@@ -418,7 +483,19 @@ export function createDesktopOs(options) {
       return;
     }
 
+    if (state.activeAppId === appId) {
+      windowEl.hidden = false;
+      return;
+    }
+
     state.activeAppId = appId;
+    root.dataset.activeApp = appId;
+    for (const button of iconButtons) {
+      button.setAttribute(
+        "aria-pressed",
+        String(button.dataset.app === appId)
+      );
+    }
     windowEl.hidden = false;
 
     if (appId === DesktopAppId.GOALS) {
@@ -467,6 +544,33 @@ export function createDesktopOs(options) {
     });
   }
 
+  if (minimizeButton) {
+    minimizeButton.addEventListener("click", () => {
+      windowEl.hidden = true;
+      const activeButton = root.querySelector(
+        `.taskbar-app[data-app="${state.activeAppId}"]`
+      );
+      activeButton?.focus();
+    });
+  }
+
+  if (maximizeButton) {
+    maximizeButton.addEventListener("click", () => {
+      const expanded = windowEl.classList.toggle("is-maximized");
+      maximizeButton.setAttribute("aria-pressed", String(expanded));
+      maximizeButton.setAttribute(
+        "aria-label", expanded ? "Restore window" : "Maximize window"
+      );
+    });
+  }
+
+  if (soundButton && muteButton) {
+    soundButton.addEventListener("click", () => {
+      muteButton.click();
+      refreshTaskbar();
+    });
+  }
+
   if (exitButton) {
     exitButton.addEventListener("click", () => {
       closeDesktopOs(state);
@@ -475,7 +579,7 @@ export function createDesktopOs(options) {
 
   state.closeWindow = closeWindow;
   state.openApp = openApp;
-  state.refreshClock = refreshClock;
+  state.refreshTaskbar = refreshTaskbar;
 
   return state;
 }
@@ -492,9 +596,9 @@ export function openDesktopOs(desktop) {
   desktop.isOpen = true;
   desktop.root.hidden = false;
   desktop.closeWindow();
-  desktop.refreshClock();
+  desktop.refreshTaskbar();
   desktop.clockTimerId = window.setInterval(() => {
-    desktop.refreshClock();
+    desktop.refreshTaskbar();
   }, DESKTOP_CLOCK_INTERVAL_MS);
 
   const firstIcon = desktop.root.querySelector("[data-app]");

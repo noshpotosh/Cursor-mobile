@@ -9,32 +9,32 @@
     {
       "id": "bubbler",
       "kind": "bubbler",
-      "gridX": 1,
-      "gridY": 8,
+      "gridX": 11,
+      "gridY": 1,
       "blocksWalk": true,
       "interactable": true
     },
     {
       "id": "coffee",
       "kind": "coffee",
-      "gridX": 6,
-      "gridY": 8,
+      "gridX": 0,
+      "gridY": 4,
       "blocksWalk": true,
       "interactable": true
     },
     {
       "id": "whiteboard",
       "kind": "whiteboard",
-      "gridX": 5,
-      "gridY": 1,
+      "gridX": 0,
+      "gridY": 8,
       "blocksWalk": true,
       "interactable": true
     },
     {
       "id": "desk-nosh",
       "kind": "desk",
-      "gridX": 2,
-      "gridY": 3,
+      "gridX": 10,
+      "gridY": 8,
       "blocksWalk": true,
       "isPlayerDesk": true,
       "staffId": "nosh"
@@ -42,8 +42,8 @@
     {
       "id": "desk-fabrizio",
       "kind": "desk",
-      "gridX": 5,
-      "gridY": 3,
+      "gridX": 2,
+      "gridY": 2,
       "blocksWalk": true,
       "isPlayerDesk": false,
       "staffId": "fabrizio-cortell"
@@ -51,8 +51,8 @@
     {
       "id": "desk-maeve",
       "kind": "desk",
-      "gridX": 8,
-      "gridY": 3,
+      "gridX": 7,
+      "gridY": 1,
       "blocksWalk": true,
       "isPlayerDesk": false,
       "staffId": "maeve-quinn"
@@ -60,7 +60,7 @@
     {
       "id": "desk-dex",
       "kind": "desk",
-      "gridX": 2,
+      "gridX": 1,
       "gridY": 6,
       "blocksWalk": true,
       "isPlayerDesk": false,
@@ -69,8 +69,8 @@
     {
       "id": "desk-cal",
       "kind": "desk",
-      "gridX": 5,
-      "gridY": 6,
+      "gridX": 10,
+      "gridY": 4,
       "blocksWalk": true,
       "isPlayerDesk": false,
       "staffId": "cal-rook"
@@ -78,8 +78,8 @@
     {
       "id": "desk-reed",
       "kind": "desk",
-      "gridX": 8,
-      "gridY": 6,
+      "gridX": 5,
+      "gridY": 8,
       "blocksWalk": true,
       "isPlayerDesk": false,
       "staffId": "reed-mallory"

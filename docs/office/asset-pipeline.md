@@ -71,3 +71,16 @@ Teams + Directory body text should be **HTML/CSS**, not baked into pixel bitmaps
 
 Files in `reference/` (including `reference/sheets/`) are for humans
 and cut guides. Runtime code must not depend on them.
+
+## Current runtime art
+
+The September UI fidelity pass adds accepted art to `furniture/` and
+`characters/`: a CRT desk, six furniture/plant props, six crew figures,
+and six portraits. Source rectangles and asset loading live in
+`office/js/sprites.js`; the game waits for these assets and its local font
+before drawing. Sprite and portrait scaling uses nearest-neighbor sampling.
+
+Generation prompts and provenance: [art-prompts.md](art-prompts.md).
+The desktop icons and wallpaper are code-native SVG pixel artwork under
+`office/assets/ui/`. Pixelify Sans is bundled under `assets/fonts/`, with
+its SIL Open Font License beside it. Runtime needs no remote font service.
