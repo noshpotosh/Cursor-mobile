@@ -67,3 +67,46 @@ export const SPAWN_SEARCH_OFFSETS = [
   { deltaX: 1, deltaY: -1 },
   { deltaX: -1, deltaY: -1 },
 ];
+
+// Chebyshev distance: orthogonal + diagonal neighbors count.
+export const INTERACT_RANGE_TILES = 1;
+
+export const InteractKind = {
+  TALK: "talk",
+  DRINK: "drink",
+};
+
+export const NPC_SKIN_FILL = "#e8c4a8";
+export const NPC_PANTS_FILL = "#3d4f5f";
+export const NPC_HAIR_FILL = "#2c1810";
+export const NPC_SHOE_FILL = "#1a1714";
+
+// Distinct jackets so staff read apart from amber Nosh.
+export const NpcJacketFill = {
+  "fabrizio-cortell": "#3d5a6c",
+  "maeve-quinn": "#a85d4f",
+  "dex-harlan": "#2f6f5e",
+  "cal-rook": "#8b3a3a",
+  "reed-mallory": "#4a5560",
+};
+
+export const DEFAULT_NPC_JACKET_FILL = "#5c6b73";
+
+export const BUBBLER_DRINK_LINE =
+  "Cold water. Pack hydrated.";
+
+// Short floor lines — real agent chat comes later.
+export const StaffTalkLine = {
+  "fabrizio-cortell":
+    "Scope first. Then we ship. Keep it 100.",
+  "maeve-quinn":
+    "If the first viewport could be another brand, cut it.",
+  "dex-harlan":
+    "Readable beats clever. Show me the recipe.",
+  "cal-rook":
+    "Prove it. I break builds that hide behind vibes.",
+  "reed-mallory":
+    "No mystery numbers. Name the thing.",
+};
+
+export const TOAST_VISIBLE_MS = 3200;

@@ -57,3 +57,39 @@ body {
   pointer-events: none;
   user-select: none;
 }
+
+.interact-prompt,
+.office-toast {
+  position: absolute;
+  left: 50%;
+  z-index: 2;
+  margin: 0;
+  padding: 0.55rem 0.9rem;
+  max-width: min(28rem, calc(100% - 2rem));
+  transform: translateX(-50%);
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.35;
+  text-align: center;
+  color: var(--ink);
+  background: rgba(244, 239, 230, 0.94);
+  border: 2px solid var(--clay);
+  box-shadow: 0 4px 16px var(--shadow);
+  pointer-events: none;
+  user-select: none;
+}
+
+.interact-prompt {
+  bottom: 1.25rem;
+}
+
+.office-toast {
+  bottom: 4.25rem;
+  border-color: var(--sage);
+  font-weight: 500;
+}
+
+.interact-prompt[hidden],
+.office-toast[hidden] {
+  display: none;
+}
