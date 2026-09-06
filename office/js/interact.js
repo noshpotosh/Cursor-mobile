@@ -1,13 +1,25 @@
 import {
   BUBBLER_DRINK_LINE,
+  COFFEE_SIP_LINE,
   FurnitureKind,
   INTERACT_RANGE_TILES,
   InteractKind,
   StaffTalkLine,
+  WHITEBOARD_NOTES,
 } from "./constants.js";
+
+let whiteboardNoteIndex = 0;
 
 function chebyshevDistance(ax, ay, bx, by) {
   return Math.max(Math.abs(ax - bx), Math.abs(ay - by));
+}
+
+function nextWhiteboardNote() {
+  const note = WHITEBOARD_NOTES[whiteboardNoteIndex];
+  whiteboardNoteIndex =
+    (whiteboardNoteIndex + 1) % WHITEBOARD_NOTES.length;
+
+  return note;
 }
 
 function buildTalkTarget(piece, person) {
@@ -30,6 +42,27 @@ function buildDrinkTarget(piece) {
     staffId: null,
     prompt: "Press E to drink from the bubbler",
     toastText: BUBBLER_DRINK_LINE,
+  };
+}
+
+function buildCoffeeTarget(piece) {
+  return {
+    kind: InteractKind.SIP_COFFEE,
+    pieceId: piece.id,
+    staffId: null,
+    prompt: "Press E to pour a coffee",
+    toastText: COFFEE_SIP_LINE,
+  };
+}
+
+function buildWhiteboardTarget(piece) {
+  return {
+    kind: InteractKind.READ_BOARD,
+    pieceId: piece.id,
+    staffId: null,
+    prompt: "Press E to read the whiteboard",
+    toastText: null,
+    readNote: nextWhiteboardNote,
   };
 }
 
@@ -69,6 +102,14 @@ export function findNearbyInteractable(
 
     if (piece.kind === FurnitureKind.BUBBLER) {
       target = buildDrinkTarget(piece);
+    }
+
+    if (piece.kind === FurnitureKind.COFFEE) {
+      target = buildCoffeeTarget(piece);
+    }
+
+    if (piece.kind === FurnitureKind.WHITEBOARD) {
+      target = buildWhiteboardTarget(piece);
     }
 
     if (piece.kind === FurnitureKind.DESK) {

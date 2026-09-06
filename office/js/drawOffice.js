@@ -2,6 +2,8 @@ import {
   BETTER_CHAIR_FILL,
   BONE,
   CHAIR_FILL,
+  COFFEE_BREW_FILL,
+  COFFEE_POT_FILL,
   FloorFill,
   FloorTileKind,
   FurnitureFill,
@@ -26,6 +28,8 @@ import {
   TILE_HEIGHT_PX,
   TILE_WIDTH_PX,
   UpgradeId,
+  WHITEBOARD_FRAME_FILL,
+  WHITEBOARD_INK_FILL,
 } from "./constants.js";
 import { buildRoomOrigin, gridToScreen } from "./isoMath.js";
 import {
@@ -200,6 +204,62 @@ function drawBubblerPlaceholder(context, centerX, centerY) {
   context.stroke();
 }
 
+function drawCoffeePlaceholder(context, centerX, centerY) {
+  // Warm carafe + steam cue so it reads apart from the bubbler.
+  context.fillStyle = FurnitureFill[FurnitureKind.COFFEE];
+  context.strokeStyle = INK;
+  context.lineWidth = 1;
+  context.fillRect(centerX - 10, centerY - 6, 20, 12);
+  context.strokeRect(centerX - 10, centerY - 6, 20, 12);
+
+  context.fillStyle = COFFEE_POT_FILL;
+  context.fillRect(centerX - 6, centerY - 22, 12, 16);
+  context.strokeRect(centerX - 6, centerY - 22, 12, 16);
+
+  context.fillStyle = COFFEE_BREW_FILL;
+  context.fillRect(centerX - 4, centerY - 18, 8, 8);
+
+  context.strokeStyle = INK;
+  context.beginPath();
+  context.moveTo(centerX - 2, centerY - 28);
+  context.quadraticCurveTo(
+    centerX - 6,
+    centerY - 34,
+    centerX - 1,
+    centerY - 38
+  );
+  context.moveTo(centerX + 2, centerY - 28);
+  context.quadraticCurveTo(
+    centerX + 6,
+    centerY - 34,
+    centerX + 1,
+    centerY - 38
+  );
+  context.stroke();
+}
+
+function drawWhiteboardPlaceholder(context, centerX, centerY) {
+  context.fillStyle = WHITEBOARD_FRAME_FILL;
+  context.strokeStyle = INK;
+  context.lineWidth = 1;
+  context.fillRect(centerX - 18, centerY - 28, 36, 28);
+  context.strokeRect(centerX - 18, centerY - 28, 36, 28);
+
+  context.fillStyle = FurnitureFill[FurnitureKind.WHITEBOARD];
+  context.fillRect(centerX - 15, centerY - 25, 30, 22);
+  context.strokeRect(centerX - 15, centerY - 25, 30, 22);
+
+  context.strokeStyle = WHITEBOARD_INK_FILL;
+  context.beginPath();
+  context.moveTo(centerX - 10, centerY - 18);
+  context.lineTo(centerX + 8, centerY - 18);
+  context.moveTo(centerX - 10, centerY - 12);
+  context.lineTo(centerX + 4, centerY - 12);
+  context.moveTo(centerX - 10, centerY - 6);
+  context.lineTo(centerX + 10, centerY - 6);
+  context.stroke();
+}
+
 function drawNameplate(context, centerX, centerY, label) {
   context.font = "11px \"IBM Plex Sans\", sans-serif";
   context.textAlign = "center";
@@ -323,6 +383,18 @@ function drawFurniturePiece(
   if (piece.kind === FurnitureKind.BUBBLER) {
     drawBubblerPlaceholder(context, centerX, centerY);
     drawNameplate(context, centerX, centerY, "Bubbler");
+    return;
+  }
+
+  if (piece.kind === FurnitureKind.COFFEE) {
+    drawCoffeePlaceholder(context, centerX, centerY);
+    drawNameplate(context, centerX, centerY, "Coffee");
+    return;
+  }
+
+  if (piece.kind === FurnitureKind.WHITEBOARD) {
+    drawWhiteboardPlaceholder(context, centerX, centerY);
+    drawNameplate(context, centerX, centerY, "Whiteboard");
     return;
   }
 

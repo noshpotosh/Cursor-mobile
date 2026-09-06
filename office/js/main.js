@@ -267,10 +267,13 @@ async function startOfficeShell() {
       window.clearTimeout(toastTimerId);
     }
 
-    toastTimerId = showToast(
-      toastEl,
-      nearbyTarget.toastText
-    );
+    let toastText = nearbyTarget.toastText;
+
+    if (nearbyTarget.kind === InteractKind.READ_BOARD) {
+      toastText = nearbyTarget.readNote();
+    }
+
+    toastTimerId = showToast(toastEl, toastText);
   });
 
   // Warm origin before the first paint so early clicks map.

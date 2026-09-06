@@ -33,5 +33,19 @@
     "description": "Open Teams and get real replies from two teammates.",
     "rewardBucks": 20,
     "deadlineLabel": "This sprint"
+  },
+  {
+    "id": "sip-office-coffee",
+    "title": "Caffeinate",
+    "description": "Pour a coffee from the loft coffee station.",
+    "rewardBucks": 5,
+    "deadlineLabel": "Anytime"
+  },
+  {
+    "id": "read-whiteboard-note",
+    "title": "Read the board",
+    "description": "Check the loft whiteboard for a pack scribble.",
+    "rewardBucks": 5,
+    "deadlineLabel": "Anytime"
   }
 ]

@@ -15,6 +15,22 @@
       "interactable": true
     },
     {
+      "id": "coffee",
+      "kind": "coffee",
+      "gridX": 8,
+      "gridY": 6,
+      "blocksWalk": true,
+      "interactable": true
+    },
+    {
+      "id": "whiteboard",
+      "kind": "whiteboard",
+      "gridX": 4,
+      "gridY": 1,
+      "blocksWalk": true,
+      "interactable": true
+    },
+    {
       "id": "desk-nosh",
       "kind": "desk",
       "gridX": 2,
