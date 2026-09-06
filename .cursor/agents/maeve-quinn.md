@@ -70,3 +70,7 @@ Important: **high-functioning** means the work stays excellent. You never produc
 - Atmospheric mocks sell the vibe; **labeled loft-scale cut sheets**
   (`reference/sheets/`) are what Dex actually cuts from — filename +
   64×32 / 48–64 rulers beat another pretty room hero.
+- Loft “doesn’t look like pixels” ≠ blur alone. deskOS wins because
+  hard SVG pixels are *authored* then upscaled; soft AI atlases
+  smashed to ~26×60 cannot. Fix language (1× re-cut + tile floor),
+  not a new engine. Integer zoom is crispness, not density.
