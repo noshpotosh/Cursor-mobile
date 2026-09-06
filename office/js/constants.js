@@ -111,6 +111,15 @@ export const StaffTalkLine = {
 };
 
 export const TOAST_VISIBLE_MS = 3200;
+export const AGENT_REPLY_DELAY_MS = 450;
+export const AGENT_CHAT_STORAGE_KEY =
+  "warewolf-office-agent-chat-v1";
+
+export const MessageRole = {
+  USER: "user",
+  AGENT: "agent",
+  SYSTEM: "system",
+};
 
 export const DesktopAppId = {
   TEAMS: "teams",
@@ -134,21 +143,6 @@ export const NEON_SIGN_FILL = "#d97706";
 export const PresenceStatus = {
   AVAILABLE: "Available",
   AWAY: "Away",
-};
-
-// Stub Teams replies until real agent chat is wired.
-export const StaffTeamsStubLine = {
-  "fabrizio-cortell":
-    "Loop me before we widen scope.",
-  "maeve-quinn":
-    "Send the mock. I'll cut the vanity.",
-  "dex-harlan":
-    "PR link when it's readable.",
-  "cal-rook":
-    "I'll try to break it after lunch.",
-  "reed-mallory":
-    "Paste the diff. I'll red-pen it.",
-  nosh: "Notes to self land here later.",
 };
 
 export const ECONOMY_STORAGE_KEY = "warewolf-office-economy-v1";

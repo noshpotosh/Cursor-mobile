@@ -320,6 +320,14 @@
   font-size: 0.76rem;
 }
 
+.teams-typing {
+  margin: 0 0 0.35rem;
+  padding: 0 0.15rem;
+  color: #6a635c;
+  font-size: 0.78rem;
+  font-style: italic;
+}
+
 .teams-compose {
   display: flex;
   gap: 0.45rem;

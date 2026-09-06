@@ -1,8 +1,14 @@
 import {
   DesktopAppId,
+  MessageRole,
   PresenceStatus,
-  StaffTeamsStubLine,
 } from "./constants.js";
+import {
+  ensureThreadGreeting,
+  listThread,
+  sendAgentMessage,
+  subscribeAgentBus,
+} from "./agentBus.js";
 import {
   completeGoal,
   formatCompanyBucks,
@@ -57,7 +63,19 @@ function formatClock(date) {
   });
 }
 
-function renderTeamsApp(body, staffList, desktopOpen) {
+function bubbleClassForRole(role) {
+  if (role === MessageRole.USER) {
+    return "teams-bubble teams-bubble-me";
+  }
+
+  if (role === MessageRole.SYSTEM) {
+    return "teams-bubble teams-bubble-system";
+  }
+
+  return "teams-bubble teams-bubble-them";
+}
+
+function renderTeamsApp(body, staffList, desktopOpen, agentBus) {
   clearElement(body);
 
   const layout = createEl("div", "teams-layout");
@@ -65,6 +83,7 @@ function renderTeamsApp(body, staffList, desktopOpen) {
   const thread = createEl("section", "teams-thread");
   const title = createEl("h2", "teams-thread-title");
   const log = createEl("div", "teams-thread-log");
+  const typing = createEl("p", "teams-typing");
   const compose = createEl("form", "teams-compose");
   const input = createEl("input", "teams-compose-input");
   const sendButton = createEl(
@@ -76,36 +95,76 @@ function renderTeamsApp(body, staffList, desktopOpen) {
   let activeStaffId = null;
 
   title.textContent = "Select a teammate";
+  typing.hidden = true;
+  typing.textContent = "Typing…";
   log.appendChild(
     createEl(
       "p",
       "teams-placeholder",
-      "Pick someone from the roster to open a stub chat."
+      "Pick a teammate to open their agent thread."
     )
   );
 
   input.type = "text";
-  input.placeholder = "Message (stub — agents later)";
+  input.placeholder = "Message your teammate…";
   input.setAttribute("aria-label", "Teams message");
   sendButton.type = "submit";
 
+  function paintThread(staffId) {
+    clearElement(log);
+    const messages = listThread(agentBus, staffId);
+
+    if (!messages.length) {
+      log.appendChild(
+        createEl(
+          "p",
+          "teams-placeholder",
+          "No messages yet."
+        )
+      );
+      return;
+    }
+
+    for (const message of messages) {
+      log.appendChild(
+        createEl(
+          "p",
+          bubbleClassForRole(message.role),
+          message.text
+        )
+      );
+    }
+
+    log.scrollTop = log.scrollHeight;
+  }
+
   function showThread(person) {
     activeStaffId = person.id;
-    clearElement(log);
     title.textContent = person.displayName;
-
-    const stub =
-      StaffTeamsStubLine[person.id]
-      || "No stub line yet.";
-
-    log.appendChild(
-      createEl(
-        "p",
-        "teams-bubble teams-bubble-them",
-        stub
-      )
-    );
+    typing.hidden = true;
+    ensureThreadGreeting(agentBus, person.id);
+    paintThread(person.id);
   }
+
+  subscribeAgentBus(agentBus, (event) => {
+    if (!activeStaffId || event.staffId !== activeStaffId) {
+      return;
+    }
+
+    if (event.type === "message") {
+      if (event.message.role === MessageRole.USER) {
+        typing.hidden = false;
+      } else {
+        typing.hidden = true;
+      }
+
+      paintThread(activeStaffId);
+    }
+
+    if (event.type === "thread-ready") {
+      paintThread(activeStaffId);
+    }
+  });
 
   for (const person of staffList) {
     const status = presenceForPerson(person, desktopOpen);
@@ -143,24 +202,24 @@ function renderTeamsApp(body, staffList, desktopOpen) {
       return;
     }
 
-    log.appendChild(
-      createEl("p", "teams-bubble teams-bubble-me", message)
+    const result = sendAgentMessage(
+      agentBus,
+      activeStaffId,
+      message
     );
-    log.appendChild(
-      createEl(
-        "p",
-        "teams-bubble teams-bubble-system",
-        "Queued. Real agent delivery comes later."
-      )
-    );
+
+    if (!result.ok) {
+      return;
+    }
+
     input.value = "";
-    log.scrollTop = log.scrollHeight;
   });
 
   compose.appendChild(input);
   compose.appendChild(sendButton);
   thread.appendChild(title);
   thread.appendChild(log);
+  thread.appendChild(typing);
   thread.appendChild(compose);
   layout.appendChild(roster);
   layout.appendChild(thread);
@@ -386,6 +445,7 @@ export function createDesktopOs(options) {
   const root = options.root;
   const staffList = options.staffList;
   const economy = options.economy;
+  const agentBus = options.agentBus;
   const onClose = options.onClose;
   const onGoalComplete = options.onGoalComplete;
   const onUpgradePurchase = options.onUpgradePurchase;
@@ -402,6 +462,7 @@ export function createDesktopOs(options) {
     root,
     staffList,
     economy,
+    agentBus,
     onClose,
     onGoalComplete,
     onUpgradePurchase,
@@ -448,7 +509,7 @@ export function createDesktopOs(options) {
 
     if (appId === DesktopAppId.TEAMS) {
       titleEl.textContent = "Teams";
-      renderTeamsApp(bodyEl, staffList, true);
+      renderTeamsApp(bodyEl, staffList, true, agentBus);
       return;
     }
 

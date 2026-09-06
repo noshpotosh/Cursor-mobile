@@ -84,7 +84,8 @@ Fake OS when Nosh uses their PC:
 ### Teams app
 
 - Sidebar roster with presence dots (Available / Away)
-- Chat thread + compose box
+- Chat thread + compose box backed by the agent message bus
+- Local persona replies now; remote Cursor provider later
 - Presence driven by desk occupancy
 
 ### Employee Directory app
