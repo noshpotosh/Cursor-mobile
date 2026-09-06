@@ -103,9 +103,16 @@ func _on_player_arrived() -> void:
 
 func _load_loft() -> void:
 	var file := FileAccess.open(LOFT_DATA, FileAccess.READ)
-	var data: Dictionary = JSON.parse_string(
-		file.get_as_text()
-	)
+	if file == null:
+		push_error("Missing loft data: %s" % LOFT_DATA)
+		return
+
+	var parsed: Variant = JSON.parse_string(file.get_as_text())
+	if typeof(parsed) != TYPE_DICTIONARY:
+		push_error("Invalid loft data: %s" % LOFT_DATA)
+		return
+
+	var data: Dictionary = parsed
 	grid_width = int(data["gridWidth"])
 	grid_height = int(data["gridHeight"])
 	var start_data: Dictionary = data["playerStart"]
