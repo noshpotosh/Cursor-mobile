@@ -185,3 +185,53 @@ export const PresenceStatus = {
 
 export const ECONOMY_STORAGE_KEY = "warewolf-office-economy-v1";
 export const STARTING_COMPANY_BUCKS = 0;
+
+// Desk kit + floor island (mock fidelity): layout offsets in loft px.
+export const CHAIR_TEXTURE_KEY = "chair-pixellab";
+export const NOSH_MAT_TEXTURE_KEY = "desk-nosh-mat";
+
+export const FloorTexture = {
+  WOOD: "floor-wood",
+  CARPET: "floor-carpet",
+  ISLAND: "floor-island",
+};
+
+export const SPRITE_ORIGIN_CENTER_X = 0.5;
+export const SPRITE_ORIGIN_FOOT_Y = 0.92;
+export const SPRITE_NO_BOB_Y = 0;
+
+export const ISLAND_INSET_TILES = 2;
+
+export const CHAIR_SCREEN_OFFSET_X = 18;
+export const CHAIR_SCREEN_OFFSET_Y = 36;
+export const CHAIR_DEPTH_BIAS = -0.35;
+export const CHAIR_DISPLAY_SIZE = 96;
+
+export const NAMEPLATE_SCREEN_OFFSET_X = 0;
+export const NAMEPLATE_SCREEN_OFFSET_Y = -8;
+export const NAMEPLATE_DEPTH_BIAS = 0.45;
+export const NAMEPLATE_FONT_PX = 11;
+export const NAMEPLATE_COLOR = "#1A1714";
+export const NAMEPLATE_BG = "#F4EFE6";
+export const NAMEPLATE_STROKE = "#1A1714";
+export const NAMEPLATE_PAD_X = 4;
+export const NAMEPLATE_PAD_Y = 2;
+export const NAMEPLATE_STROKE_WIDTH = 2;
+export const NAMEPLATE_ORIGIN_X = 0.5;
+export const NAMEPLATE_ORIGIN_Y = 1;
+
+export const NOSH_MAT_SCREEN_OFFSET_X = 0;
+export const NOSH_MAT_SCREEN_OFFSET_Y = 22;
+export const NOSH_MAT_DEPTH_BIAS = -0.2;
+export const NOSH_MAT_DISPLAY_SIZE = 96;
+
+// First-name plates — mock uses short labels, not full legal names.
+export const STAFF_NAMEPLATE = {
+  nosh: "Nosh",
+  "fabrizio-cortell": "Fabrizio",
+  "maeve-quinn": "Maeve",
+  "dex-harlan": "Dex",
+  "cal-rook": "Cal",
+  "reed-mallory": "Reed",
+};
+

@@ -61,6 +61,8 @@ export const SINGLE_SPRITES = [
   { id: "coffee-pixellab", path: "furniture/coffee-station.png" },
   { id: "whiteboard-pixellab", path: "furniture/whiteboard.png" },
   { id: "desk-with-monitor", path: "furniture/desk-with-monitor.png" },
+  { id: "floor-island", path: "tiles/floor-island.png" },
+  { id: "desk-nosh-mat", path: "furniture/desk-nosh-mat.png" },
 ];
 
 const sprites = new Map();
