@@ -22,11 +22,12 @@ consumer together when changing art.
 
 - `ui/desktop-symbols.png`: 520×40 atlas; thirteen 40×40 cells, in order:
   Teams, Directory, loft, book, search, person, people, building, star,
-  available, chevron, Wi-Fi, sound.
+  available, chevron, Wi-Fi, sound. Teams and Directory cells are PixelLab
+  pixen stamps (`art-source/ui/icons/`); remaining cells stay SVG-authored.
 - `ui/desktop-theme.png`: 160×32 atlas; five 32×32 nine-slice cells, in order:
   window, paper, selected, button, input. Default border margin is 5 native
-  pixels; window overrides it to 10. Used for taskbar, buttons, paper
-  panels, and Directory chrome — not the main app window frame.
+  pixels; window overrides it to 10. Used for buttons, paper panels, and
+  Directory chrome — not the main app window frame or taskbar.
 - `ui/bucks-chip.png`: cropped PixelLab loft bucks plate (298×77). Live
   Label shows `"%d bucks"`; HUD displays it at 186×48.
 - `ui/window-chrome.png`: cropped PixelLab app window frame (276×211).
@@ -34,12 +35,16 @@ consumer together when changing art.
   fixed on the right. Matching content insets place Directory / Teams on
   the parchment without covering that right strip. Live transparent
   hit-targets cover the orange controls; title and icon stay live.
+- `ui/taskbar.png`: cropped PixelLab desk taskbar (483×161). Nine-slice
+  margins `[16,10,16,10]`; displayed at `Rect2(0, 614, 1280, 106)`. Idle
+  bar only — loft/home, app captions, tray icons, and clock stay live.
 - `ui/desktop-atlas.json` owns texture paths, named regions, margins,
   content insets, and control rects for `desktop_art.gd`.
 - `ui/wallpaper-tile.png`: seamless 80×80 cream diamond wallpaper.
 - Editable pixel SVG source: `art-source/ui/` for symbols/theme/wallpaper.
   PixelLab panel sources: `bucks-chip-source.png`,
-  `window-chrome-source.png` with `pixellab-ui-provenance.md`.
+  `window-chrome-source.png`, `taskbar-source.png` with
+  `pixellab-ui-provenance.md`.
 - Export: `tools/export_desktop_art.gd` (SVG rasterize + opaque crop for
   PixelLab panels); named regions and styles: `scripts/desktop_art.gd`.
   UI consumers: `desk_hud.gd`, `desktop_directory.gd`.

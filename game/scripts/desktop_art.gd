@@ -11,6 +11,7 @@ static var symbols := load_texture("symbols")
 static var chrome := load_texture("chrome")
 static var bucks_chip := load_texture("bucks_chip")
 static var window_chrome := load_texture("window_chrome")
+static var taskbar := load_texture("taskbar")
 
 
 static func load_texture(group: String) -> Texture2D:
@@ -74,6 +75,27 @@ static func window_panel(parent: Node, bounds: Rect2) -> Panel:
 	result.position = bounds.position
 	result.size = bounds.size
 	result.add_theme_stylebox_override("panel", window_chrome_style())
+	result.mouse_filter = Control.MOUSE_FILTER_STOP
+	parent.add_child(result)
+	return result
+
+
+static func taskbar_style() -> StyleBoxTexture:
+	var settings: Dictionary = atlas.taskbar
+	var box := StyleBoxTexture.new()
+	box.texture = region(taskbar, bounds("taskbar", "bar"))
+	var margins: Array = settings.nine_slice_margins
+	for side in 4:
+		box.set_texture_margin(side, margins[side])
+	box.set_content_margin_all(0)
+	return box
+
+
+static func taskbar_panel(parent: Node, bounds: Rect2) -> Panel:
+	var result := Panel.new()
+	result.position = bounds.position
+	result.size = bounds.size
+	result.add_theme_stylebox_override("panel", taskbar_style())
 	result.mouse_filter = Control.MOUSE_FILTER_STOP
 	parent.add_child(result)
 	return result

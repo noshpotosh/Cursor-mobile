@@ -140,13 +140,12 @@ func _desktop_icon(
 
 
 func _build_taskbar() -> void:
-	var taskbar := Art.panel(
-		_desktop, Rect2(0, TASKBAR_TOP, 1280, 106), "window"
+	var taskbar := Art.taskbar_panel(
+		_desktop, Rect2(0, TASKBAR_TOP, 1280, 106)
 	)
-	var home := Art.button(
-		taskbar, "", Rect2(16, 14, 82, 76), hide_desk
+	var home := Art.invisible_button(
+		taskbar, Rect2(16, 14, 82, 76), hide_desk, "Leave desk (Esc)"
 	)
-	home.tooltip_text = "Leave desk (Esc)"
 	Art.icon(home, "loft", Rect2(14, 10, 54, 54))
 	_taskbar_app(taskbar, "Teams", "teams", 118, 160, _open_teams_app)
 	_taskbar_app(
@@ -166,8 +165,8 @@ func _taskbar_app(
 	parent: Node, caption: String, symbol: String,
 	left: int, width: int, action: Callable
 ) -> void:
-	var button := Art.button(
-		parent, "", Rect2(left, 14, width, 76), action
+	var button := Art.invisible_button(
+		parent, Rect2(left, 14, width, 76), action, caption
 	)
 	Art.icon(button, symbol, Rect2(12, 18, 40, 40))
 	Art.label(
@@ -179,7 +178,7 @@ func _build_app_window() -> void:
 	_app_window = Art.window_panel(_desktop, WINDOW_BOUNDS)
 	_app_window.name = "AppWindow"
 	_window_icon = Art.icon(
-		_app_window, "book", Rect2(_inset_left, 10, 32, 28)
+		_app_window, "directory", Rect2(_inset_left, 10, 32, 28)
 	)
 	_window_title = Art.label(
 		_app_window, "Employee Directory",
@@ -268,7 +267,7 @@ func _open_teams_app() -> void:
 func _open_directory_app() -> void:
 	_window_title.text = "Employee Directory"
 	_window_icon.texture = Art.region(
-		Art.symbols, Art.bounds("symbols", "book")
+		Art.symbols, Art.bounds("symbols", "directory")
 	)
 	_directory.visible = true
 	_teams.visible = false
