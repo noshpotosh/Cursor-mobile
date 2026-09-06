@@ -5,7 +5,12 @@
 **Date:** 2026-09-05  
 **Deciders:** Nosh + Fabrizio Cortell  
 **Reopen note:** 2026-09-06 — loft unparked; Phaser 3 owns the
-canvas, DOM desk OS stays (ADR 007 §4 / ADR 008).
+canvas, DOM desk OS stays (ADR 007 §4 / ADR 008).  
+**Reopen note:** 2026-09-06 — rooms, movement, and talk surfaces
+amended by
+[`002-loft-vn-hybrid.md`](002-loft-vn-hybrid.md)
+(Founder’s Office + loft; player-only walk; VN panels; desk OS in
+founder office only).
 
 ## Decision
 

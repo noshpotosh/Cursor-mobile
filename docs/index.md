@@ -14,6 +14,7 @@ One map. Not a pile of READMEs.
 | [`ai-studio-game-plan.md`](ai-studio-game-plan.md) | Implementation plan under ADR 008 |
 | [`../office/`](../office/) | Phaser web client (active) — see [`../office/README.md`](../office/README.md) |
 | [`office/`](office/) | Virtual office art bible, ADRs, pipeline |
+| [`office/decisions/002-loft-vn-hybrid.md`](office/decisions/002-loft-vn-hybrid.md) | Loft × VN hybrid: two rooms, player-only walk, Teams vs VN |
 | [`game-asset-pipeline.md`](game-asset-pipeline.md) | World art: Phaser/`office/` active; Godot section archived |
 | [`../game/`](../game/) | Archived Godot P1 spike — see [`../game/README.md`](../game/README.md) |
 | [`meetings/`](meetings/) | Meeting / conversation summaries |

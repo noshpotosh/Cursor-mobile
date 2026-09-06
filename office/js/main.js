@@ -1,6 +1,7 @@
 import {
   GoalEventKind,
   InteractKind,
+  RoomId,
   TOAST_VISIBLE_MS,
   UpgradeId,
 } from "./constants.js";
@@ -27,6 +28,7 @@ import {
   buildInteractTargetForPiece,
   findFurnitureAt,
   findFurnitureAtScreen,
+  findFurnitureById,
   findNearbyInteractable,
 } from "./interact.js";
 import {
@@ -34,21 +36,25 @@ import {
   staffById,
 } from "./loadOfficeData.js";
 import {
-  createNpcs,
   isNpcAtDesk,
   updateNpcs,
 } from "./npcs.js";
 import { createPhaserLoft } from "./phaserLoft.js";
 import {
-  createPlayer,
   requestPlayerWalk,
   updatePlayer,
 } from "./player.js";
+import { playRoomFlash } from "./roomFlash.js";
+import {
+  applyRoom,
+  findExitForDoor,
+  isFoundersOffice,
+  isSharedLoft,
+  roomsById,
+} from "./rooms.js";
 import { loadSprites } from "./sprites.js";
 import {
-  buildWalkMap,
   findAdjacentWalkable,
-  findSpawnNearPlayerDesk,
   isWalkable,
 } from "./walkMap.js";
 
@@ -165,38 +171,39 @@ function handleGoalEvent(shell, kind, detail) {
   announceGoalCompletions(shell, completed);
 }
 
-function wireDesktopCallbacks(shell) {
-  return {
-    getOccupancy() {
-      return buildOccupancyMap(shell.npcs, true);
-    },
-    onClose() {
-      setPromptText(shell.promptEl, "");
-    },
-    onGoalComplete(result) {
-      shell.showEconomyToast(
-        `+${result.rewardBucks} bucks — ${result.title}`
-      );
-      playUiBlip(shell.audio, "message");
-    },
-    onUpgradePurchase(result) {
-      shell.showEconomyToast(
-        `Installed ${result.title} (−${result.costBucks})`
-      );
-      playUiBlip(shell.audio, "click");
-    },
-    onOfficeChange(result) {
-      shell.applyOfficeLayout(result.officeId);
-      shell.showEconomyToast(`Moved into ${result.title}`);
-      playUiBlip(shell.audio, "click");
-    },
-    onMessageSent() {
-      playUiBlip(shell.audio, "message");
-    },
-    onGoalEvent(kind, detail) {
-      handleGoalEvent(shell, kind, detail);
-    },
-  };
+function interactOptions(shell) {
+  return { allowDeskPc: isFoundersOffice(shell) };
+}
+
+function travelThroughDoor(shell, target) {
+  if (shell.roomTravelPending) {
+    return;
+  }
+
+  const furniture = findFurnitureById(
+    shell.office,
+    target.pieceId
+  );
+  const exit =
+    findExitForDoor(shell, furniture)
+    || {
+      toRoomId: target.toRoomId,
+      toSpawn: target.toSpawn,
+    };
+
+  if (!exit || !exit.toRoomId) {
+    return;
+  }
+
+  shell.roomTravelPending = true;
+  setPromptText(shell.promptEl, "");
+  playUiBlip(shell.audio, "click");
+
+  playRoomFlash(shell.stage, () => {
+    applyRoom(shell, exit.toRoomId, exit.toSpawn || null);
+  }).finally(() => {
+    shell.roomTravelPending = false;
+  });
 }
 
 function triggerInteract(shell, target) {
@@ -204,7 +211,16 @@ function triggerInteract(shell, target) {
     return;
   }
 
+  if (target.kind === InteractKind.USE_DOOR) {
+    travelThroughDoor(shell, target);
+    return;
+  }
+
   if (target.kind === InteractKind.USE_PC) {
+    if (!isFoundersOffice(shell)) {
+      return;
+    }
+
     openDesktopOs(shell.desktop);
     playUiBlip(shell.audio, "click");
     handleGoalEvent(
@@ -252,13 +268,21 @@ function triggerInteract(shell, target) {
 }
 
 function handleLoftPointer(shell, gridX, gridY, localX, localY) {
-  const furniture = findFurnitureAtScreen(shell.office, localX, localY)
-    || findFurnitureAt(shell.office, gridX, gridY);
+  if (shell.roomTravelPending) {
+    return;
+  }
+
+  const furniture = findFurnitureAtScreen(
+    shell.office,
+    localX,
+    localY
+  ) || findFurnitureAt(shell.office, gridX, gridY);
 
   if (furniture) {
     const target = buildInteractTargetForPiece(
       furniture,
-      shell.staffLookup
+      shell.staffLookup,
+      interactOptions(shell)
     );
 
     if (!target) {
@@ -314,7 +338,7 @@ function handleOfficeKeydown(event, shell) {
     return;
   }
 
-  if (!shell.nearbyTarget) {
+  if (shell.roomTravelPending || !shell.nearbyTarget) {
     return;
   }
 
@@ -322,7 +346,7 @@ function handleOfficeKeydown(event, shell) {
 }
 
 function tickShell(shell, deltaSeconds) {
-  if (isDesktopOsOpen(shell.desktop)) {
+  if (isDesktopOsOpen(shell.desktop) || shell.roomTravelPending) {
     shell.nearbyTarget = null;
     setPromptText(shell.promptEl, "");
     return;
@@ -338,7 +362,8 @@ function tickShell(shell, deltaSeconds) {
   shell.nearbyTarget = findNearbyInteractable(
     shell.player,
     shell.office,
-    shell.staffLookup
+    shell.staffLookup,
+    interactOptions(shell)
   );
   setPromptText(
     shell.promptEl,
@@ -347,6 +372,58 @@ function tickShell(shell, deltaSeconds) {
 
   // Keep upgrade map warm for later Phaser art parity.
   shell.loftUpgrades = loftUpgradesFromEconomy(shell.economy);
+}
+
+function wireDesktopCallbacks(shell) {
+  return {
+    getOccupancy() {
+      return buildOccupancyMap(shell.npcs, true);
+    },
+    onClose() {
+      setPromptText(shell.promptEl, "");
+    },
+    onGoalComplete(result) {
+      shell.showEconomyToast(
+        `+${result.rewardBucks} bucks — ${result.title}`
+      );
+      playUiBlip(shell.audio, "message");
+    },
+    onUpgradePurchase(result) {
+      shell.showEconomyToast(
+        `Installed ${result.title} (−${result.costBucks})`
+      );
+      playUiBlip(shell.audio, "click");
+    },
+    onOfficeChange(result) {
+      const rebuilt = shell.applyOfficeLayout(result.officeId);
+
+      if (rebuilt) {
+        shell.showEconomyToast(`Moved into ${result.title}`);
+      } else {
+        shell.showEconomyToast(
+          `${result.title} ready — exit to loft.`
+        );
+      }
+
+      playUiBlip(shell.audio, "click");
+    },
+    onMessageSent() {
+      playUiBlip(shell.audio, "message");
+    },
+    onGoalEvent(kind, detail) {
+      handleGoalEvent(shell, kind, detail);
+    },
+  };
+}
+
+function roomDisplayName(shell) {
+  const room = shell.roomsLookup[shell.currentRoomId];
+
+  if (room && room.displayName) {
+    return room.displayName;
+  }
+
+  return shell.office.displayName || "Office";
 }
 
 async function startOfficeShell() {
@@ -366,6 +443,7 @@ async function startOfficeShell() {
   await loadSprites();
   await document.fonts.ready;
   const staffLookup = staffById(bundle.staff);
+  const roomsLookup = roomsById(bundle.rooms.rooms);
   const economy = createEconomy(
     bundle.goals,
     bundle.upgrades,
@@ -373,13 +451,6 @@ async function startOfficeShell() {
   );
   const agentBus = createAgentBus(bundle.agentPersonas);
   const audio = createAudioBus();
-
-  let office =
-    bundle.layouts[economy.currentOfficeId] || bundle.office;
-  let walkMap = buildWalkMap(office);
-  let spawn = findSpawnNearPlayerDesk(office, walkMap);
-  let player = createPlayer(spawn.gridX, spawn.gridY);
-  let npcs = createNpcs(office, staffLookup);
   const title = document.querySelector(".office-title");
 
   const shell = {
@@ -390,27 +461,33 @@ async function startOfficeShell() {
     bucksHud,
     muteButton,
     staffLookup,
+    roomsLookup,
+    bundle,
     economy,
     audio,
-    office,
-    walkMap,
-    player,
-    npcs,
+    currentRoomId: null,
+    office: null,
+    walkMap: null,
+    player: null,
+    npcs: [],
     desktop: null,
     loft: null,
     toastTimerId: null,
     nearbyTarget: null,
     loftUpgrades: {},
+    roomTravelPending: false,
     showEconomyToast: null,
     applyOfficeLayout: null,
+    syncOfficeTitle: null,
   };
 
-  function syncOfficeTitle() {
-    if (title && shell.office.displayName) {
-      title.textContent =
-        `Warewolf · ${shell.office.displayName}`;
+  shell.syncOfficeTitle = function syncOfficeTitle() {
+    if (!title) {
+      return;
     }
-  }
+
+    title.textContent = `Warewolf · ${roomDisplayName(shell)}`;
+  };
 
   shell.showEconomyToast = function showEconomyToast(text) {
     if (shell.toastTimerId !== null) {
@@ -420,31 +497,27 @@ async function startOfficeShell() {
     shell.toastTimerId = showToast(toastEl, text);
   };
 
+  // Economy loft size upgrade — rebuild only if already in the loft.
   shell.applyOfficeLayout = function applyOfficeLayout(
-    officeId
+    _officeId
   ) {
-    const nextOffice = bundle.layouts[officeId];
-
-    if (!nextOffice) {
-      return;
+    if (!isSharedLoft(shell)) {
+      return false;
     }
 
-    shell.office = nextOffice;
-    shell.walkMap = buildWalkMap(shell.office);
-    spawn = findSpawnNearPlayerDesk(
-      shell.office,
-      shell.walkMap
-    );
-    shell.player = createPlayer(spawn.gridX, spawn.gridY);
-    shell.npcs = createNpcs(shell.office, staffLookup);
-    syncOfficeTitle();
+    applyRoom(shell, RoomId.SHARED_LOFT, {
+      gridX: Math.round(shell.player.gridX),
+      gridY: Math.round(shell.player.gridY),
+    });
 
-    if (shell.loft) {
-      shell.loft.rebuild();
-    }
+    return true;
   };
 
-  syncOfficeTitle();
+  applyRoom(
+    shell,
+    bundle.rooms.startRoomId || RoomId.FOUNDERS_OFFICE
+  );
+
   refreshBucksHud(bucksHud, economy);
   refreshMuteButton(muteButton, audio);
   subscribeEconomy(economy, () => {
@@ -480,10 +553,6 @@ async function startOfficeShell() {
       toggleAudioMuted(audio);
       refreshMuteButton(muteButton, audio);
     });
-  }
-
-  if (economy.currentOfficeId !== shell.office.id) {
-    shell.applyOfficeLayout(economy.currentOfficeId);
   }
 }
 

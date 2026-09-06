@@ -102,6 +102,20 @@ button:focus-visible, input:focus-visible {
   pointer-events: none;
 }
 .office-toast { bottom: 92px; z-index: 20; border-color: var(--sage); }
+.room-flash {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+  background: var(--bone);
+  opacity: 0;
+  transition: opacity 80ms linear;
+}
+.room-flash.is-on { opacity: 1; }
+.room-flash.is-off { opacity: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .room-flash { transition: none; }
+}
 [hidden] { display: none !important; }
 @media (max-width: 640px) {
   .loft-chrome { left: 12px; right: 12px; align-items: flex-start; }
