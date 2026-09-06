@@ -567,3 +567,25 @@
   filter: brightness(1.05);
   outline: none;
 }
+
+.loft-section-title {
+  margin: 0.35rem 0 0;
+  font-size: 0.9rem;
+  letter-spacing: 0.02em;
+}
+
+.loft-history {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  max-height: 8rem;
+  overflow: auto;
+  padding-right: 0.2rem;
+}
+
+.loft-history-row {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.35;
+  color: #6a635c;
+}

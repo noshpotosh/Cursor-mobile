@@ -6,6 +6,12 @@
     "costBucks": 10
   },
   {
+    "id": "desk-lamps",
+    "title": "Desk lamps",
+    "description": "Warm task lamps on every desk. Late-night friendly.",
+    "costBucks": 15
+  },
+  {
     "id": "better-chairs",
     "title": "Better chairs",
     "description": "Deeper seats with a real backrest. Spine-friendly.",

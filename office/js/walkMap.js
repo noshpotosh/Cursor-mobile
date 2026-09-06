@@ -1,4 +1,5 @@
 import {
+  CARDINAL_STEPS,
   PLAYER_DESK_ID,
   SPAWN_SEARCH_OFFSETS,
 } from "./constants.js";
@@ -61,6 +62,19 @@ export function isWalkable(walkMap, gridX, gridY) {
   }
 
   return !walkMap.blocked.has(cellKey(gridX, gridY));
+}
+
+export function findAdjacentWalkable(walkMap, gridX, gridY) {
+  for (const step of CARDINAL_STEPS) {
+    const nextX = gridX + step.deltaX;
+    const nextY = gridY + step.deltaY;
+
+    if (isWalkable(walkMap, nextX, nextY)) {
+      return { gridX: nextX, gridY: nextY };
+    }
+  }
+
+  return null;
 }
 
 export function findPlayerDesk(office) {

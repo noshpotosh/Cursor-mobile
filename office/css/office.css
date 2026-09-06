@@ -111,3 +111,31 @@ body {
   pointer-events: none;
   user-select: none;
 }
+
+.mute-button {
+  position: absolute;
+  top: 3.4rem;
+  right: 1rem;
+  z-index: 2;
+  margin: 0;
+  padding: 0.4rem 0.75rem;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--ink);
+  background: rgba(244, 239, 230, 0.92);
+  border: 2px solid var(--clay);
+  box-shadow: 0 4px 16px var(--shadow);
+  cursor: pointer;
+}
+
+.mute-button:hover,
+.mute-button:focus-visible {
+  border-color: var(--amber);
+  outline: none;
+}
+
+.mute-button[aria-pressed="true"] {
+  border-color: var(--ink);
+  opacity: 0.8;
+}
