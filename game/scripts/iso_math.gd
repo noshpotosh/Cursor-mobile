@@ -2,8 +2,9 @@
 class_name IsoMath
 extends RefCounted
 
-const TILE_WIDTH := 64
-const TILE_HEIGHT := 32
+## Locked by ADR 010 — 128px world art standard.
+const TILE_WIDTH := 128
+const TILE_HEIGHT := 64
 
 
 static func grid_to_screen(grid_x: int, grid_y: int) -> Vector2:

@@ -16,8 +16,9 @@ Neither requires replacing every individual image with a sheet.
 - Window and button borders: a theme sheet sliced with `StyleBoxTexture`.
   Nine-slice borders keep their authored corners when a panel grows.
 - Wallpaper: a separate seamless repeating tile.
-- World tiles: 64×32 logical isometric diamonds. Standalone tiles remain
-  valid; migrate to `TileSetAtlasSource` when tile authoring needs it.
+- World tiles: **128×64** isometric diamonds ([ADR 010](decisions/010-128px-world-art-standard.md)).
+  Standalone tiles remain valid; migrate to `TileSetAtlasSource` when
+  tile authoring needs it. Furniture/props: **128×128** canvases.
 - Text, buttons, lists, layout, and state: live Godot Controls. Never bake
   the desktop screenshot, names, balances, or body text into a texture.
 
@@ -69,6 +70,10 @@ without clipping. The visible character remains approximately 60 pixels tall.
 The legacy desk/chair sprites still shrink larger accepted images into loft
 sizes. Packing them would not remove that pixel-density debt. Replace them
 only when properly authored art is available, with matched pivots and scale.
+
+World tiles and props follow [ADR 010](decisions/010-128px-world-art-standard.md):
+**128×64** floor diamonds and **128×128** furniture canvases, displayed 1:1
+with `IsoMath` at those sizes.
 
 ## Add or replace an asset
 

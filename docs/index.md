@@ -10,6 +10,7 @@ One map. Not a pile of READMEs.
 | [`brand.md`](brand.md) | Name, logo, visual system |
 | [`decisions/007-honest-ai-studio-tycoon.md`](decisions/007-honest-ai-studio-tycoon.md) | Active product thesis (office on hold) |
 | [`decisions/008-ai-studio-product-contract.md`](decisions/008-ai-studio-product-contract.md) | P0 product / trust / Godot vehicle lock |
+| [`decisions/010-128px-world-art-standard.md`](decisions/010-128px-world-art-standard.md) | Loft tiles 128×64 / props 128×128 |
 | [`ai-studio-game-plan.md`](ai-studio-game-plan.md) | Implementation plan under ADR 008 |
 | [`../game/`](../game/) | Godot AI studio game (P1+) — see [`../game/README.md`](../game/README.md) |
 | [`game-asset-pipeline.md`](game-asset-pipeline.md) | Godot art authoring, sprite sheets, exports, and validation |

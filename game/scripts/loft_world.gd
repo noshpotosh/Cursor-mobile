@@ -7,8 +7,19 @@ const PlayerScript = preload("res://scripts/player_actor.gd")
 const LOFT_DATA := "res://data/starter_loft.json"
 const FLOOR_CARPET := "res://assets/tiles/floor-carpet.png"
 const FLOOR_WOOD := "res://assets/tiles/floor-wood-border.png"
-const DESK_CRT := "res://assets/furniture/desk-crt.png"
-const LOFT_PROPS := "res://assets/furniture/loft-props.png"
+
+const DESK_TEXTURE := "res://assets/furniture/desk-with-monitor.png"
+const CHAIR_TEXTURE := "res://assets/furniture/chair-basic.png"
+const BUBBLER_TEXTURE := "res://assets/furniture/bubbler.png"
+const COFFEE_TEXTURE := "res://assets/furniture/coffee-station.png"
+const WHITEBOARD_TEXTURE := "res://assets/furniture/whiteboard.png"
+
+## Lift so sprite feet sit on the isometric diamond center (128 world).
+const DESK_LIFT_PX := 32
+const CHAIR_LIFT_PX := 24
+const BUBBLER_LIFT_PX := 56
+const COFFEE_LIFT_PX := 32
+const WHITEBOARD_LIFT_PX := 40
 
 var grid_width := 10
 var grid_height := 8
@@ -16,6 +27,7 @@ var player_start := Vector2i(5, 4)
 var desk_cell := Vector2i(8, 6)
 
 var _blocked := {}
+var _furniture_pieces: Array = []
 var _astar := AStarGrid2D.new()
 var _player = null
 var _pending_desk := false
@@ -121,6 +133,7 @@ func _load_loft() -> void:
 	)
 
 	_blocked.clear()
+	_furniture_pieces.clear()
 	for piece in data["furniture"]:
 		var cell := Vector2i(
 			int(piece["gridX"]),
@@ -130,6 +143,7 @@ func _load_loft() -> void:
 			_blocked[cell] = true
 		if piece.get("isPlayerDesk", false):
 			desk_cell = cell
+		_furniture_pieces.append(piece)
 
 
 func _build_floor() -> void:
@@ -166,32 +180,64 @@ func _build_pathfinding() -> void:
 
 
 func _spawn_furniture() -> void:
-	var desk := AtlasSprites.make_sprite(
-		DESK_CRT,
-		AtlasSprites.DESK_CROP,
-		AtlasSprites.DESK_DRAW
-	)
-	desk.position = IsoMath.grid_to_screen(
-		desk_cell.x,
-		desk_cell.y
-	)
-	desk.position.y -= 20
-	desk.z_index = desk_cell.x + desk_cell.y
-	_furniture.add_child(desk)
+	for piece in _furniture_pieces:
+		var kind := String(piece.get("kind", ""))
+		var texture_path := _texture_for_kind(kind)
+		if texture_path.is_empty():
+			continue
+		if not ResourceLoader.exists(texture_path):
+			push_warning("Missing furniture art: %s" % texture_path)
+			continue
 
-	var chair_cell := Vector2i(desk_cell.x, desk_cell.y - 1)
-	var chair := AtlasSprites.make_sprite(
-		LOFT_PROPS,
-		AtlasSprites.CHAIR_CROP,
-		AtlasSprites.CHAIR_DRAW
-	)
-	chair.position = IsoMath.grid_to_screen(
-		chair_cell.x,
-		chair_cell.y
-	)
-	chair.position.y -= 8
-	chair.z_index = chair_cell.x + chair_cell.y
-	_furniture.add_child(chair)
+		var cell := Vector2i(
+			int(piece["gridX"]),
+			int(piece["gridY"])
+		)
+		var sprite := _make_prop_sprite(texture_path)
+		sprite.position = IsoMath.grid_to_screen(cell.x, cell.y)
+		sprite.position.y -= _lift_for_kind(kind)
+		sprite.z_index = cell.x + cell.y
+		_furniture.add_child(sprite)
+
+
+func _texture_for_kind(kind: String) -> String:
+	match kind:
+		"desk":
+			return DESK_TEXTURE
+		"chair":
+			return CHAIR_TEXTURE
+		"bubbler":
+			return BUBBLER_TEXTURE
+		"coffee":
+			return COFFEE_TEXTURE
+		"whiteboard":
+			return WHITEBOARD_TEXTURE
+		_:
+			return ""
+
+
+func _lift_for_kind(kind: String) -> int:
+	match kind:
+		"desk":
+			return DESK_LIFT_PX
+		"chair":
+			return CHAIR_LIFT_PX
+		"bubbler":
+			return BUBBLER_LIFT_PX
+		"coffee":
+			return COFFEE_LIFT_PX
+		"whiteboard":
+			return WHITEBOARD_LIFT_PX
+		_:
+			return 0
+
+
+func _make_prop_sprite(path: String) -> Sprite2D:
+	var sprite := Sprite2D.new()
+	sprite.texture = load(path) as Texture2D
+	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	sprite.centered = true
+	return sprite
 
 
 func _spawn_player() -> void:

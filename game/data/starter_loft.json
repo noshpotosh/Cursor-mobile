@@ -6,6 +6,30 @@
   "playerStart": { "gridX": 5, "gridY": 4 },
   "furniture": [
     {
+      "id": "bubbler",
+      "kind": "bubbler",
+      "gridX": 9,
+      "gridY": 1,
+      "blocksWalk": true,
+      "isPlayerDesk": false
+    },
+    {
+      "id": "coffee",
+      "kind": "coffee",
+      "gridX": 0,
+      "gridY": 1,
+      "blocksWalk": true,
+      "isPlayerDesk": false
+    },
+    {
+      "id": "whiteboard",
+      "kind": "whiteboard",
+      "gridX": 0,
+      "gridY": 6,
+      "blocksWalk": true,
+      "isPlayerDesk": false
+    },
+    {
       "id": "desk-nosh",
       "kind": "desk",
       "gridX": 8,
@@ -17,6 +41,86 @@
       "id": "chair-nosh",
       "kind": "chair",
       "gridX": 8,
+      "gridY": 5,
+      "blocksWalk": true,
+      "isPlayerDesk": false
+    },
+    {
+      "id": "desk-fabrizio",
+      "kind": "desk",
+      "gridX": 2,
+      "gridY": 1,
+      "blocksWalk": true,
+      "isPlayerDesk": false
+    },
+    {
+      "id": "chair-fabrizio",
+      "kind": "chair",
+      "gridX": 2,
+      "gridY": 0,
+      "blocksWalk": true,
+      "isPlayerDesk": false
+    },
+    {
+      "id": "desk-maeve",
+      "kind": "desk",
+      "gridX": 5,
+      "gridY": 1,
+      "blocksWalk": true,
+      "isPlayerDesk": false
+    },
+    {
+      "id": "chair-maeve",
+      "kind": "chair",
+      "gridX": 5,
+      "gridY": 0,
+      "blocksWalk": true,
+      "isPlayerDesk": false
+    },
+    {
+      "id": "desk-dex",
+      "kind": "desk",
+      "gridX": 1,
+      "gridY": 4,
+      "blocksWalk": true,
+      "isPlayerDesk": false
+    },
+    {
+      "id": "chair-dex",
+      "kind": "chair",
+      "gridX": 1,
+      "gridY": 3,
+      "blocksWalk": true,
+      "isPlayerDesk": false
+    },
+    {
+      "id": "desk-cal",
+      "kind": "desk",
+      "gridX": 8,
+      "gridY": 3,
+      "blocksWalk": true,
+      "isPlayerDesk": false
+    },
+    {
+      "id": "chair-cal",
+      "kind": "chair",
+      "gridX": 8,
+      "gridY": 2,
+      "blocksWalk": true,
+      "isPlayerDesk": false
+    },
+    {
+      "id": "desk-reed",
+      "kind": "desk",
+      "gridX": 4,
+      "gridY": 6,
+      "blocksWalk": true,
+      "isPlayerDesk": false
+    },
+    {
+      "id": "chair-reed",
+      "kind": "chair",
+      "gridX": 4,
       "gridY": 5,
       "blocksWalk": true,
       "isPlayerDesk": false
