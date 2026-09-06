@@ -22,7 +22,7 @@ One map. Not a pile of READMEs.
 
 - **Root `README.md`** = company front door only.
 - **Doctrine** stays in `docs/*.md` — update in place, don't spawn twins.
-- **PRs** = one concern each; **Nosh** merges to `main` (see `pr-discipline.md`).
+- **PRs** = one concern each; **Nosh or Fabrizio** merges to `main` (see `pr-discipline.md`).
 - **Meetings** = what we talked about (context, debate, open threads).
 - **Decisions** = what we locked (short, dated, final).
 - **Core memories** = scars and trophies — high bar, proactive, not a daily diary.

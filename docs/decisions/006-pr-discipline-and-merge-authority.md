@@ -1,16 +1,23 @@
 # ADR 006 — PR discipline & merge authority
 
-**Status:** Locked  
+**Status:** Locked (merge authority amended by ADR 009)  
 **Date:** 2026-09-06  
 **Deciders:** Nosh  
-**Recorded / enforced by:** Fabrizio Cortell (not a Decider)
+**Recorded / enforced by:** Fabrizio Cortell (not a Decider on
+this ADR)
+
+> **Amendment:** Merge authority in decision #1 below is
+> superseded by
+> [`009-merge-authority-nosh-or-fabrizio.md`](009-merge-authority-nosh-or-fabrizio.md)
+> (Nosh **or** Fabrizio may merge). One-concern PR rules (#2–#5)
+> still stand.
 
 ## Decision
 
-1. **Nosh alone has final say on every merge to `main`.** Agents
-   — including Fabrizio — open scoped PRs. They do **not** merge,
-   approve-and-merge, or auto-merge — including Cursor cloud /
-   `app/cursor` merges — unless Nosh explicitly says so for that PR.
+1. ~~**Nosh alone has final say on every merge to `main`.**~~
+   **Superseded by ADR 009.** Merge authority is now Nosh or
+   Fabrizio. Other agents still do not merge unless a founder
+   authorizes that specific PR. See ADR 009.
 2. **One concern per PR.** A concern is one feature, one decision
    (ADR), one meeting topic, or one tightly coupled fix. If two
    things could be reverted independently, they are two PRs.
@@ -28,16 +35,15 @@
 
 Nosh called out sloppy multi-feature merges, mixed meetings, and
 bot merges without his review. Scoped PRs exist so we can revert
-or change one thing without undoing three others. Nosh's merge
-authority is the last gate — not an agent co-vote.
+or change one thing without undoing three others. Merge
+authority was later expanded in ADR 009; scoped-PR discipline
+here is unchanged.
 
 ## Consequences
 
 - Doctrine: [`../pr-discipline.md`](../pr-discipline.md)
 - Always-on rule: `.cursor/rules/pr-discipline.mdc`
-- Culture "How we decide" names Nosh as sole merge authority
-- Fabrizio documents this lock and enforces PR scope at planning
-  time; he does not decide or merge
-- Crew follows the rule at PR time
+- One-concern rules remain binding for every agent
+- Merge authority → ADR 009
 - GitHub branch protection / required reviews can come later;
   behavior locks first

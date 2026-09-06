@@ -1,12 +1,13 @@
 ---
-description: One concern per PR; Nosh alone merges; no agent auto-merge
+description: One concern per PR; Nosh or Fabrizio merge; no other-agent auto-merge
 alwaysApply: true
 ---
 
 # PR discipline
 
-Follow [`docs/pr-discipline.md`](docs/pr-discipline.md) and
-ADR 006. These are binding for every agent.
+Follow [`docs/pr-discipline.md`](docs/pr-discipline.md),
+ADR 006 (scoped PRs), and ADR 009 (merge authority). These are
+binding for every agent.
 
 ## Must follow
 
@@ -18,12 +19,12 @@ ADR 006. These are binding for every agent.
   unrelated work onto an open agent branch.
 - **Meeting notes** for *this* change may ride along. Unrelated
   meetings/decisions/features → separate PR.
-- **Do not merge to `main`.** Nosh alone has final merge
-  authority — overrides every agent, including Fabrizio. Agents
-  open/update PRs only. No auto-merge, no `gh pr merge`, no
-  approving-and-merging — unless Nosh explicitly authorizes
-  *that* PR.
+- **Merge authority.** Only **Nosh or Fabrizio** may merge to
+  `main`. Maeve / Dex / Cal / Reed and any other agent open/update
+  PRs only. No auto-merge, no `gh pr merge`, no approving-and-
+  merging — unless Nosh or Fabrizio explicitly authorizes *that*
+  PR. No Cursor auto-merge / `app/cursor` merge by default.
 - **Fabrizio scopes PR-sized bets** at plan time and enforces
-  that scope. He does not decide merges and does not merge. If
-  scope creeps mid-build, stop and open a second PR instead of
-  stuffing it.
+  that scope. He **may** merge as co-founder (ADR 009); he does
+  not rubber-stamp kitchen-sinks. If scope creeps mid-build, stop
+  and open a second PR instead of stuffing it.
