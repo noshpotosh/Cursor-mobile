@@ -69,7 +69,9 @@ Keep faces simple. Silhouette > detail. Idle bob optional later.
 
 **Required:** bubbler / water cooler — Nosh can drink; NPCs sometimes walk up.
 
-Later candidates (not launch-blocking): coffee pot, plant to water, whiteboard, couch.
+**Phase 8 loft life:** coffee station + whiteboard (E to sip / read rotating scribbles).
+
+Later candidates: plant to water, couch.
 
 ## Desktop OS chrome
 

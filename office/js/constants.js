@@ -16,6 +16,8 @@ export const FloorTileKind = {
 export const FurnitureKind = {
   DESK: "desk",
   BUBBLER: "bubbler",
+  COFFEE: "coffee",
+  WHITEBOARD: "whiteboard",
 };
 
 export const FloorFill = {
@@ -26,7 +28,14 @@ export const FloorFill = {
 export const FurnitureFill = {
   [FurnitureKind.DESK]: "#c4a484",
   [FurnitureKind.BUBBLER]: "#6b8f71",
+  [FurnitureKind.COFFEE]: "#5c4033",
+  [FurnitureKind.WHITEBOARD]: "#e8e2d6",
 };
+
+export const COFFEE_POT_FILL = "#3d4f5f";
+export const COFFEE_BREW_FILL = "#4a2f1f";
+export const WHITEBOARD_FRAME_FILL = "#7a5c45";
+export const WHITEBOARD_INK_FILL = "#1a1714";
 
 export const PLAYER_DESK_ACCENT = "#d97706";
 export const INK = "#1a1714";
@@ -74,6 +83,8 @@ export const INTERACT_RANGE_TILES = 1;
 export const InteractKind = {
   TALK: "talk",
   DRINK: "drink",
+  SIP_COFFEE: "sip-coffee",
+  READ_BOARD: "read-board",
   USE_PC: "use-pc",
 };
 
@@ -96,7 +107,18 @@ export const DEFAULT_NPC_JACKET_FILL = "#5c6b73";
 export const BUBBLER_DRINK_LINE =
   "Cold water. Pack hydrated.";
 
-// Short floor lines — real agent chat comes later.
+export const COFFEE_SIP_LINE =
+  "Hot brew. Pack caffeinated.";
+
+// Rotating scribbles on the loft whiteboard.
+export const WHITEBOARD_NOTES = [
+  "Ship the smallest honest slice.",
+  "Brand first. One job per viewport.",
+  "Readable beats clever.",
+  "Prove it — vibes don't merge.",
+  "Name the thing. No mystery mush.",
+];
+
 export const StaffTalkLine = {
   "fabrizio-cortell":
     "Scope first. Then we ship. Keep it 100.",
