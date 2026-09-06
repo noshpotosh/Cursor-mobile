@@ -10,7 +10,7 @@
       "id": "bubbler",
       "kind": "bubbler",
       "gridX": 1,
-      "gridY": 7,
+      "gridY": 6,
       "blocksWalk": true,
       "interactable": true
     },
