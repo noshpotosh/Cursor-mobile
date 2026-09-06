@@ -20,7 +20,7 @@ menu tour.
 | Player | Nosh (internal demo cast) |
 | Furniture | One desk + one chair |
 | Interaction | **Use desk** → stub “Desk” panel |
-| Art | Desk/chair from loft furniture atlases (`desk-crt`, `loft-props`); hard 1× Nosh + authored floor tiles |
+| Art | Loft atlases (`desk-crt`, `loft-props`, `crew-idle`) + authored floor tiles |
 
 ## Success moment
 
@@ -32,21 +32,18 @@ side quest, no hire/fire.
 
 See [`game/assets/MANIFEST.md`](../../game/assets/MANIFEST.md).
 
-**Furniture:** Nosh locked P1 on the parked loft’s atlases —
-`office/assets/furniture/desk-crt.png` and `loft-props.png`
-(copied into `game/assets/furniture/`). Desk + chair crops match
-`office/js/sprites.js`. This is deliberate parity with the living
-web loft, not the hard 1× `desk-basic` / `chair-basic` pipeline
-cuts.
+**Atlases:** Nosh locked P1 on the parked loft’s atlases —
+`desk-crt.png`, `loft-props.png`, and `crew-idle.png` (copied
+into `game/assets/`). Crops match `office/js/sprites.js` (desk,
+chair, nosh). Parity with the living web loft, not hard 1×
+pipeline cuts.
 
 **Floor:** authored 64×32 carpet + wood-border diamonds (no tile
 folder on `main` yet).
 
-**Player:** hard 1× `nosh-idle` for now.
-
-Density note: soft furniture atlases drawn small still fail the
-“reads as pixels like deskOS” bar. P1 ships them anyway per Nosh;
-a later hard cut can replace without changing Dex’s crop API.
+Density note: soft atlases drawn small still fail the “reads as
+pixels like deskOS” bar. P1 ships them anyway per Nosh; a later
+hard cut can replace without changing Dex’s crop API.
 
 ## Non-goals (Dex: do not build)
 
@@ -54,8 +51,8 @@ a later hard cut can replace without changing Dex’s crop API.
 - deskOS / SVG desktop migration
 - Management loop, economy, save (P2)
 - Reopening web `office/` features
-- Hard 1× furniture pipeline cuts (`desk-basic`, etc.) — deferred;
-  P1 uses `desk-crt` / `loft-props` per Nosh
+- Hard 1× pipeline cuts (`desk-basic`, `nosh-idle`, etc.) —
+  deferred; P1 uses `desk-crt` / `loft-props` / `crew-idle` per Nosh
 
 ## Handoff to Dex (PR B)
 
