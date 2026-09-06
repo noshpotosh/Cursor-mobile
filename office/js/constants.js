@@ -74,6 +74,7 @@ export const INTERACT_RANGE_TILES = 1;
 export const InteractKind = {
   TALK: "talk",
   DRINK: "drink",
+  USE_PC: "use-pc",
 };
 
 export const NPC_SKIN_FILL = "#e8c4a8";
@@ -110,3 +111,28 @@ export const StaffTalkLine = {
 };
 
 export const TOAST_VISIBLE_MS = 3200;
+
+export const DesktopAppId = {
+  TEAMS: "teams",
+  DIRECTORY: "directory",
+};
+
+export const PresenceStatus = {
+  AVAILABLE: "Available",
+  AWAY: "Away",
+};
+
+// Stub Teams replies until real agent chat is wired.
+export const StaffTeamsStubLine = {
+  "fabrizio-cortell":
+    "Loop me before we widen scope.",
+  "maeve-quinn":
+    "Send the mock. I'll cut the vanity.",
+  "dex-harlan":
+    "PR link when it's readable.",
+  "cal-rook":
+    "I'll try to break it after lunch.",
+  "reed-mallory":
+    "Paste the diff. I'll red-pen it.",
+  nosh: "Notes to self land here later.",
+};

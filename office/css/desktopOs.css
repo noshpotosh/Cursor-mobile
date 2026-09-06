@@ -1,0 +1,394 @@
+.desktop-os {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  color: var(--ink);
+  background:
+    radial-gradient(
+      circle at 18% 22%,
+      rgba(217, 119, 6, 0.1),
+      transparent 42%
+    ),
+    radial-gradient(
+      circle at 82% 68%,
+      rgba(107, 143, 113, 0.12),
+      transparent 40%
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(26, 23, 20, 0.035) 0,
+      rgba(26, 23, 20, 0.035) 1px,
+      transparent 1px,
+      transparent 12px
+    ),
+    var(--bone);
+}
+
+.desktop-os[hidden] {
+  display: none;
+}
+
+.desktop-wallpaper {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.1rem;
+  align-content: flex-start;
+  padding: 1.4rem;
+}
+
+.desktop-icon {
+  width: 5.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  align-items: center;
+  padding: 0.5rem 0.35rem;
+  border: 2px solid transparent;
+  border-radius: 0.35rem;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  font: inherit;
+}
+
+.desktop-icon:hover,
+.desktop-icon:focus-visible {
+  border-color: var(--clay);
+  background: rgba(244, 239, 230, 0.72);
+  outline: none;
+}
+
+.desktop-icon-glyph {
+  width: 2.7rem;
+  height: 2.7rem;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--ink);
+  border-radius: 0.35rem;
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+.teams-glyph {
+  background: #5b7c99;
+  color: var(--bone);
+}
+
+.directory-glyph {
+  background: var(--sage);
+  color: var(--bone);
+}
+
+.desktop-icon-label {
+  font-size: 0.78rem;
+  font-weight: 650;
+  text-align: center;
+}
+
+.desktop-window {
+  position: absolute;
+  top: 8%;
+  left: 50%;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  width: min(52rem, calc(100% - 2rem));
+  height: min(70%, calc(100% - 6rem));
+  overflow: hidden;
+  background: var(--bone);
+  border: 3px solid var(--ink);
+  box-shadow: 0 12px 40px var(--shadow);
+  transform: translateX(-50%);
+}
+
+.desktop-window[hidden] {
+  display: none;
+}
+
+.window-chrome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.4rem 0.5rem 0.4rem 0.75rem;
+  background: var(--ink);
+  color: var(--bone);
+}
+
+.window-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.window-close {
+  width: 1.7rem;
+  height: 1.7rem;
+  border: 2px solid var(--bone);
+  background: transparent;
+  color: var(--bone);
+  cursor: pointer;
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.window-close:hover,
+.window-close:focus-visible {
+  background: var(--amber);
+  border-color: var(--amber);
+  color: var(--ink);
+  outline: none;
+}
+
+.window-body {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  background: #f7f2ea;
+}
+
+.desktop-taskbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.4rem 0.7rem;
+  background: var(--ink);
+  color: var(--bone);
+  border-top: 3px solid var(--amber);
+}
+
+#desktop-exit {
+  padding: 0.32rem 0.65rem;
+  border: 2px solid var(--amber);
+  background: transparent;
+  color: var(--bone);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+#desktop-exit:hover,
+#desktop-exit:focus-visible {
+  background: var(--amber);
+  color: var(--ink);
+  outline: none;
+}
+
+.taskbar-clock {
+  font-size: 0.82rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.presence-dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: #9a9590;
+}
+
+.presence-dot.is-available {
+  background: #3f8f5a;
+}
+
+.presence-dot.is-away {
+  background: #c47b2d;
+}
+
+.teams-layout,
+.directory-layout {
+  display: grid;
+  grid-template-columns: minmax(11rem, 14rem) 1fr;
+  height: 100%;
+  min-height: 0;
+}
+
+.teams-roster,
+.directory-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.5rem;
+  overflow: auto;
+  border-right: 2px solid var(--clay);
+  background: rgba(244, 239, 230, 0.88);
+}
+
+.teams-roster-row,
+.directory-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 0.45rem;
+  row-gap: 0.08rem;
+  align-items: center;
+  width: 100%;
+  padding: 0.42rem 0.48rem;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.teams-roster-name,
+.directory-row-name {
+  font-size: 0.84rem;
+  font-weight: 650;
+}
+
+.teams-roster-status {
+  grid-column: 2;
+  font-size: 0.72rem;
+  color: #6a635c;
+}
+
+.teams-roster-row:hover,
+.directory-row:hover,
+.teams-roster-row:focus-visible,
+.directory-row:focus-visible {
+  border-color: var(--clay);
+  background: rgba(217, 119, 6, 0.08);
+  outline: none;
+}
+
+.teams-thread,
+.directory-detail {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  padding: 0.85rem 1rem 1rem;
+}
+
+.teams-thread-title,
+.directory-name {
+  margin: 0 0 0.6rem;
+  font-size: 1.02rem;
+}
+
+.teams-thread-log {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.7rem;
+  overflow: auto;
+  padding-right: 0.2rem;
+}
+
+.teams-placeholder,
+.directory-placeholder {
+  margin: 0;
+  color: #6a635c;
+  font-size: 0.88rem;
+}
+
+.teams-bubble {
+  max-width: 85%;
+  margin: 0;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--clay);
+  border-radius: 0.35rem;
+  font-size: 0.86rem;
+  line-height: 1.4;
+}
+
+.teams-bubble-them {
+  align-self: flex-start;
+  background: #efe8dc;
+}
+
+.teams-bubble-me {
+  align-self: flex-end;
+  background: rgba(217, 119, 6, 0.16);
+  border-color: var(--amber);
+}
+
+.teams-bubble-system {
+  align-self: center;
+  max-width: 95%;
+  border-style: dashed;
+  background: transparent;
+  color: #6a635c;
+  font-size: 0.76rem;
+}
+
+.teams-compose {
+  display: flex;
+  gap: 0.45rem;
+}
+
+.teams-compose-input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.48rem 0.6rem;
+  border: 2px solid var(--clay);
+  background: var(--bone);
+  color: var(--ink);
+  font: inherit;
+}
+
+.teams-compose-send {
+  padding: 0.48rem 0.75rem;
+  border: 2px solid var(--ink);
+  background: var(--amber);
+  color: var(--ink);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+}
+
+.directory-role {
+  margin: 0 0 0.4rem;
+  font-weight: 650;
+}
+
+.directory-presence {
+  display: inline-block;
+  margin: 0 0 0.8rem;
+  padding: 0.18rem 0.45rem;
+  border: 1px solid var(--clay);
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.directory-presence.is-available {
+  border-color: #3f8f5a;
+  color: #2f6b44;
+}
+
+.directory-presence.is-away {
+  border-color: #c47b2d;
+  color: #8a5418;
+}
+
+.directory-about {
+  margin: 0;
+  line-height: 1.45;
+}
+
+@media (max-width: 720px) {
+  .teams-layout,
+  .directory-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: 9rem 1fr;
+  }
+
+  .teams-roster,
+  .directory-list {
+    border-right: 0;
+    border-bottom: 2px solid var(--clay);
+  }
+
+  .desktop-window {
+    top: 5%;
+    height: min(78%, calc(100% - 5rem));
+  }
+}

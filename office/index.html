@@ -8,6 +8,7 @@
     />
     <title>Warewolf Virtual Office</title>
     <link rel="stylesheet" href="css/office.css" />
+    <link rel="stylesheet" href="css/desktopOs.css" />
   </head>
   <body>
     <main class="stage" id="office-stage">
@@ -22,6 +23,60 @@
         hidden
       ></p>
       <p class="office-toast" id="office-toast" hidden></p>
+
+      <section
+        id="desktop-os"
+        class="desktop-os"
+        hidden
+        aria-label="Desk desktop"
+      >
+        <div class="desktop-wallpaper">
+          <button
+            type="button"
+            class="desktop-icon"
+            data-app="teams"
+          >
+            <span class="desktop-icon-glyph teams-glyph"
+              >T</span
+            >
+            <span class="desktop-icon-label">Teams</span>
+          </button>
+          <button
+            type="button"
+            class="desktop-icon"
+            data-app="directory"
+          >
+            <span
+              class="desktop-icon-glyph directory-glyph"
+              >D</span
+            >
+            <span class="desktop-icon-label"
+              >Directory</span
+            >
+          </button>
+        </div>
+
+        <div class="desktop-window" hidden>
+          <header class="window-chrome">
+            <span class="window-title"></span>
+            <button
+              type="button"
+              class="window-close"
+              aria-label="Close window"
+            >
+              ×
+            </button>
+          </header>
+          <div class="window-body"></div>
+        </div>
+
+        <footer class="desktop-taskbar">
+          <button type="button" id="desktop-exit">
+            Leave desk
+          </button>
+          <span class="taskbar-clock"></span>
+        </footer>
+      </section>
     </main>
 
     <script type="module" src="js/main.js"></script>
