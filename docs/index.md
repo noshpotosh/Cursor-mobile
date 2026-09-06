@@ -8,12 +8,13 @@ One map. Not a pile of READMEs.
 | [`coding-standards.md`](coding-standards.md) | How we write code |
 | [`pr-discipline.md`](pr-discipline.md) | Scoped PRs + who merges |
 | [`brand.md`](brand.md) | Name, logo, visual system |
-| [`office/`](office/) | Virtual office art bible, ADRs, pipeline |
+| [`decisions/007-honest-ai-studio-tycoon.md`](decisions/007-honest-ai-studio-tycoon.md) | Active product thesis (office on hold) |
+| [`office/`](office/) | Virtual office art bible, ADRs, pipeline (**on hold**) |
 | [`meetings/`](meetings/) | Meeting / conversation summaries |
 | [`decisions/`](decisions/) | Locked calls (ADRs-lite) |
 | [`core-memories/`](core-memories/) | Memorable / crazy moments (agents write proactively) |
 | [`../brand/`](../brand/) | Logo image assets |
-| [`../office/`](../office/) | Virtual office app + reference mocks |
+| [`../office/`](../office/) | Virtual office app + reference mocks (**on hold**) |
 
 ## Rules of the house
 

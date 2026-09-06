@@ -1,8 +1,11 @@
 # ADR 001 — Virtual office product scope
 
-**Status:** Locked  
+**Status:** On hold (superseded for active product priority by
+[`../../decisions/007-honest-ai-studio-tycoon.md`](../../decisions/007-honest-ai-studio-tycoon.md))  
 **Date:** 2026-09-05  
-**Deciders:** Nosh + Fabrizio Cortell
+**Deciders:** Nosh + Fabrizio Cortell  
+**Hold note:** 2026-09-06 — loft stays in repo; no new feature work
+until Nosh reopens it.
 
 ## Decision
 

@@ -4,6 +4,11 @@ Internal isometric pixel office for Warewolf.
 
 ## Status
 
+**On hold** (2026-09-06): active product priority is the honest AI
+studio tycoon thesis —
+[`../docs/decisions/007-honest-ai-studio-tycoon.md`](../docs/decisions/007-honest-ai-studio-tycoon.md).
+Loft remains runnable; no new office feature work until reopened.
+
 Plan complete through Phase 6 polish:
 
 - Phase 0 — art + product lock
