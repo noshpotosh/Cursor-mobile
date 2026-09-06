@@ -46,8 +46,8 @@ export const PLAYER_PANTS_FILL = "#3d4f5f";
 export const PLAYER_HAIR_FILL = "#2c1810";
 export const PLAYER_SHOE_FILL = "#1a1714";
 
-export const PATH_TARGET_FILL = "rgba(217, 119, 6, 0.28)";
-export const PATH_TARGET_STROKE = "#d97706";
+export const PATH_TARGET_FILL = "rgba(217, 119, 6, 0.5)";
+export const PATH_TARGET_STROKE = "#b45309";
 
 export const CARDINAL_STEPS = [
   { deltaX: 1, deltaY: 0 },

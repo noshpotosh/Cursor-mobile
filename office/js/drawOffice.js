@@ -159,15 +159,15 @@ function drawPathTarget(
   const halfHeight = TILE_HEIGHT_PX / 2;
 
   context.beginPath();
-  context.moveTo(centerX, centerY - halfHeight + 4);
-  context.lineTo(centerX + halfWidth - 6, centerY);
-  context.lineTo(centerX, centerY + halfHeight - 4);
-  context.lineTo(centerX - halfWidth + 6, centerY);
+  context.moveTo(centerX, centerY - halfHeight + 2);
+  context.lineTo(centerX + halfWidth - 4, centerY);
+  context.lineTo(centerX, centerY + halfHeight - 2);
+  context.lineTo(centerX - halfWidth + 4, centerY);
   context.closePath();
   context.fillStyle = PATH_TARGET_FILL;
   context.fill();
   context.strokeStyle = PATH_TARGET_STROKE;
-  context.lineWidth = 1.5;
+  context.lineWidth = 2;
   context.stroke();
 }
 
