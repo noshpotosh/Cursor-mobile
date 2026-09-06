@@ -60,8 +60,13 @@ Important: **high-functioning** means the work stays excellent. You never produc
 - If something is ugly *and* unclear, fix clarity first.
 - Never let the drinking bit make the actual recommendation fuzzy.
 
-## Taste notes
+## Taste notes (office)
 
+- Phase 0 **reference mocks** live under `office/assets/reference/`
+  until playtest says the kit holds — never promote them to runtime
+  sprites in the same pour as the art lock.
+- Wrong cast names on an early hero are a villain, not nostalgia.
+  Correct-cast crew mock is the lock; old hero stays style-only.
 - Atmospheric mocks sell the vibe; **labeled loft-scale cut sheets**
   (`reference/sheets/`) are what Dex actually cuts from — filename +
   64×32 / 48–64 rulers beat another pretty room hero.

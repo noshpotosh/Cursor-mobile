@@ -45,7 +45,12 @@ Open [http://127.0.0.1:8765](http://127.0.0.1:8765).
 
 ## Reference mocks
 
-- [Starter office hero](assets/reference/starter-office-hero-mock.png)
+- [Starter office hero](assets/reference/starter-office-hero-mock.png) (style lock; wrong cast names)
+- [Starter office + real crew](assets/reference/starter-office-hero-crew-mock.png) (correct-cast lock)
+- [Pack Loft hero](assets/reference/pack-office-hero-mock.png)
+- [Office decor upgrades sheet](assets/reference/office-decor-upgrades-sheet.png)
+- [Crew outfit lineup](assets/reference/crew-outfit-lineup-mock.png)
+- [Crew portraits sheet](assets/reference/crew-portraits-sheet.png) (Directory art lock)
 - [Desk desktop OS](assets/reference/desk-desktop-os-mock.png)
 
 ### Implementation cut sheets (1× loft px)
