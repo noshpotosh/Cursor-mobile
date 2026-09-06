@@ -1,5 +1,11 @@
 # Virtual Office — How to run
 
+**On hold** (2026-09-06): active product priority moved to the honest
+AI studio tycoon thesis — see
+[`../decisions/007-honest-ai-studio-tycoon.md`](../decisions/007-honest-ai-studio-tycoon.md).
+Existing loft still runs; do not treat this as the current build
+target.
+
 Serve the `office/` folder over HTTP. Browsers block ES module `fetch` from `file://`.
 
 ```bash
