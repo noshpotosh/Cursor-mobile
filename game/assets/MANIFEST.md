@@ -25,14 +25,24 @@ consumer together when changing art.
   available, chevron, Wi-Fi, sound.
 - `ui/desktop-theme.png`: 160×32 atlas; five 32×32 nine-slice cells, in order:
   window, paper, selected, button, input. Default border margin is 5 native
-  pixels; window overrides it to 10. `ui/desktop-atlas.json` owns texture
-  paths, named regions, and margins consumed by `desktop_art.gd`.
+  pixels; window overrides it to 10. Used for taskbar, buttons, paper
+  panels, and Directory chrome — not the main app window frame.
+- `ui/bucks-chip.png`: cropped PixelLab loft bucks plate (298×77). Live
+  Label shows `"%d bucks"`; HUD displays it at 186×48.
+- `ui/window-chrome.png`: cropped PixelLab app window frame (276×211).
+  Nine-slice margins `[19,40,71,15]` keep the title-bar control cluster
+  fixed on the right. Matching content insets place Directory / Teams on
+  the parchment without covering that right strip. Live transparent
+  hit-targets cover the orange controls; title and icon stay live.
+- `ui/desktop-atlas.json` owns texture paths, named regions, margins,
+  content insets, and control rects for `desktop_art.gd`.
 - `ui/wallpaper-tile.png`: seamless 80×80 cream diamond wallpaper.
-- Editable pixel SVG source: `art-source/ui/`. Existing Teams, Directory,
-  loft, and wallpaper art originated in the accepted `office/assets/ui/`
-  SVG kit; theme and supporting symbols are newly authored for Godot.
-- Export: `tools/export_desktop_art.gd`; named regions and styles:
-  `scripts/desktop_art.gd`. UI consumers: `desk_hud.gd`, `desktop_directory.gd`.
+- Editable pixel SVG source: `art-source/ui/` for symbols/theme/wallpaper.
+  PixelLab panel sources: `bucks-chip-source.png`,
+  `window-chrome-source.png` with `pixellab-ui-provenance.md`.
+- Export: `tools/export_desktop_art.gd` (SVG rasterize + opaque crop for
+  PixelLab panels); named regions and styles: `scripts/desktop_art.gd`.
+  UI consumers: `desk_hud.gd`, `desktop_directory.gd`.
 - `characters/crew-portraits.png`: accepted 1536×1024 crew portrait atlas,
   copied unchanged from `office/assets/characters/crew-portraits.png`.
   Six 512×512 cells: Nosh, Fabrizio, Maeve / Dex, Cal, Reed.
@@ -41,9 +51,11 @@ consumer together when changing art.
   SIL Open Font License (`fonts/OFL.txt`). No remote font dependency.
 
 The comparison reference is `office/assets/reference/desk-desktop-os-mock.png`.
-The desktop is composed from live Controls and separate art. The screenshot
-and its fragments are never runtime textures. Text, clock, search, employee
-selection, and window controls remain live; Teams messaging is not connected.
+Runtime app-window chrome intentionally drifts from that mock to the
+PixelLab frame. The desktop is composed from live Controls and separate
+art. Screenshots and fragments are never runtime textures. Text, clock,
+search, employee selection, and window controls remain live; Teams
+messaging is not connected.
 
 ## Existing world art
 

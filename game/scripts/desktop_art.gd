@@ -3,11 +3,14 @@ extends RefCounted
 const FONT = preload("res://assets/fonts/pixelify-sans.ttf")
 const INK := Color("302b20")
 const PAPER := Color("f8edcf")
+const BUCKS_GOLD := Color("e6b765")
 static var atlas: Dictionary = JSON.parse_string(
 	FileAccess.get_file_as_string("res://assets/ui/desktop-atlas.json")
 )
 static var symbols := load_texture("symbols")
 static var chrome := load_texture("chrome")
+static var bucks_chip := load_texture("bucks_chip")
+static var window_chrome := load_texture("window_chrome")
 
 
 static func load_texture(group: String) -> Texture2D:
@@ -41,11 +44,51 @@ static func style(kind: String) -> StyleBoxTexture:
 	return box
 
 
+static func window_chrome_style() -> StyleBoxTexture:
+	var settings: Dictionary = atlas.window_chrome
+	var box := StyleBoxTexture.new()
+	box.texture = region(window_chrome, bounds("window_chrome", "frame"))
+	var margins: Array = settings.nine_slice_margins
+	for side in 4:
+		box.set_texture_margin(side, margins[side])
+	var insets: Array = settings.content_insets
+	box.content_margin_left = insets[0]
+	box.content_margin_top = insets[1]
+	box.content_margin_right = insets[2]
+	box.content_margin_bottom = insets[3]
+	return box
+
+
 static func panel(parent: Node, bounds: Rect2, kind: String) -> Panel:
 	var result := Panel.new()
 	result.position = bounds.position
 	result.size = bounds.size
 	result.add_theme_stylebox_override("panel", style(kind))
+	result.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	parent.add_child(result)
+	return result
+
+
+static func window_panel(parent: Node, bounds: Rect2) -> Panel:
+	var result := Panel.new()
+	result.position = bounds.position
+	result.size = bounds.size
+	result.add_theme_stylebox_override("panel", window_chrome_style())
+	result.mouse_filter = Control.MOUSE_FILTER_STOP
+	parent.add_child(result)
+	return result
+
+
+static func texture_rect(
+	parent: Node, texture: Texture2D, bounds: Rect2
+) -> TextureRect:
+	var result := TextureRect.new()
+	result.texture = texture
+	result.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	result.stretch_mode = TextureRect.STRETCH_SCALE
+	result.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	result.position = bounds.position
+	result.size = bounds.size
 	result.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	parent.add_child(result)
 	return result
@@ -98,6 +141,23 @@ static func button(
 	result.add_theme_stylebox_override("normal", style(kind))
 	result.add_theme_stylebox_override("hover", style("selected"))
 	result.add_theme_stylebox_override("pressed", style("selected"))
+	result.pressed.connect(action)
+	parent.add_child(result)
+	return result
+
+
+static func invisible_button(
+	parent: Node, bounds: Rect2, action: Callable, hint: String
+) -> Button:
+	var result := Button.new()
+	result.text = ""
+	result.position = bounds.position
+	result.size = bounds.size
+	result.tooltip_text = hint
+	result.add_theme_stylebox_override("normal", StyleBoxEmpty.new())
+	result.add_theme_stylebox_override("hover", StyleBoxEmpty.new())
+	result.add_theme_stylebox_override("pressed", StyleBoxEmpty.new())
+	result.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
 	result.pressed.connect(action)
 	parent.add_child(result)
 	return result

@@ -3,22 +3,22 @@ extends CanvasLayer
 const Art = preload("res://scripts/desktop_art.gd")
 const Directory = preload("res://scripts/desktop_directory.gd")
 const WALLPAPER = preload("res://assets/ui/wallpaper-tile.png")
-const WINDOW_BOUNDS := Rect2(318, 36, 910, 538)
+const WINDOW_BOUNDS := Rect2(150, 36, 980, 538)
 const MAXIMIZED_BOUNDS := Rect2(8, 8, 1264, 596)
 const TASKBAR_TOP := 614
-const WINDOW_PAPER_INSET := Vector2(10, 70)
-const WINDOW_PAPER_PADDING := Vector2(20, 84)
 const DIRECTORY_WIDTH := 890
 const TEAMS_CONTENT_INSET := Vector2(24, 30)
-const WINDOW_CONTROLS_RIGHT_INSET := 180
-const WINDOW_CONTROL_SPACING := 56
+const BUCKS_CHIP_BOUNDS := Rect2(1070, 14, 186, 48)
+const WINDOW_CONTROL_HIT := Vector2(40, 40)
+const WINDOW_CONTROL_HINTS := [
+	"Minimize", "Maximize / restore", "Close",
+]
 
 var _company_bucks := 0
 var _loft_chrome: Control
 var _bucks_label: Label
 var _desktop: Control
 var _app_window: Control
-var _window_paper: Panel
 var _window_buttons: Array[Button] = []
 var _window_title: Label
 var _window_icon: TextureRect
@@ -26,6 +26,11 @@ var _directory: Control
 var _teams: Control
 var _clock: Label
 var _maximized := false
+var _inset_left: float = Art.atlas.window_chrome.content_insets[0]
+var _inset_top: float = Art.atlas.window_chrome.content_insets[1]
+var _inset_right: float = Art.atlas.window_chrome.content_insets[2]
+var _chrome_size: Vector2 = Art.bounds("window_chrome", "frame").size
+var _control_rects: Array = Art.atlas.window_chrome.controls
 
 
 func _ready() -> void:
@@ -83,12 +88,16 @@ func _build_loft_chrome() -> void:
 		_loft_chrome, "◆  WAREWOLF · STARTER LOFT",
 		Rect2(24, 18, 600, 32), 18, Art.PAPER
 	)
-	Art.panel(_loft_chrome, Rect2(1096, 14, 160, 34), "button")
+	Art.texture_rect(
+		_loft_chrome,
+		Art.region(Art.bucks_chip, Art.bounds("bucks_chip", "chip")),
+		BUCKS_CHIP_BOUNDS
+	)
 	_bucks_label = Art.label(
-		_loft_chrome, "", Rect2(1096, 14, 160, 34),
-		18, Color("e6b765")
+		_loft_chrome, "", BUCKS_CHIP_BOUNDS, 18, Art.BUCKS_GOLD
 	)
 	_bucks_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_bucks_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 
 
 func _build_desktop_os() -> void:
@@ -167,28 +176,25 @@ func _taskbar_app(
 
 
 func _build_app_window() -> void:
-	_app_window = Art.panel(_desktop, WINDOW_BOUNDS, "window")
+	_app_window = Art.window_panel(_desktop, WINDOW_BOUNDS)
 	_app_window.name = "AppWindow"
-	_app_window.mouse_filter = Control.MOUSE_FILTER_STOP
-	_window_paper = Art.panel(
-		_app_window, Rect2(
-			WINDOW_PAPER_INSET, WINDOW_BOUNDS.size - WINDOW_PAPER_PADDING
-		), "paper"
+	_window_icon = Art.icon(
+		_app_window, "book", Rect2(_inset_left, 10, 32, 28)
 	)
-	_window_icon = Art.icon(_app_window, "book", Rect2(24, 18, 48, 40))
 	_window_title = Art.label(
-		_app_window, "Employee Directory", Rect2(86, 14, 650, 50),
-		38, Art.PAPER
+		_app_window, "Employee Directory",
+		Rect2(_inset_left + 40, 8, 520, 32), 28, Art.PAPER
 	)
-	_window_control("−", 0, _close_app_window, "Minimize")
-	_window_control("□", 1, _toggle_maximize, "Maximize / restore")
-	_window_control("×", 2, _close_app_window, "Close")
+	_window_title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_window_control(0, _close_app_window)
+	_window_control(1, _toggle_maximize)
+	_window_control(2, _close_app_window)
 	_directory = Directory.new()
 	_directory.name = "Directory"
-	_directory.position = WINDOW_PAPER_INSET
+	_place_window_content(_directory, Vector2.ZERO)
 	_app_window.add_child(_directory)
 	_teams = Control.new()
-	_teams.position = WINDOW_PAPER_INSET + TEAMS_CONTENT_INSET
+	_place_window_content(_teams, TEAMS_CONTENT_INSET)
 	_app_window.add_child(_teams)
 	Art.label(_teams, "Teams", Rect2(0, 0, 820, 60), 44)
 	Art.label(
@@ -196,19 +202,35 @@ func _build_app_window() -> void:
 			+ "Messaging is not connected in this loft preview.",
 		Rect2(0, 84, 820, 170), 30
 	)
+	_layout_window_content(WINDOW_BOUNDS.size)
 
 
-func _window_control(
-	caption: String, index: int, action: Callable, hint: String
-) -> void:
-	var controls_left := WINDOW_BOUNDS.size.x - WINDOW_CONTROLS_RIGHT_INSET
-	var left := controls_left + index * WINDOW_CONTROL_SPACING
-	var button := Art.button(
-		_app_window, caption, Rect2(left, 16, 48, 48), action,
-		"button", 38
+func _place_window_content(node: Control, extra_inset: Vector2) -> void:
+	node.position = Vector2(
+		_inset_left + extra_inset.x,
+		_inset_top + extra_inset.y
 	)
-	button.tooltip_text = hint
+
+
+func _window_control(index: int, action: Callable) -> void:
+	var hit := _control_hit_bounds(WINDOW_BOUNDS.size, index)
+	var button := Art.invisible_button(
+		_app_window, hit, action, WINDOW_CONTROL_HINTS[index]
+	)
 	_window_buttons.append(button)
+
+
+func _control_hit_bounds(window_size: Vector2, index: int) -> Rect2:
+	var native: Array = _control_rects[index]
+	var native_rect := Rect2(
+		native[0], native[1], native[2], native[3]
+	)
+	var from_right := _chrome_size.x - native_rect.position.x
+	var center := Vector2(
+		window_size.x - from_right + native_rect.size.x * 0.5,
+		native_rect.position.y + native_rect.size.y * 0.5
+	)
+	return Rect2(center - WINDOW_CONTROL_HIT * 0.5, WINDOW_CONTROL_HIT)
 
 
 func _toggle_maximize() -> void:
@@ -216,13 +238,21 @@ func _toggle_maximize() -> void:
 	var bounds := MAXIMIZED_BOUNDS if _maximized else WINDOW_BOUNDS
 	_app_window.position = bounds.position
 	_app_window.size = bounds.size
-	_window_paper.size = bounds.size - WINDOW_PAPER_PADDING
-	_directory.position.x = (bounds.size.x - DIRECTORY_WIDTH) / 2
-	_teams.position.x = _directory.position.x + TEAMS_CONTENT_INSET.x
-	var controls_left := bounds.size.x - WINDOW_CONTROLS_RIGHT_INSET
+	_layout_window_content(bounds.size)
 	for index in _window_buttons.size():
-		var spacing := index * WINDOW_CONTROL_SPACING
-		_window_buttons[index].position.x = controls_left + spacing
+		var hit := _control_hit_bounds(bounds.size, index)
+		_window_buttons[index].position = hit.position
+
+
+func _layout_window_content(window_size: Vector2) -> void:
+	var parchment_width: float = (
+		window_size.x - _inset_left - _inset_right
+	)
+	var directory_left: float = (
+		_inset_left + (parchment_width - DIRECTORY_WIDTH) / 2.0
+	)
+	_directory.position = Vector2(directory_left, _inset_top)
+	_teams.position = _directory.position + TEAMS_CONTENT_INSET
 
 
 func _open_teams_app() -> void:

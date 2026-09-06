@@ -138,5 +138,59 @@
         10
       ]
     }
+  },
+  "bucks_chip": {
+    "texture": "bucks-chip.png",
+    "regions": {
+      "chip": [
+        0,
+        0,
+        298,
+        77
+      ]
+    }
+  },
+  "window_chrome": {
+    "texture": "window-chrome.png",
+    "nine_slice_margins": [
+      19,
+      40,
+      71,
+      15
+    ],
+    "content_insets": [
+      19,
+      40,
+      71,
+      15
+    ],
+    "regions": {
+      "frame": [
+        0,
+        0,
+        276,
+        211
+      ]
+    },
+    "controls": [
+      [
+        205,
+        10,
+        20,
+        18
+      ],
+      [
+        226,
+        10,
+        20,
+        18
+      ],
+      [
+        247,
+        10,
+        20,
+        18
+      ]
+    ]
   }
 }
