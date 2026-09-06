@@ -1,15 +1,14 @@
 # Virtual Office — How to run
 
-**On hold** (2026-09-06): active product priority moved to the honest
-AI studio tycoon thesis — see
-[`../decisions/007-honest-ai-studio-tycoon.md`](../decisions/007-honest-ai-studio-tycoon.md).
-Existing loft still runs; do not treat this as the current build
-target.
+**Active shipping web client** (Phaser 3 + DOM desk OS). See
+[`../decisions/008-ai-studio-product-contract.md`](../decisions/008-ai-studio-product-contract.md).
 
-Serve the `office/` folder over HTTP. Browsers block ES module `fetch` from `file://`.
+Serve the `office/` folder over HTTP. Browsers block ES module
+`fetch` from `file://`. Install Phaser once, then serve:
 
 ```bash
 cd office
+npm install
 python3 -m http.server 8765
 ```
 

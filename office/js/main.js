@@ -1,4 +1,3 @@
-import { loadSprites } from './sprites.js';
 import {
   GoalEventKind,
   InteractKind,
@@ -17,7 +16,6 @@ import {
   isDesktopOsOpen,
   openDesktopOs,
 } from "./desktopOs.js";
-import { drawOffice } from "./drawOffice.js";
 import {
   createEconomy,
   formatCompanyBucks,
@@ -31,7 +29,6 @@ import {
   findFurnitureAtScreen,
   findNearbyInteractable,
 } from "./interact.js";
-import { buildRoomView, screenToGrid } from "./isoMath.js";
 import {
   loadStarterOfficeBundle,
   staffById,
@@ -41,11 +38,13 @@ import {
   isNpcAtDesk,
   updateNpcs,
 } from "./npcs.js";
+import { createPhaserLoft } from "./phaserLoft.js";
 import {
   createPlayer,
   requestPlayerWalk,
   updatePlayer,
 } from "./player.js";
+import { loadSprites } from "./sprites.js";
 import {
   buildWalkMap,
   findAdjacentWalkable,
@@ -61,34 +60,6 @@ function showLoadError(message) {
   }
 
   title.textContent = message;
-}
-
-function sizeCanvasToStage(canvas, stage) {
-  const width = stage.clientWidth;
-  const height = stage.clientHeight;
-  const pixelRatio = window.devicePixelRatio || 1;
-
-  const backingWidth = Math.floor(width * pixelRatio);
-  const backingHeight = Math.floor(height * pixelRatio);
-  if (canvas.width === backingWidth && canvas.height === backingHeight) {
-    return;
-  }
-  canvas.width = backingWidth;
-  canvas.height = backingHeight;
-  canvas.style.width = `${width}px`;
-  canvas.style.height = `${height}px`;
-
-  const context = canvas.getContext("2d");
-  context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-}
-
-function readClickInStage(event, stage) {
-  const bounds = stage.getBoundingClientRect();
-
-  return {
-    clickX: event.clientX - bounds.left,
-    clickY: event.clientY - bounds.top,
-  };
 }
 
 function setPromptText(promptEl, text) {
@@ -280,19 +251,7 @@ function triggerInteract(shell, target) {
   }
 }
 
-function handleCanvasClick(event, shell) {
-  if (isDesktopOsOpen(shell.desktop)) {
-    return;
-  }
-
-  const { clickX, clickY } = readClickInStage(
-    event,
-    shell.stage
-  );
-  const scale = shell.roomOrigin.scale || 1;
-  const localX = (clickX - shell.roomOrigin.originX) / scale;
-  const localY = (clickY - shell.roomOrigin.originY) / scale;
-  const { gridX, gridY } = screenToGrid(localX, localY);
+function handleLoftPointer(shell, gridX, gridY, localX, localY) {
   const furniture = findFurnitureAtScreen(shell.office, localX, localY)
     || findFurnitureAt(shell.office, gridX, gridY);
 
@@ -362,66 +321,45 @@ function handleOfficeKeydown(event, shell) {
   triggerInteract(shell, shell.nearbyTarget);
 }
 
-function startRenderLoop(shell) {
-  function renderFrame(nowMs) {
-    const deltaSeconds = Math.min(
-      (nowMs - shell.lastFrameMs) / 1000,
-      0.05
-    );
-    shell.lastFrameMs = nowMs;
-
-    if (!isDesktopOsOpen(shell.desktop)) {
-      updatePlayer(shell.player, deltaSeconds);
-      updateNpcs(
-        shell.npcs,
-        shell.office,
-        shell.walkMap,
-        deltaSeconds
-      );
-      shell.nearbyTarget = findNearbyInteractable(
-        shell.player,
-        shell.office,
-        shell.staffLookup
-      );
-      setPromptText(
-        shell.promptEl,
-        shell.nearbyTarget ? shell.nearbyTarget.prompt : ""
-      );
-    } else {
-      shell.nearbyTarget = null;
-      setPromptText(shell.promptEl, "");
-    }
-
-    sizeCanvasToStage(shell.canvas, shell.stage);
-    shell.roomOrigin = drawOffice(
-      shell.canvas,
-      shell.office,
-      shell.staffLookup,
-      shell.player,
-      shell.npcs,
-      shell.stage.clientWidth,
-      shell.stage.clientHeight,
-      loftUpgradesFromEconomy(shell.economy),
-      nowMs / 1000
-    );
-
-    window.requestAnimationFrame(renderFrame);
+function tickShell(shell, deltaSeconds) {
+  if (isDesktopOsOpen(shell.desktop)) {
+    shell.nearbyTarget = null;
+    setPromptText(shell.promptEl, "");
+    return;
   }
 
-  window.requestAnimationFrame(renderFrame);
+  updatePlayer(shell.player, deltaSeconds);
+  updateNpcs(
+    shell.npcs,
+    shell.office,
+    shell.walkMap,
+    deltaSeconds
+  );
+  shell.nearbyTarget = findNearbyInteractable(
+    shell.player,
+    shell.office,
+    shell.staffLookup
+  );
+  setPromptText(
+    shell.promptEl,
+    shell.nearbyTarget ? shell.nearbyTarget.prompt : ""
+  );
+
+  // Keep upgrade map warm for later Phaser art parity.
+  shell.loftUpgrades = loftUpgradesFromEconomy(shell.economy);
 }
 
 async function startOfficeShell() {
   const stage = document.getElementById("office-stage");
-  const canvas = document.getElementById("office-canvas");
+  const phaserHost = document.getElementById("office-phaser");
   const promptEl = document.getElementById("interact-prompt");
   const toastEl = document.getElementById("office-toast");
   const desktopRoot = document.getElementById("desktop-os");
   const bucksHud = document.getElementById("bucks-hud");
   const muteButton = document.getElementById("mute-button");
 
-  if (!stage || !canvas || !desktopRoot) {
-    throw new Error("Missing office stage, canvas, or desktop");
+  if (!stage || !phaserHost || !desktopRoot) {
+    throw new Error("Missing office stage, Phaser host, or desktop");
   }
 
   const bundle = await loadStarterOfficeBundle();
@@ -446,7 +384,7 @@ async function startOfficeShell() {
 
   const shell = {
     stage,
-    canvas,
+    phaserHost,
     promptEl,
     toastEl,
     bucksHud,
@@ -459,10 +397,10 @@ async function startOfficeShell() {
     player,
     npcs,
     desktop: null,
+    loft: null,
     toastTimerId: null,
-    lastFrameMs: performance.now(),
-    roomOrigin: { originX: 0, originY: 0 },
     nearbyTarget: null,
+    loftUpgrades: {},
     showEconomyToast: null,
     applyOfficeLayout: null,
   };
@@ -500,6 +438,10 @@ async function startOfficeShell() {
     shell.player = createPlayer(spawn.gridX, spawn.gridY);
     shell.npcs = createNpcs(shell.office, staffLookup);
     syncOfficeTitle();
+
+    if (shell.loft) {
+      shell.loft.rebuild();
+    }
   };
 
   syncOfficeTitle();
@@ -517,8 +459,16 @@ async function startOfficeShell() {
     ...wireDesktopCallbacks(shell),
   });
 
-  shell.canvas.addEventListener("click", (event) => {
-    handleCanvasClick(event, shell);
+  shell.loft = createPhaserLoft({
+    parentEl: phaserHost,
+    getShell: () => shell,
+    isDesktopOpen: () => isDesktopOsOpen(shell.desktop),
+    onTilePointer: (gridX, gridY, localX, localY) => {
+      handleLoftPointer(shell, gridX, gridY, localX, localY);
+    },
+    tick: (deltaSeconds) => {
+      tickShell(shell, deltaSeconds);
+    },
   });
 
   window.addEventListener("keydown", (event) => {
@@ -535,20 +485,9 @@ async function startOfficeShell() {
   if (economy.currentOfficeId !== shell.office.id) {
     shell.applyOfficeLayout(economy.currentOfficeId);
   }
-
-  shell.roomOrigin = buildRoomView(
-    shell.office.gridWidth,
-    shell.office.gridHeight,
-    stage.clientWidth,
-    stage.clientHeight
-  );
-
-  startRenderLoop(shell);
 }
 
 startOfficeShell().catch((error) => {
   console.error(error);
-  showLoadError(
-    "Could not load office data. Serve /office over HTTP."
-  );
+  showLoadError("Failed to load loft");
 });
