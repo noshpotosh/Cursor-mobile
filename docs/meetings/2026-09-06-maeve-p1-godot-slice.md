@@ -20,7 +20,7 @@ menu tour.
 | Player | Nosh (internal demo cast) |
 | Furniture | One desk + one chair |
 | Interaction | **Use desk** → stub “Desk” panel |
-| Art | Hard 1× pack under `game/assets/` |
+| Art | Desk/chair from loft furniture atlases (`desk-crt`, `loft-props`); hard 1× Nosh + authored floor tiles |
 
 ## Success moment
 
@@ -32,19 +32,30 @@ side quest, no hire/fire.
 
 See [`game/assets/MANIFEST.md`](../../game/assets/MANIFEST.md).
 
-Hero sources were the labeled loft-scale sheets under
-`office/assets/reference/sheets/`. Character + furniture PNGs
-match the sheet pipeline names at native pixel size. Floor
-diamonds are authored 64×32 tiles in the art-direction palette
-(sheet guides are labeled composites, not croppable atlases).
+**Furniture:** Nosh locked P1 on the parked loft’s atlases —
+`office/assets/furniture/desk-crt.png` and `loft-props.png`
+(copied into `game/assets/furniture/`). Desk + chair crops match
+`office/js/sprites.js`. This is deliberate parity with the living
+web loft, not the hard 1× `desk-basic` / `chair-basic` pipeline
+cuts.
+
+**Floor:** authored 64×32 carpet + wood-border diamonds (no tile
+folder on `main` yet).
+
+**Player:** hard 1× `nosh-idle` for now.
+
+Density note: soft furniture atlases drawn small still fail the
+“reads as pixels like deskOS” bar. P1 ships them anyway per Nosh;
+a later hard cut can replace without changing Dex’s crop API.
 
 ## Non-goals (Dex: do not build)
 
 - Other crew, pack loft, portraits, upgrade overlays
 - deskOS / SVG desktop migration
 - Management loop, economy, save (P2)
-- Soft AI atlases as Godot hero art
 - Reopening web `office/` features
+- Hard 1× furniture pipeline cuts (`desk-basic`, etc.) — deferred;
+  P1 uses `desk-crt` / `loft-props` per Nosh
 
 ## Handoff to Dex (PR B)
 
