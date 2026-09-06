@@ -1,0 +1,73 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/characters/nosh-motion.png" id="NoshSheet"]
+
+[sub_resource type="AtlasTexture" id="NoshFrame0"]
+atlas = ExtResource("NoshSheet")
+region = Rect2(0, 0, 48, 96)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="NoshFrame1"]
+atlas = ExtResource("NoshSheet")
+region = Rect2(48, 0, 48, 96)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="NoshFrame2"]
+atlas = ExtResource("NoshSheet")
+region = Rect2(96, 0, 48, 96)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="NoshFrame3"]
+atlas = ExtResource("NoshSheet")
+region = Rect2(144, 0, 48, 96)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="NoshFrame4"]
+atlas = ExtResource("NoshSheet")
+region = Rect2(192, 0, 48, 96)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="NoshFrame5"]
+atlas = ExtResource("NoshSheet")
+region = Rect2(240, 0, 48, 96)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="NoshFrame6"]
+atlas = ExtResource("NoshSheet")
+region = Rect2(288, 0, 48, 96)
+filter_clip = true
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("NoshFrame0")
+}],
+"loop": 0,
+"name": &"idle",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("NoshFrame1")
+}, {
+"duration": 1.0,
+"texture": SubResource("NoshFrame2")
+}, {
+"duration": 1.0,
+"texture": SubResource("NoshFrame3")
+}, {
+"duration": 1.0,
+"texture": SubResource("NoshFrame4")
+}, {
+"duration": 1.0,
+"texture": SubResource("NoshFrame5")
+}, {
+"duration": 1.0,
+"texture": SubResource("NoshFrame6")
+}],
+"loop": 1,
+"name": &"run",
+"speed": 10.0
+}]
+metadata/foot_pivot = Vector2(24, 74)

@@ -36,14 +36,16 @@
 
 ```bash
 godot --headless --path game -s res://scripts/smoke_check.gd
+godot --headless --path game -s res://scripts/animation_check.gd
 ```
 
-Expect `SMOKE_OK`.
+Expect `SMOKE_OK` and `ANIMATION_OK`.
 
 ## P1 proof
 
 - Starter loft floor from tile PNGs
-- Click or tap a floor cell to walk (shared input path)
+- Click or tap a floor cell to walk (shared input path); Nosh uses an
+  idle/run sprite sheet with mirrored left-facing art
 - Click/tap the desk (or walk beside it) to open **desk desktop OS**
   (wallpaper, Teams/Directory icons, taskbar, loft bucks chrome)
 - Esc or Leave desk to return to the loft
