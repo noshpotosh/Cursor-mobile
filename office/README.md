@@ -23,14 +23,15 @@ Plan complete through Phase 6 polish:
 
 ## Run
 
-Serve this folder over HTTP (ES modules + `fetch` need it):
-
 ```bash
 cd office
+npm install
 python3 -m http.server 8765
 ```
 
 Open [http://127.0.0.1:8765](http://127.0.0.1:8765).
+
+Phaser 3 owns the loft canvas; the desk OS stays DOM.
 
 ### Controls
 
