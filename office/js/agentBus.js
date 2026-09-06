@@ -182,3 +182,12 @@ export function describeAgentProvider(bus, staffId) {
       + "Cursor agent delivery when a backend exists.",
   };
 }
+
+// Plan Phase 4 seam names (aliases for adapters).
+export function getThread(bus, agentId) {
+  return listThread(bus, agentId);
+}
+
+export function sendMessage(bus, agentId, text) {
+  return sendAgentMessage(bus, agentId, text);
+}

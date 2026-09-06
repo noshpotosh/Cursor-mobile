@@ -82,7 +82,10 @@ export function buildRoomOrigin(
   gridWidth,
   gridHeight,
   viewWidth,
-  viewHeight
+  viewHeight,
+  focusGridX,
+  focusGridY,
+  followBlend
 ) {
   const bounds = measureRoomBounds(gridWidth, gridHeight);
 
@@ -91,5 +94,24 @@ export function buildRoomOrigin(
   const originY =
     (viewHeight - bounds.height) / 2 - bounds.minY;
 
-  return { originX, originY };
+  if (
+    focusGridX == null
+    || focusGridY == null
+    || !followBlend
+  ) {
+    return { originX, originY };
+  }
+
+  const focus = gridToScreen(focusGridX, focusGridY);
+  const focusOriginX = viewWidth / 2 - focus.screenX;
+  const focusOriginY = viewHeight / 2 - focus.screenY;
+
+  return {
+    originX:
+      originX * (1 - followBlend)
+      + focusOriginX * followBlend,
+    originY:
+      originY * (1 - followBlend)
+      + focusOriginY * followBlend,
+  };
 }

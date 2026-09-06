@@ -136,3 +136,50 @@ export function findNearbyInteractable(
 
   return bestTarget;
 }
+
+export function findFurnitureAt(office, gridX, gridY) {
+  for (const piece of office.furniture) {
+    if (piece.gridX === gridX && piece.gridY === gridY) {
+      return piece;
+    }
+  }
+
+  return null;
+}
+
+export function buildInteractTargetForPiece(
+  piece,
+  staffLookup
+) {
+  if (piece.kind === FurnitureKind.BUBBLER) {
+    return buildDrinkTarget(piece);
+  }
+
+  if (piece.kind === FurnitureKind.COFFEE) {
+    return buildCoffeeTarget(piece);
+  }
+
+  if (piece.kind === FurnitureKind.WHITEBOARD) {
+    return buildWhiteboardTarget(piece);
+  }
+
+  if (piece.kind !== FurnitureKind.DESK) {
+    return null;
+  }
+
+  if (piece.isPlayerDesk) {
+    return buildUsePcTarget(piece);
+  }
+
+  if (!piece.staffId) {
+    return null;
+  }
+
+  const person = staffLookup[piece.staffId];
+
+  if (!person) {
+    return null;
+  }
+
+  return buildTalkTarget(piece, person);
+}

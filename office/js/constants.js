@@ -152,6 +152,7 @@ export const DesktopAppId = {
 
 export const UpgradeId = {
   DESK_PLANTS: "desk-plants",
+  DESK_LAMPS: "desk-lamps",
   BETTER_CHAIRS: "better-chairs",
   AMBER_NEON: "amber-neon",
 };
@@ -160,7 +161,15 @@ export const BETTER_CHAIR_FILL = "#5c4033";
 export const PLANT_POT_FILL = "#8b6914";
 export const PLANT_LEAF_FILL = "#6b8f71";
 export const NEON_SIGN_FILL = "#d97706";
+export const DESK_LAMP_FILL = "#d4a017";
+export const DESK_LAMP_GLOW_FILL = "rgba(255, 214, 102, 0.55)";
 
+export const STARTER_OFFICE_ID = "starter-loft";
+export const NPC_BUBBLER_VISIT_SECONDS = 18;
+export const NPC_BUBBLER_DWELL_SECONDS = 2.5;
+export const CAMERA_FOLLOW_BLEND = 0.32;
+export const AUDIO_MUTE_STORAGE_KEY =
+  "warewolf-office-audio-mute-v1";
 
 export const PresenceStatus = {
   AVAILABLE: "Available",

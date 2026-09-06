@@ -1,6 +1,7 @@
 import {
   DesktopAppId,
   MessageRole,
+  PLAYER_STAFF_ID,
   PresenceStatus,
 } from "./constants.js";
 import {
@@ -13,18 +14,25 @@ import {
   completeGoal,
   formatCompanyBucks,
   listGoals,
+  listOfficeHistory,
+  listOffices,
   listUpgrades,
+  purchaseOffice,
   purchaseUpgrade,
+  selectOwnedOffice,
 } from "./economy.js";
 
-function presenceForPerson(person, desktopOpen) {
-  if (person.isPlayer) {
-    return desktopOpen
+function presenceForPerson(person, desktop, occupancy) {
+  if (person.id === PLAYER_STAFF_ID || person.isPlayer) {
+    return desktop.isOpen
       ? PresenceStatus.AVAILABLE
       : PresenceStatus.AWAY;
   }
 
-  // Phase 3 seats NPCs at desks; treat them as available.
+  if (occupancy && occupancy[person.id] === false) {
+    return PresenceStatus.AWAY;
+  }
+
   return PresenceStatus.AVAILABLE;
 }
 
@@ -63,6 +71,19 @@ function formatClock(date) {
   });
 }
 
+function formatHistoryStamp(atMs) {
+  try {
+    return new Date(atMs).toLocaleString([], {
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+    });
+  } catch (error) {
+    return "";
+  }
+}
+
 function bubbleClassForRole(role) {
   if (role === MessageRole.USER) {
     return "teams-bubble teams-bubble-me";
@@ -75,8 +96,14 @@ function bubbleClassForRole(role) {
   return "teams-bubble teams-bubble-them";
 }
 
-function renderTeamsApp(body, staffList, desktopOpen, agentBus) {
+function renderTeamsApp(body, desktop) {
   clearElement(body);
+
+  const staffList = desktop.staffList;
+  const agentBus = desktop.agentBus;
+  const occupancy = desktop.getOccupancy
+    ? desktop.getOccupancy()
+    : {};
 
   const layout = createEl("div", "teams-layout");
   const roster = createEl("aside", "teams-roster");
@@ -167,7 +194,11 @@ function renderTeamsApp(body, staffList, desktopOpen, agentBus) {
   });
 
   for (const person of staffList) {
-    const status = presenceForPerson(person, desktopOpen);
+    const status = presenceForPerson(
+      person,
+      desktop,
+      occupancy
+    );
     const row = createEl("button", "teams-roster-row");
     row.type = "button";
 
@@ -213,6 +244,10 @@ function renderTeamsApp(body, staffList, desktopOpen, agentBus) {
     }
 
     input.value = "";
+
+    if (desktop.onMessageSent) {
+      desktop.onMessageSent();
+    }
   });
 
   compose.appendChild(input);
@@ -226,8 +261,13 @@ function renderTeamsApp(body, staffList, desktopOpen, agentBus) {
   body.appendChild(layout);
 }
 
-function renderDirectoryApp(body, staffList, desktopOpen) {
+function renderDirectoryApp(body, desktop) {
   clearElement(body);
+
+  const staffList = desktop.staffList;
+  const occupancy = desktop.getOccupancy
+    ? desktop.getOccupancy()
+    : {};
 
   const layout = createEl("div", "directory-layout");
   const list = createEl("aside", "directory-list");
@@ -243,7 +283,11 @@ function renderDirectoryApp(body, staffList, desktopOpen) {
 
   function showProfile(person) {
     clearElement(detail);
-    const status = presenceForPerson(person, desktopOpen);
+    const status = presenceForPerson(
+      person,
+      desktop,
+      occupancy
+    );
 
     detail.appendChild(
       createEl("h2", "directory-name", person.displayName)
@@ -264,7 +308,11 @@ function renderDirectoryApp(body, staffList, desktopOpen) {
   }
 
   for (const person of staffList) {
-    const status = presenceForPerson(person, desktopOpen);
+    const status = presenceForPerson(
+      person,
+      desktop,
+      occupancy
+    );
     const row = createEl("button", "directory-row");
     row.type = "button";
 
@@ -364,15 +412,38 @@ function renderGoalsApp(body, economy, onGoalComplete) {
   body.appendChild(layout);
 }
 
-function renderLoftApp(body, economy, onUpgradePurchase) {
+function renderLoftApp(body, desktop) {
   clearElement(body);
+
+  const economy = desktop.economy;
+  const onUpgradePurchase = desktop.onUpgradePurchase;
+  const onOfficeChange = desktop.onOfficeChange;
 
   const layout = createEl("div", "loft-layout");
   const summary = createEl("p", "loft-summary");
-  const list = createEl("div", "loft-list");
+  const upgradeHeading = createEl(
+    "h3",
+    "loft-section-title",
+    "Loft upgrades"
+  );
+  const upgradeList = createEl("div", "loft-list");
+  const officeHeading = createEl(
+    "h3",
+    "loft-section-title",
+    "Office catalog"
+  );
+  const officeList = createEl("div", "loft-list");
+  const historyHeading = createEl(
+    "h3",
+    "loft-section-title",
+    "Office history"
+  );
+  const historyList = createEl("div", "loft-history");
 
   function refresh() {
-    clearElement(list);
+    clearElement(upgradeList);
+    clearElement(officeList);
+    clearElement(historyList);
     summary.textContent =
       `Company balance: ${formatCompanyBucks(economy.companyBucks)}`;
 
@@ -431,13 +502,113 @@ function renderLoftApp(body, economy, onUpgradePurchase) {
         card.appendChild(button);
       }
 
-      list.appendChild(card);
+      upgradeList.appendChild(card);
+    }
+
+    for (const office of listOffices(economy)) {
+      const card = createEl("article", "loft-card");
+
+      if (office.isCurrent) {
+        card.classList.add("is-owned");
+      }
+
+      card.appendChild(
+        createEl("h3", "loft-title", office.displayName)
+      );
+      card.appendChild(
+        createEl(
+          "p",
+          "loft-description",
+          office.description
+        )
+      );
+
+      const meta = createEl("p", "loft-meta");
+      meta.textContent =
+        office.costBucks === 0
+          ? `Free · ${office.thumbnailLabel}`
+          : `${office.costBucks} bucks · ${office.thumbnailLabel}`;
+      card.appendChild(meta);
+
+      if (office.isCurrent) {
+        card.appendChild(
+          createEl("p", "loft-status", "Current office")
+        );
+      } else if (office.isOwned) {
+        const button = createEl(
+          "button",
+          "loft-buy-button",
+          "Move in"
+        );
+        button.type = "button";
+        button.addEventListener("click", () => {
+          const result = selectOwnedOffice(
+            economy,
+            office.id
+          );
+
+          if (!result.ok) {
+            return;
+          }
+
+          refresh();
+
+          if (onOfficeChange) {
+            onOfficeChange(result);
+          }
+        });
+        card.appendChild(button);
+      } else {
+        const canAfford =
+          economy.companyBucks >= office.costBucks;
+        const button = createEl(
+          "button",
+          "loft-buy-button",
+          canAfford ? "Buy office" : "Need more bucks"
+        );
+        button.type = "button";
+        button.disabled = !canAfford;
+        button.addEventListener("click", () => {
+          const result = purchaseOffice(
+            economy,
+            office.id
+          );
+
+          if (!result.ok) {
+            return;
+          }
+
+          refresh();
+
+          if (onOfficeChange) {
+            onOfficeChange(result);
+          }
+        });
+        card.appendChild(button);
+      }
+
+      officeList.appendChild(card);
+    }
+
+    const history = listOfficeHistory(economy).slice().reverse();
+
+    for (const entry of history) {
+      const row = createEl("p", "loft-history-row");
+      row.textContent =
+        `${entry.displayName} — ${entry.note} `
+        + `(${formatHistoryStamp(entry.atMs)})`;
+      historyList.appendChild(row);
     }
   }
 
   refresh();
   layout.appendChild(summary);
-  layout.appendChild(list);
+  layout.appendChild(upgradeHeading);
+  layout.appendChild(upgradeList);
+  layout.appendChild(officeHeading);
+  layout.appendChild(officeList);
+  layout.appendChild(historyHeading);
+  layout.appendChild(historyList);
   body.appendChild(layout);
 }
 
@@ -449,6 +620,9 @@ export function createDesktopOs(options) {
   const onClose = options.onClose;
   const onGoalComplete = options.onGoalComplete;
   const onUpgradePurchase = options.onUpgradePurchase;
+  const onOfficeChange = options.onOfficeChange;
+  const onMessageSent = options.onMessageSent;
+  const getOccupancy = options.getOccupancy;
 
   const windowEl = root.querySelector(".desktop-window");
   const titleEl = root.querySelector(".window-title");
@@ -466,6 +640,9 @@ export function createDesktopOs(options) {
     onClose,
     onGoalComplete,
     onUpgradePurchase,
+    onOfficeChange,
+    onMessageSent,
+    getOccupancy,
     windowEl,
     titleEl,
     bodyEl,
@@ -509,25 +686,29 @@ export function createDesktopOs(options) {
 
     if (appId === DesktopAppId.TEAMS) {
       titleEl.textContent = "Teams";
-      renderTeamsApp(bodyEl, staffList, true, agentBus);
+      renderTeamsApp(bodyEl, state);
       return;
     }
 
     if (appId === DesktopAppId.DIRECTORY) {
       titleEl.textContent = "Employee Directory";
-      renderDirectoryApp(bodyEl, staffList, true);
+      renderDirectoryApp(bodyEl, state);
       return;
     }
 
     if (appId === DesktopAppId.GOALS) {
       titleEl.textContent = "Team Goals";
-      renderGoalsApp(bodyEl, economy, onGoalComplete);
+      renderGoalsApp(
+        bodyEl,
+        economy,
+        onGoalComplete
+      );
       return;
     }
 
     if (appId === DesktopAppId.LOFT) {
       titleEl.textContent = "Loft Shop";
-      renderLoftApp(bodyEl, economy, onUpgradePurchase);
+      renderLoftApp(bodyEl, state);
     }
   }
 
@@ -572,6 +753,12 @@ export function openDesktopOs(desktop) {
   desktop.clockTimerId = window.setInterval(() => {
     desktop.refreshClock();
   }, 30000);
+
+  const firstIcon = desktop.root.querySelector("[data-app]");
+
+  if (firstIcon) {
+    firstIcon.focus();
+  }
 }
 
 export function closeDesktopOs(desktop) {

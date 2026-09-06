@@ -22,12 +22,22 @@ function rebuildPath(cameFrom, startKey, goalKey) {
   return path;
 }
 
+function isInsideMap(walkMap, gridX, gridY) {
+  const outsideWidth =
+    gridX < 0 || gridX >= walkMap.gridWidth;
+  const outsideHeight =
+    gridY < 0 || gridY >= walkMap.gridHeight;
+
+  return !outsideWidth && !outsideHeight;
+}
+
 // Cardinal BFS — short loft paths stay readable and cheap.
+// Start may be a blocked desk seat (NPC standing up).
 export function findPath(walkMap, startX, startY, goalX, goalY) {
-  const startWalkable = isWalkable(walkMap, startX, startY);
+  const startInside = isInsideMap(walkMap, startX, startY);
   const goalWalkable = isWalkable(walkMap, goalX, goalY);
 
-  if (!startWalkable || !goalWalkable) {
+  if (!startInside || !goalWalkable) {
     return [];
   }
 

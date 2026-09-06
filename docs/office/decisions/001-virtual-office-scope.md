@@ -17,9 +17,9 @@ Build an internal **Warewolf Virtual Office** as a **static vanilla HTML** app u
 | Art | Isometric pixel, cozy living office |
 | Economy | **Company bucks** earned by completing **team goals/deadlines** |
 | Desk PC | Opens a **fake desktop OS** |
-| Launch apps | **Teams** + **Employee Directory** only |
+| Launch apps | **Teams**, **Directory**, **Goals**, **Loft** |
 | Agent chat | Local persona message bus in Teams; **live Cursor delivery later** |
-| Persistence | `localStorage` for bucks/goals/office state |
+| Persistence | `localStorage` for bucks/goals/office/upgrades/mute |
 | Quality bar | Production-quality internal tool; no corner-cutting |
 
 ### Staff data contract (shared)
@@ -33,7 +33,6 @@ Floor NPCs and Employee Directory share one source of truth (later: `office/data
 
 - React/Vue/Svelte / bundler-required app
 - Real Cursor agent message delivery (local persona bus is in; remote later)
-- Extra desktop apps beyond Teams + Directory
 - Multiplayer / accounts / server
 - Full HR needs/hunger sim
 

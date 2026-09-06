@@ -4,6 +4,9 @@ import {
   CHAIR_FILL,
   COFFEE_BREW_FILL,
   COFFEE_POT_FILL,
+  CAMERA_FOLLOW_BLEND,
+  DESK_LAMP_FILL,
+  DESK_LAMP_GLOW_FILL,
   FloorFill,
   FloorTileKind,
   FurnitureFill,
@@ -105,6 +108,23 @@ function drawDeskPlant(context, centerX, centerY) {
   context.stroke();
 }
 
+function drawDeskLamp(context, centerX, centerY) {
+  context.fillStyle = DESK_LAMP_FILL;
+  context.strokeStyle = INK;
+  context.lineWidth = 1;
+  context.fillRect(centerX - 18, centerY - 8, 5, 8);
+  context.strokeRect(centerX - 18, centerY - 8, 5, 8);
+  context.beginPath();
+  context.moveTo(centerX - 15, centerY - 8);
+  context.lineTo(centerX - 15, centerY - 16);
+  context.lineTo(centerX - 9, centerY - 14);
+  context.stroke();
+  context.fillStyle = DESK_LAMP_GLOW_FILL;
+  context.beginPath();
+  context.arc(centerX - 10, centerY - 12, 5, 0, Math.PI * 2);
+  context.fill();
+}
+
 function drawDeskChair(
   context,
   centerX,
@@ -141,6 +161,7 @@ function drawDeskPlaceholder(
   const deskFill = FurnitureFill[FurnitureKind.DESK];
   const betterChairs = loftUpgrades[UpgradeId.BETTER_CHAIRS];
   const deskPlants = loftUpgrades[UpgradeId.DESK_PLANTS];
+  const deskLamps = loftUpgrades[UpgradeId.DESK_LAMPS];
 
   // Desk top
   context.fillStyle = deskFill;
@@ -169,6 +190,10 @@ function drawDeskPlaceholder(
 
   if (deskPlants) {
     drawDeskPlant(context, centerX, centerY);
+  }
+
+  if (deskLamps) {
+    drawDeskLamp(context, centerX, centerY);
   }
 }
 
@@ -507,6 +532,7 @@ function drawWorldEntities(
 function emptyLoftUpgrades() {
   return {
     [UpgradeId.DESK_PLANTS]: false,
+    [UpgradeId.DESK_LAMPS]: false,
     [UpgradeId.BETTER_CHAIRS]: false,
     [UpgradeId.AMBER_NEON]: false,
   };
@@ -526,6 +552,9 @@ export function drawOffice(
   const width = viewWidth || canvas.width;
   const height = viewHeight || canvas.height;
   const upgrades = loftUpgrades || emptyLoftUpgrades();
+  const reduceMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+  ).matches;
 
   context.clearRect(0, 0, width, height);
   context.fillStyle = BONE;
@@ -535,7 +564,10 @@ export function drawOffice(
     office.gridWidth,
     office.gridHeight,
     width,
-    height
+    height,
+    player.gridX,
+    player.gridY,
+    reduceMotion ? 0 : CAMERA_FOLLOW_BLEND
   );
 
   drawFloor(context, office, originX, originY);

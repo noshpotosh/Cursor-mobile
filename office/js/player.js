@@ -1,12 +1,19 @@
 import { PLAYER_MOVE_TILES_PER_SECOND } from "./constants.js";
 import { findPath } from "./pathfind.js";
 
+function prefersReducedMotion() {
+  return window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+  ).matches;
+}
+
 export function createPlayer(gridX, gridY) {
   return {
     gridX,
     gridY,
     path: [],
     walkBobPhase: 0,
+    onArrive: null,
   };
 }
 
@@ -22,12 +29,48 @@ export function isPlayerMoving(player) {
   return player.path.length > 0;
 }
 
-export function requestPlayerWalk(player, walkMap, goalX, goalY) {
+export function requestPlayerWalk(
+  player,
+  walkMap,
+  goalX,
+  goalY,
+  onArrive
+) {
+  player.onArrive = onArrive || null;
+
+  if (prefersReducedMotion()) {
+    player.gridX = goalX;
+    player.gridY = goalY;
+    player.path = [];
+    player.walkBobPhase = 0;
+
+    if (player.onArrive) {
+      const callback = player.onArrive;
+      player.onArrive = null;
+      callback();
+    }
+
+    return;
+  }
+
   const startX = Math.round(player.gridX);
   const startY = Math.round(player.gridY);
   const path = findPath(walkMap, startX, startY, goalX, goalY);
 
   player.path = path;
+
+  if (path.length === 0 && player.onArrive) {
+    const sameTile =
+      startX === goalX && startY === goalY;
+
+    if (sameTile) {
+      const callback = player.onArrive;
+      player.onArrive = null;
+      callback();
+    } else {
+      player.onArrive = null;
+    }
+  }
 }
 
 export function updatePlayer(player, deltaSeconds) {
@@ -49,6 +92,13 @@ export function updatePlayer(player, deltaSeconds) {
     player.gridX = nextStep.gridX;
     player.gridY = nextStep.gridY;
     player.path.shift();
+
+    if (player.path.length === 0 && player.onArrive) {
+      const callback = player.onArrive;
+      player.onArrive = null;
+      callback();
+    }
+
     return;
   }
 

@@ -8,19 +8,6 @@ export async function loadJson(url) {
   return response.json();
 }
 
-export async function loadStarterOfficeBundle() {
-  const [office, staff, goals, upgrades, agentPersonas] =
-    await Promise.all([
-      loadJson("./data/starter-office.json"),
-      loadJson("./data/staff.json"),
-      loadJson("./data/goals.json"),
-      loadJson("./data/upgrades.json"),
-      loadJson("./data/agent-personas.json"),
-    ]);
-
-  return { office, staff, goals, upgrades, agentPersonas };
-}
-
 export function staffById(staffList) {
   const byId = {};
 
@@ -29,4 +16,54 @@ export function staffById(staffList) {
   }
 
   return byId;
+}
+
+export async function loadOfficeBundle() {
+  const [
+    starter,
+    pack,
+    staff,
+    goals,
+    upgrades,
+    offices,
+    agentPersonas,
+  ] = await Promise.all([
+    loadJson("./data/starter-office.json"),
+    loadJson("./data/pack-office.json"),
+    loadJson("./data/staff.json"),
+    loadJson("./data/goals.json"),
+    loadJson("./data/upgrades.json"),
+    loadJson("./data/offices.json"),
+    loadJson("./data/agent-personas.json"),
+  ]);
+
+  const layouts = {
+    [starter.id]: starter,
+    [pack.id]: pack,
+  };
+
+  return {
+    layouts,
+    office: starter,
+    staff,
+    goals,
+    upgrades,
+    offices,
+    agentPersonas,
+  };
+}
+
+// Back-compat alias used by earlier phases.
+export async function loadStarterOfficeBundle() {
+  const bundle = await loadOfficeBundle();
+
+  return {
+    office: bundle.office,
+    staff: bundle.staff,
+    goals: bundle.goals,
+    upgrades: bundle.upgrades,
+    agentPersonas: bundle.agentPersonas,
+    offices: bundle.offices,
+    layouts: bundle.layouts,
+  };
 }
