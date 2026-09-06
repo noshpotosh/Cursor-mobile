@@ -1,0 +1,25 @@
+{
+  "id": "starter-loft-p1",
+  "displayName": "Starter Loft",
+  "gridWidth": 10,
+  "gridHeight": 8,
+  "playerStart": { "gridX": 5, "gridY": 4 },
+  "furniture": [
+    {
+      "id": "desk-nosh",
+      "kind": "desk",
+      "gridX": 8,
+      "gridY": 6,
+      "blocksWalk": true,
+      "isPlayerDesk": true
+    },
+    {
+      "id": "chair-nosh",
+      "kind": "chair",
+      "gridX": 8,
+      "gridY": 5,
+      "blocksWalk": true,
+      "isPlayerDesk": false
+    }
+  ]
+}

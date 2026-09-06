@@ -11,7 +11,7 @@ One map. Not a pile of READMEs.
 | [`decisions/007-honest-ai-studio-tycoon.md`](decisions/007-honest-ai-studio-tycoon.md) | Active product thesis (office on hold) |
 | [`decisions/008-ai-studio-product-contract.md`](decisions/008-ai-studio-product-contract.md) | P0 product / trust / Godot vehicle lock |
 | [`ai-studio-game-plan.md`](ai-studio-game-plan.md) | Implementation plan under ADR 008 |
-| [`../game/`](../game/) | Godot AI studio game (P1+) |
+| [`../game/`](../game/) | Godot AI studio game (P1+) — see [`../game/README.md`](../game/README.md) |
 | [`office/`](office/) | Virtual office art bible, ADRs, pipeline (**on hold**) |
 | [`meetings/`](meetings/) | Meeting / conversation summaries |
 | [`decisions/`](decisions/) | Locked calls (ADRs-lite) |
