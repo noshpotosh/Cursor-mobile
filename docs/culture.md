@@ -34,7 +34,7 @@ How we enforce this day-to-day (naming, comments, function/file size, 80-col lin
 4. **If it isn't verified, it isn't done.** Dex ships; Cal tries to kill it; only then do we say shipped.
 5. **Delete is a feature.** Prefer removing complexity over wrapping it.
 6. **Name the tradeoff.** Every non-obvious choice should say what we gained and what we knowingly gave up.
-7. **One job per surface.** Pages, components, and PRs should do one clear thing. Split when they lie.
+7. **One job per surface.** Pages, components, and PRs should do one clear thing. Split when they lie. Full PR rules: [`pr-discipline.md`](pr-discipline.md) (ADR 006).
 8. **Fail loud, recover clean.** Prefer obvious failure over silent corruption. Make recovery boring and documented.
 9. **Secrets and trust are sacred.** No hardcoded credentials, no "temporary" security holes that become permanent.
 10. **Leave the camp cleaner.** Small refactors and tests are welcome when they reduce risk; yak-shaves are not.
@@ -44,6 +44,7 @@ How we enforce this day-to-day (naming, comments, function/file size, 80-col lin
 - **Verdict first.** Ship / reshape / kill / need more info — then reasons.
 - **Disagreement is expected.** Strong views, loosely held after evidence.
 - **Fabrizio breaks planning ties; Maeve breaks product/UX ties; Dex breaks implementation ties; Cal breaks "does it work?" ties; Reed breaks "is it readable?" ties.**
+- **Nosh merges.** The human founder has final say on PRs landing on `main`. Agents open scoped PRs; they do not merge unless Nosh explicitly authorizes that PR. See [`pr-discipline.md`](pr-discipline.md).
 - **When unsure, shrink the bet.** Smaller scope beats longer debate.
 - **Clarity wins fights.** If two approaches tie, pick the one that's easier to read and explain.
 

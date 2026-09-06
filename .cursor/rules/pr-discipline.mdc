@@ -1,0 +1,26 @@
+---
+description: One concern per PR; Nosh merges; agents do not auto-merge
+alwaysApply: true
+---
+
+# PR discipline
+
+Follow [`docs/pr-discipline.md`](docs/pr-discipline.md) and
+ADR 006. These are binding for every agent.
+
+## Must follow
+
+- **One concern per PR.** One feature, fix, ADR, or meeting
+  topic. Split when concerns could revert independently.
+- **Honest PR titles/bodies.** Title matches the diff. Say what,
+  why, and how to verify. No `docs:` labels hiding code.
+- **Branch per concern** off current `main`. Do not stack
+  unrelated work onto an open agent branch.
+- **Meeting notes** for *this* change may ride along. Unrelated
+  meetings/decisions/features → separate PR.
+- **Do not merge to `main`.** Nosh (human founder) has final merge
+  authority. Agents open/update PRs only. No auto-merge, no
+  `gh pr merge`, no approving-and-merging — unless Nosh
+  explicitly authorizes *that* PR.
+- **Fabrizio scopes PR-sized bets** at plan time. If scope creeps
+  mid-build, stop and open a second PR instead of stuffing it.

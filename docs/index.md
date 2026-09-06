@@ -6,6 +6,7 @@ One map. Not a pile of READMEs.
 | --- | --- |
 | [`culture.md`](culture.md) | Culture + principles |
 | [`coding-standards.md`](coding-standards.md) | How we write code |
+| [`pr-discipline.md`](pr-discipline.md) | Scoped PRs + who merges |
 | [`brand.md`](brand.md) | Name, logo, visual system |
 | [`office/`](office/) | Virtual office art bible, ADRs, pipeline |
 | [`meetings/`](meetings/) | Meeting / conversation summaries |
@@ -18,6 +19,7 @@ One map. Not a pile of READMEs.
 
 - **Root `README.md`** = company front door only.
 - **Doctrine** stays in `docs/*.md` — update in place, don't spawn twins.
+- **PRs** = one concern each; **Nosh** merges to `main` (see `pr-discipline.md`).
 - **Meetings** = what we talked about (context, debate, open threads).
 - **Decisions** = what we locked (short, dated, final).
 - **Core memories** = scars and trophies — high bar, proactive, not a daily diary.
