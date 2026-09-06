@@ -3,6 +3,7 @@ import {
   TOAST_VISIBLE_MS,
   UpgradeId,
 } from "./constants.js";
+import { createAgentBus } from "./agentBus.js";
 import {
   createDesktopOs,
   handleDesktopOsKeydown,
@@ -135,10 +136,11 @@ async function startOfficeShell() {
     throw new Error("Missing office stage, canvas, or desktop");
   }
 
-  const { office, staff, goals, upgrades } =
+  const { office, staff, goals, upgrades, agentPersonas } =
     await loadStarterOfficeBundle();
   const staffLookup = staffById(staff);
   const economy = createEconomy(goals, upgrades);
+  const agentBus = createAgentBus(agentPersonas);
   const walkMap = buildWalkMap(office);
   const spawn = findSpawnNearPlayerDesk(office, walkMap);
   const player = createPlayer(spawn.gridX, spawn.gridY);
@@ -168,6 +170,7 @@ async function startOfficeShell() {
     root: desktopRoot,
     staffList: staff,
     economy,
+    agentBus,
     onClose() {
       setPromptText(promptEl, "");
     },

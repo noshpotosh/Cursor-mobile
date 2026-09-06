@@ -26,5 +26,12 @@
     "description": "Open Directory and read one teammate profile.",
     "rewardBucks": 10,
     "deadlineLabel": "This week"
+  },
+  {
+    "id": "message-two-agents",
+    "title": "Ping the pack",
+    "description": "Open Teams and get real replies from two teammates.",
+    "rewardBucks": 20,
+    "deadlineLabel": "This sprint"
   }
 ]
