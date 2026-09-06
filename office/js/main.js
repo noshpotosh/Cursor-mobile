@@ -1,4 +1,5 @@
 import {
+  GoalEventKind,
   InteractKind,
   TOAST_VISIBLE_MS,
   UpgradeId,
@@ -20,6 +21,7 @@ import {
   createEconomy,
   formatCompanyBucks,
   ownsUpgrade,
+  recordGoalEvent,
   subscribeEconomy,
 } from "./economy.js";
 import {
@@ -166,6 +168,25 @@ function buildOccupancyMap(npcs, desktopOpen) {
   return occupancy;
 }
 
+function announceGoalCompletions(shell, completed) {
+  for (const result of completed) {
+    shell.showEconomyToast(
+      `+${result.rewardBucks} bucks — ${result.title}`
+    );
+    playUiBlip(shell.audio, "message");
+  }
+}
+
+function handleGoalEvent(shell, kind, detail) {
+  const completed = recordGoalEvent(
+    shell.economy,
+    kind,
+    detail
+  );
+
+  announceGoalCompletions(shell, completed);
+}
+
 function wireDesktopCallbacks(shell) {
   return {
     getOccupancy() {
@@ -194,6 +215,9 @@ function wireDesktopCallbacks(shell) {
     onMessageSent() {
       playUiBlip(shell.audio, "message");
     },
+    onGoalEvent(kind, detail) {
+      handleGoalEvent(shell, kind, detail);
+    },
   };
 }
 
@@ -205,6 +229,10 @@ function triggerInteract(shell, target) {
   if (target.kind === InteractKind.USE_PC) {
     openDesktopOs(shell.desktop);
     playUiBlip(shell.audio, "click");
+    handleGoalEvent(
+      shell,
+      GoalEventKind.OPEN_DESKTOP
+    );
     return;
   }
 
@@ -225,6 +253,24 @@ function triggerInteract(shell, target) {
     || target.kind === InteractKind.SIP_COFFEE;
 
   playUiBlip(shell.audio, drinkLike ? "drink" : "click");
+
+  if (target.kind === InteractKind.TALK) {
+    handleGoalEvent(shell, GoalEventKind.TALK, {
+      staffId: target.staffId,
+    });
+  }
+
+  if (target.kind === InteractKind.DRINK) {
+    handleGoalEvent(shell, GoalEventKind.DRINK);
+  }
+
+  if (target.kind === InteractKind.SIP_COFFEE) {
+    handleGoalEvent(shell, GoalEventKind.SIP_COFFEE);
+  }
+
+  if (target.kind === InteractKind.READ_BOARD) {
+    handleGoalEvent(shell, GoalEventKind.READ_BOARD);
+  }
 }
 
 function handleCanvasClick(event, shell) {

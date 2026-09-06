@@ -3,6 +3,13 @@ import {
   STARTING_COMPANY_BUCKS,
   STARTER_OFFICE_ID,
 } from "./constants.js";
+import {
+  applyGoalEvent,
+  createGoalProgress,
+  describeGoalProgress,
+  goalIsReady,
+  TRACKED_GOAL_IDS,
+} from "./goalProgress.js";
 
 function emptyEconomyState() {
   return {
@@ -19,6 +26,7 @@ function emptyEconomyState() {
         note: "Day-one loft.",
       },
     ],
+    goalProgress: createGoalProgress(null),
   };
 }
 
@@ -71,6 +79,7 @@ function readStoredEconomy() {
       currentOfficeId,
       ownedOfficeIds,
       officeHistory,
+      goalProgress: createGoalProgress(parsed.goalProgress),
     };
   } catch (error) {
     return emptyEconomyState();
@@ -87,6 +96,7 @@ function writeStoredEconomy(state) {
       currentOfficeId: state.currentOfficeId,
       ownedOfficeIds: state.ownedOfficeIds,
       officeHistory: state.officeHistory,
+      goalProgress: state.goalProgress,
     })
   );
 }
@@ -124,6 +134,7 @@ export function createEconomy(goals, upgrades, offices) {
     officeHistory: stored.officeHistory.map((entry) => ({
       ...entry,
     })),
+    goalProgress: createGoalProgress(stored.goalProgress),
     listeners: [],
   };
 }
@@ -154,6 +165,10 @@ export function listGoals(economy) {
   return economy.goals.map((goal) => ({
     ...goal,
     isComplete: isGoalComplete(economy, goal.id),
+    progressLabel: describeGoalProgress(
+      goal.id,
+      economy.goalProgress
+    ),
   }));
 }
 
@@ -202,7 +217,42 @@ export function completeGoal(economy, goalId) {
     ok: true,
     rewardBucks: goal.rewardBucks,
     title: goal.title,
+    goalId,
   };
+}
+
+// Apply a real loft/desktop action; auto-complete ready goals.
+export function recordGoalEvent(economy, kind, detail) {
+  economy.goalProgress = applyGoalEvent(
+    economy.goalProgress,
+    kind,
+    detail || {}
+  );
+
+  const completed = [];
+
+  for (const goalId of TRACKED_GOAL_IDS) {
+    if (isGoalComplete(economy, goalId)) {
+      continue;
+    }
+
+    if (!goalIsReady(goalId, economy.goalProgress)) {
+      continue;
+    }
+
+    const result = completeGoal(economy, goalId);
+
+    if (result.ok) {
+      completed.push(result);
+    }
+  }
+
+  if (completed.length === 0) {
+    writeStoredEconomy(economy);
+    notifyEconomy(economy);
+  }
+
+  return completed;
 }
 
 export function purchaseUpgrade(economy, upgradeId) {

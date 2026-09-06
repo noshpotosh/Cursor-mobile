@@ -1,6 +1,7 @@
 import {
   DesktopAppId,
   DESKTOP_CLOCK_INTERVAL_MS,
+  GoalEventKind,
   MessageRole,
 } from "./constants.js";
 import {
@@ -19,7 +20,6 @@ import {
 } from "./desktopDom.js";
 import { renderLoftApp } from "./desktopLoftApp.js";
 import {
-  completeGoal,
   formatCompanyBucks,
   listGoals,
 } from "./economy.js";
@@ -126,6 +126,16 @@ function renderTeamsApp(body, desktop) {
         typing.hidden = false;
       } else {
         typing.hidden = true;
+
+        if (
+          event.message.role === MessageRole.AGENT
+          && desktop.onGoalEvent
+        ) {
+          desktop.onGoalEvent(
+            GoalEventKind.AGENT_REPLY,
+            { staffId: activeStaffId }
+          );
+        }
       }
 
       paintTeamsThread(log, agentBus, activeStaffId);
@@ -228,6 +238,13 @@ function renderDirectoryApp(body, desktop) {
     detail.appendChild(
       createEl("p", "directory-about", person.about)
     );
+
+    if (desktop.onGoalEvent) {
+      desktop.onGoalEvent(
+        GoalEventKind.DIRECTORY_PROFILE,
+        { staffId: person.id }
+      );
+    }
   }
 
   for (const person of staffList) {
@@ -263,12 +280,17 @@ function renderDirectoryApp(body, desktop) {
   body.appendChild(layout);
 }
 
-function renderGoalsApp(body, economy, onGoalComplete) {
+function renderGoalsApp(body, economy) {
   clearElement(body);
 
   const layout = createEl("div", "goals-layout");
   const summary = createEl("p", "goals-summary");
   const list = createEl("div", "goals-list");
+  const hint = createEl(
+    "p",
+    "goals-hint",
+    "Goals complete themselves when you do the work in the loft."
+  );
 
   function refresh() {
     clearElement(list);
@@ -303,26 +325,13 @@ function renderGoalsApp(body, economy, onGoalComplete) {
           createEl("p", "goal-status", "Completed")
         );
       } else {
-        const button = createEl(
-          "button",
-          "goal-complete-button",
-          "Mark done"
+        card.appendChild(
+          createEl(
+            "p",
+            "goal-progress",
+            goal.progressLabel
+          )
         );
-        button.type = "button";
-        button.addEventListener("click", () => {
-          const result = completeGoal(economy, goal.id);
-
-          if (!result.ok) {
-            return;
-          }
-
-          refresh();
-
-          if (onGoalComplete) {
-            onGoalComplete(result);
-          }
-        });
-        card.appendChild(button);
       }
 
       list.appendChild(card);
@@ -331,8 +340,11 @@ function renderGoalsApp(body, economy, onGoalComplete) {
 
   refresh();
   layout.appendChild(summary);
+  layout.appendChild(hint);
   layout.appendChild(list);
   body.appendChild(layout);
+
+  return refresh;
 }
 
 export function createDesktopOs(options) {
@@ -345,6 +357,7 @@ export function createDesktopOs(options) {
   const onUpgradePurchase = options.onUpgradePurchase;
   const onOfficeChange = options.onOfficeChange;
   const onMessageSent = options.onMessageSent;
+  const onGoalEvent = options.onGoalEvent;
   const getOccupancy = options.getOccupancy;
 
   const windowEl = root.querySelector(".desktop-window");
@@ -365,6 +378,7 @@ export function createDesktopOs(options) {
     onUpgradePurchase,
     onOfficeChange,
     onMessageSent,
+    onGoalEvent,
     getOccupancy,
     windowEl,
     titleEl,
@@ -407,25 +421,31 @@ export function createDesktopOs(options) {
     state.activeAppId = appId;
     windowEl.hidden = false;
 
+    if (appId === DesktopAppId.GOALS) {
+      titleEl.textContent = "Team Goals";
+      renderGoalsApp(bodyEl, economy);
+      return;
+    }
+
     if (appId === DesktopAppId.TEAMS) {
       titleEl.textContent = "Teams";
       renderTeamsApp(bodyEl, state);
+
+      if (state.onGoalEvent) {
+        state.onGoalEvent(GoalEventKind.OPEN_TEAMS);
+      }
+
       return;
     }
 
     if (appId === DesktopAppId.DIRECTORY) {
       titleEl.textContent = "Employee Directory";
       renderDirectoryApp(bodyEl, state);
-      return;
-    }
 
-    if (appId === DesktopAppId.GOALS) {
-      titleEl.textContent = "Team Goals";
-      renderGoalsApp(
-        bodyEl,
-        economy,
-        onGoalComplete
-      );
+      if (state.onGoalEvent) {
+        state.onGoalEvent(GoalEventKind.OPEN_DIRECTORY);
+      }
+
       return;
     }
 
@@ -481,6 +501,10 @@ export function openDesktopOs(desktop) {
 
   if (firstIcon) {
     firstIcon.focus();
+  }
+
+  if (desktop.onGoalEvent) {
+    desktop.onGoalEvent(GoalEventKind.OPEN_DESKTOP);
   }
 }
 

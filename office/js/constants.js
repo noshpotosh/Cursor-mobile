@@ -172,6 +172,32 @@ export const DesktopAppId = {
   LOFT: "loft",
 };
 
+// Goal ids must match office/data/goals.json.
+export const GoalId = {
+  SHIP_PHASE4_DESKTOP: "ship-phase4-desktop",
+  TALK_TO_THREE_TEAMMATES: "talk-to-three-teammates",
+  HYDRATE_ONCE: "hydrate-once",
+  OPEN_DIRECTORY_PROFILE: "open-directory-profile",
+  MESSAGE_TWO_AGENTS: "message-two-agents",
+  SIP_OFFICE_COFFEE: "sip-office-coffee",
+  READ_WHITEBOARD_NOTE: "read-whiteboard-note",
+};
+
+export const GoalEventKind = {
+  OPEN_DESKTOP: "open-desktop",
+  OPEN_TEAMS: "open-teams",
+  OPEN_DIRECTORY: "open-directory",
+  DIRECTORY_PROFILE: "directory-profile",
+  TALK: "talk",
+  DRINK: "drink",
+  SIP_COFFEE: "sip-coffee",
+  READ_BOARD: "read-board",
+  AGENT_REPLY: "agent-reply",
+};
+
+export const TALK_GOAL_TARGET_COUNT = 3;
+export const AGENT_REPLY_GOAL_TARGET_COUNT = 2;
+
 export const UpgradeId = {
   DESK_PLANTS: "desk-plants",
   DESK_LAMPS: "desk-lamps",

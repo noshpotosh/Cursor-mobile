@@ -537,6 +537,20 @@
   color: #2f6b44;
 }
 
+.goal-progress {
+  margin: 0;
+  font-size: 0.84rem;
+  font-weight: 650;
+  color: #6a635c;
+}
+
+.goals-hint {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #6a635c;
+  line-height: 1.35;
+}
+
 .goal-complete-button {
   padding: 0.4rem 0.7rem;
   border: 2px solid var(--ink);
