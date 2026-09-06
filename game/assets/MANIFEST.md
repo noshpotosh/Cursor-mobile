@@ -1,5 +1,6 @@
 # Godot runtime art manifest
 
+Contributor workflow: [Godot asset pipeline](../../docs/game-asset-pipeline.md).
 All runtime paths are relative to `game/assets/`; the game never loads the
 parked office project. Preserve source, export, import settings, and runtime
 consumer together when changing art.
