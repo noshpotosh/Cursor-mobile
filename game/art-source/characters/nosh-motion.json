@@ -1,0 +1,84 @@
+{
+  "source": "res://art-source/characters/nosh-motion-source.png",
+  "sheet": "res://assets/characters/nosh-motion.png",
+  "resource": "res://assets/characters/nosh-frames.tres",
+  "source_size": [
+    2172,
+    724
+  ],
+  "cell_size": [
+    48,
+    96
+  ],
+  "pivot": [
+    24,
+    74
+  ],
+  "scale_divisor": 8,
+  "frames_per_second": 10,
+  "facing": "left; mirror horizontally for right",
+  "provenance": "OpenAI image generation, 2026-09-06; Nosh orange hoodie motion study. Original RGBA retained unchanged. Mechanical crops share y and scale to preserve the run bob. No four-direction art is claimed.",
+  "crops": [
+    [
+      32,
+      0,
+      248,
+      720
+    ],
+    [
+      280,
+      0,
+      312,
+      720
+    ],
+    [
+      592,
+      0,
+      240,
+      720
+    ],
+    [
+      832,
+      0,
+      272,
+      720
+    ],
+    [
+      1104,
+      0,
+      304,
+      720
+    ],
+    [
+      1408,
+      0,
+      240,
+      720
+    ],
+    [
+      1648,
+      0,
+      280,
+      720
+    ],
+    [
+      1928,
+      0,
+      224,
+      720
+    ]
+  ],
+  "animations": {
+    "idle": [
+      0
+    ],
+    "run": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ]
+  }
+}

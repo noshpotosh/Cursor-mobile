@@ -7,7 +7,6 @@ const PlayerScript = preload("res://scripts/player_actor.gd")
 const LOFT_DATA := "res://data/starter_loft.json"
 const FLOOR_CARPET := "res://assets/tiles/floor-carpet.png"
 const FLOOR_WOOD := "res://assets/tiles/floor-wood-border.png"
-const CREW_IDLE := "res://assets/characters/crew-idle.png"
 const DESK_CRT := "res://assets/furniture/desk-crt.png"
 const LOFT_PROPS := "res://assets/furniture/loft-props.png"
 
@@ -197,13 +196,6 @@ func _spawn_furniture() -> void:
 
 func _spawn_player() -> void:
 	_player = PlayerScript.new()
-	var body := AtlasSprites.make_sprite(
-		CREW_IDLE,
-		AtlasSprites.NOSH_CROP,
-		AtlasSprites.NOSH_DRAW
-	)
-	body.position.y -= AtlasSprites.NOSH_DRAW.y / 2.0
-	_player.add_child(body)
 	_actors.add_child(_player)
 	_player.setup(player_start)
 	_player.arrived.connect(_on_player_arrived)
