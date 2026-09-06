@@ -32,7 +32,7 @@ Floor NPCs and Employee Directory share one source of truth (later: `office/data
 ### Non-goals (for now)
 
 - React/Vue/Svelte / bundler-required app
-- Real Cursor agent message delivery
+- Real Cursor agent message delivery (local persona bus is in; remote later)
 - Extra desktop apps beyond Teams + Directory
 - Multiplayer / accounts / server
 - Full HR needs/hunger sim
