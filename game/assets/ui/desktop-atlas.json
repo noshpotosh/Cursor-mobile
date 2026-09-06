@@ -192,5 +192,22 @@
         18
       ]
     ]
+  },
+  "taskbar": {
+    "texture": "taskbar.png",
+    "nine_slice_margins": [
+      16,
+      10,
+      16,
+      10
+    ],
+    "regions": {
+      "bar": [
+        0,
+        0,
+        483,
+        161
+      ]
+    }
   }
 }
