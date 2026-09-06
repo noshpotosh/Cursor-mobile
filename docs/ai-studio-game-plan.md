@@ -145,17 +145,26 @@ Unlock stronger staff, harder project types, and better offices.
 
 "Customize everything" is an attractive sentence and an infinite scope trap.
 
+**Art system (proposed ADR 010):** consistency comes from a finite
+modular catalog under the loft art bible — layered characters,
+recolor maps, shared animation sets per body archetype, and prop
+kits that upgrade by swap. Image models may help author candidates
+offline; Maeve accepts them into the catalog. The live game does
+not invent arbitrary sprites mid-session.
+
 The first version should support:
 
 - Free-form company name, project title, and project pitch
-- A bounded founder appearance set
+- A bounded founder appearance set (modular slots + recolors —
+  clothes, hair color, gender presentation as slot choices)
 - Bounded employee roles and traits
 - Editable goals and milestones
-- Office layout and decor choices
+- Office layout and decor choices from the prop kit catalog
 - Project templates that AI can adapt
 
 The first version should not generate arbitrary gameplay systems, art,
-employees, or toolchains. Broader generation comes after the fixed loop works.
+employees, or toolchains. Broader generation comes after the fixed loop
+works. See [ADR 010](decisions/010-modular-art-and-customization.md).
 
 ## Staff management
 
@@ -247,6 +256,8 @@ Carry forward the existing contracts:
 - Warm bone, clay, amber, sage, and ink palette
 - Pixel art for the world
 - Normal readable text controls for management UI
+- Modular layered characters + recolor (proposed ADR 010), not
+  runtime arbitrary generation
 
 Reference mocks remain references. Accepted runtime sprites may be migrated
 into the Godot project with their provenance intact.
@@ -424,7 +435,9 @@ be locked after observing the first playable build.
 - Deploying real software
 - Connecting third-party accounts
 - Multiplayer or shared companies
-- Fully generated art or employees
+- Fully generated art or employees at runtime
+- Unique animation sheets per clothing item
+- Player-facing text-to-sprite / text-to-prop tools
 - Multiple spendable currencies
 - Detailed employee life simulation
 - Arbitrary programming languages and toolchains
@@ -443,5 +456,6 @@ be locked after observing the first playable build.
 
 ## Next move
 
-Maeve defines the P1 vertical-slice experience and asset cut. Then
-Dex creates the Godot project and migrates one loft’s accepted art.
+P1 Godot loft slice is underway / landed. Open art call: Nosh locks
+or rejects proposed ADR 010. If locked, Maeve specs the first
+founder slot sheet (counts, not vibes) before any compositor work.
