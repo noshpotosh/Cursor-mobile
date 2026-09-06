@@ -23,11 +23,11 @@ function drawFurniture(context, piece, staff, npcs, upgrades, time, reduced) {
   drawDesk(context, x, y, piece.isPlayerDesk, upgrades);
   const occupant = npcs.find(npc => npc.deskId === piece.id && npc.atDesk);
   if (occupant) {
-    drawNpcSilhouette(context, x + 24, y + 8, occupant.staffId,
+    drawNpcSilhouette(context, x + 48, y + 16, occupant.staffId,
       time, reduced, true);
   }
   drawDeskChair(context, x, y, upgrades[UpgradeId.BETTER_CHAIRS]);
-  drawNameplate(context, x - 24, y,
+  drawNameplate(context, x - 48, y,
     staff[piece.staffId]?.displayName || piece.id, piece.isPlayerDesk);
 }
 
@@ -85,7 +85,7 @@ export function drawOffice(canvas, office, staff, player, npcs,
   if (isPlayerMoving(player)) {
     const target = playerPathTarget(player);
     const { screenX: x, screenY: y } = gridToScreen(target.gridX, target.gridY);
-    polygon(context, [[x, y - 11], [x + 22, y], [x, y + 11], [x - 22, y]],
+    polygon(context, [[x, y - 22], [x + 44, y], [x, y + 22], [x - 44, y]],
       '#d9770630', '#d7ae67');
   }
   drawEntities(context, office, staff, player, npcs, upgrades, time, reduced);
