@@ -7,6 +7,7 @@ function emptyEconomyState() {
   return {
     companyBucks: STARTING_COMPANY_BUCKS,
     completedGoalIds: [],
+    ownedUpgradeIds: [],
   };
 }
 
@@ -29,12 +30,20 @@ function readStoredEconomy() {
           (id) => typeof id === "string"
         )
       : [];
+    const ownedUpgradeIds = Array.isArray(
+      parsed.ownedUpgradeIds
+    )
+      ? parsed.ownedUpgradeIds.filter(
+          (id) => typeof id === "string"
+        )
+      : [];
 
     return {
       companyBucks: Number.isFinite(companyBucks)
         ? companyBucks
         : STARTING_COMPANY_BUCKS,
       completedGoalIds,
+      ownedUpgradeIds,
     };
   } catch (error) {
     return emptyEconomyState();
@@ -47,23 +56,32 @@ function writeStoredEconomy(state) {
     JSON.stringify({
       companyBucks: state.companyBucks,
       completedGoalIds: state.completedGoalIds,
+      ownedUpgradeIds: state.ownedUpgradeIds,
     })
   );
 }
 
-export function createEconomy(goals) {
+export function createEconomy(goals, upgrades) {
   const stored = readStoredEconomy();
   const goalById = {};
+  const upgradeById = {};
 
   for (const goal of goals) {
     goalById[goal.id] = goal;
   }
 
+  for (const upgrade of upgrades) {
+    upgradeById[upgrade.id] = upgrade;
+  }
+
   const state = {
     goals,
+    upgrades,
     goalById,
+    upgradeById,
     companyBucks: stored.companyBucks,
     completedGoalIds: [...stored.completedGoalIds],
+    ownedUpgradeIds: [...stored.ownedUpgradeIds],
     listeners: [],
   };
 
@@ -84,10 +102,21 @@ export function isGoalComplete(economy, goalId) {
   return economy.completedGoalIds.includes(goalId);
 }
 
+export function ownsUpgrade(economy, upgradeId) {
+  return economy.ownedUpgradeIds.includes(upgradeId);
+}
+
 export function listGoals(economy) {
   return economy.goals.map((goal) => ({
     ...goal,
     isComplete: isGoalComplete(economy, goal.id),
+  }));
+}
+
+export function listUpgrades(economy) {
+  return economy.upgrades.map((upgrade) => ({
+    ...upgrade,
+    isOwned: ownsUpgrade(economy, upgrade.id),
   }));
 }
 
@@ -117,6 +146,42 @@ export function completeGoal(economy, goalId) {
     ok: true,
     rewardBucks: goal.rewardBucks,
     title: goal.title,
+  };
+}
+
+export function purchaseUpgrade(economy, upgradeId) {
+  const upgrade = economy.upgradeById[upgradeId];
+
+  if (!upgrade) {
+    return {
+      ok: false,
+      reason: "Unknown upgrade.",
+    };
+  }
+
+  if (ownsUpgrade(economy, upgradeId)) {
+    return {
+      ok: false,
+      reason: "Already owned.",
+    };
+  }
+
+  if (economy.companyBucks < upgrade.costBucks) {
+    return {
+      ok: false,
+      reason: "Not enough bucks.",
+    };
+  }
+
+  economy.companyBucks -= upgrade.costBucks;
+  economy.ownedUpgradeIds.push(upgradeId);
+  writeStoredEconomy(economy);
+  notifyEconomy(economy);
+
+  return {
+    ok: true,
+    costBucks: upgrade.costBucks,
+    title: upgrade.title,
   };
 }
 

@@ -116,7 +116,20 @@ export const DesktopAppId = {
   TEAMS: "teams",
   DIRECTORY: "directory",
   GOALS: "goals",
+  LOFT: "loft",
 };
+
+export const UpgradeId = {
+  DESK_PLANTS: "desk-plants",
+  BETTER_CHAIRS: "better-chairs",
+  AMBER_NEON: "amber-neon",
+};
+
+export const BETTER_CHAIR_FILL = "#5c4033";
+export const PLANT_POT_FILL = "#8b6914";
+export const PLANT_LEAF_FILL = "#6b8f71";
+export const NEON_SIGN_FILL = "#d97706";
+
 
 export const PresenceStatus = {
   AVAILABLE: "Available",

@@ -7,6 +7,8 @@ import {
   completeGoal,
   formatCompanyBucks,
   listGoals,
+  listUpgrades,
+  purchaseUpgrade,
 } from "./economy.js";
 
 function presenceForPerson(person, desktopOpen) {
@@ -303,12 +305,90 @@ function renderGoalsApp(body, economy, onGoalComplete) {
   body.appendChild(layout);
 }
 
+function renderLoftApp(body, economy, onUpgradePurchase) {
+  clearElement(body);
+
+  const layout = createEl("div", "loft-layout");
+  const summary = createEl("p", "loft-summary");
+  const list = createEl("div", "loft-list");
+
+  function refresh() {
+    clearElement(list);
+    summary.textContent =
+      `Company balance: ${formatCompanyBucks(economy.companyBucks)}`;
+
+    for (const upgrade of listUpgrades(economy)) {
+      const card = createEl("article", "loft-card");
+
+      if (upgrade.isOwned) {
+        card.classList.add("is-owned");
+      }
+
+      card.appendChild(
+        createEl("h3", "loft-title", upgrade.title)
+      );
+      card.appendChild(
+        createEl(
+          "p",
+          "loft-description",
+          upgrade.description
+        )
+      );
+
+      const meta = createEl("p", "loft-meta");
+      meta.textContent = `${upgrade.costBucks} bucks`;
+      card.appendChild(meta);
+
+      if (upgrade.isOwned) {
+        card.appendChild(
+          createEl("p", "loft-status", "Installed")
+        );
+      } else {
+        const canAfford =
+          economy.companyBucks >= upgrade.costBucks;
+        const button = createEl(
+          "button",
+          "loft-buy-button",
+          canAfford ? "Buy" : "Need more bucks"
+        );
+        button.type = "button";
+        button.disabled = !canAfford;
+        button.addEventListener("click", () => {
+          const result = purchaseUpgrade(
+            economy,
+            upgrade.id
+          );
+
+          if (!result.ok) {
+            return;
+          }
+
+          refresh();
+
+          if (onUpgradePurchase) {
+            onUpgradePurchase(result);
+          }
+        });
+        card.appendChild(button);
+      }
+
+      list.appendChild(card);
+    }
+  }
+
+  refresh();
+  layout.appendChild(summary);
+  layout.appendChild(list);
+  body.appendChild(layout);
+}
+
 export function createDesktopOs(options) {
   const root = options.root;
   const staffList = options.staffList;
   const economy = options.economy;
   const onClose = options.onClose;
   const onGoalComplete = options.onGoalComplete;
+  const onUpgradePurchase = options.onUpgradePurchase;
 
   const windowEl = root.querySelector(".desktop-window");
   const titleEl = root.querySelector(".window-title");
@@ -324,6 +404,7 @@ export function createDesktopOs(options) {
     economy,
     onClose,
     onGoalComplete,
+    onUpgradePurchase,
     windowEl,
     titleEl,
     bodyEl,
@@ -380,6 +461,12 @@ export function createDesktopOs(options) {
     if (appId === DesktopAppId.GOALS) {
       titleEl.textContent = "Team Goals";
       renderGoalsApp(bodyEl, economy, onGoalComplete);
+      return;
+    }
+
+    if (appId === DesktopAppId.LOFT) {
+      titleEl.textContent = "Loft Shop";
+      renderLoftApp(bodyEl, economy, onUpgradePurchase);
     }
   }
 

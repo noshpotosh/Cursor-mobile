@@ -1,4 +1,5 @@
 import {
+  BETTER_CHAIR_FILL,
   BONE,
   CHAIR_FILL,
   FloorFill,
@@ -6,8 +7,11 @@ import {
   FurnitureFill,
   FurnitureKind,
   INK,
+  NEON_SIGN_FILL,
   PATH_TARGET_FILL,
   PATH_TARGET_STROKE,
+  PLANT_LEAF_FILL,
+  PLANT_POT_FILL,
   PLAYER_DESK_ACCENT,
   PLAYER_HAIR_FILL,
   PLAYER_JACKET_FILL,
@@ -21,6 +25,7 @@ import {
   SCREEN_FILL,
   TILE_HEIGHT_PX,
   TILE_WIDTH_PX,
+  UpgradeId,
 } from "./constants.js";
 import { buildRoomOrigin, gridToScreen } from "./isoMath.js";
 import {
@@ -82,13 +87,56 @@ function drawFloor(context, office, originX, originY) {
   }
 }
 
+function drawDeskPlant(context, centerX, centerY) {
+  context.fillStyle = PLANT_POT_FILL;
+  context.strokeStyle = INK;
+  context.lineWidth = 1;
+  context.fillRect(centerX + 12, centerY - 8, 8, 7);
+  context.strokeRect(centerX + 12, centerY - 8, 8, 7);
+
+  context.fillStyle = PLANT_LEAF_FILL;
+  context.beginPath();
+  context.arc(centerX + 16, centerY - 12, 5, 0, Math.PI * 2);
+  context.fill();
+  context.stroke();
+}
+
+function drawDeskChair(
+  context,
+  centerX,
+  centerY,
+  betterChairs
+) {
+  const chairFill = betterChairs
+    ? BETTER_CHAIR_FILL
+    : CHAIR_FILL;
+
+  context.fillStyle = chairFill;
+  context.strokeStyle = INK;
+  context.lineWidth = 1;
+
+  if (betterChairs) {
+    context.fillRect(centerX - 9, centerY + 6, 18, 14);
+    context.strokeRect(centerX - 9, centerY + 6, 18, 14);
+    context.fillRect(centerX - 9, centerY + 2, 18, 5);
+    context.strokeRect(centerX - 9, centerY + 2, 18, 5);
+    return;
+  }
+
+  context.fillRect(centerX - 8, centerY + 8, 16, 10);
+  context.strokeRect(centerX - 8, centerY + 8, 16, 10);
+}
+
 function drawDeskPlaceholder(
   context,
   centerX,
   centerY,
-  isPlayerDesk
+  isPlayerDesk,
+  loftUpgrades
 ) {
   const deskFill = FurnitureFill[FurnitureKind.DESK];
+  const betterChairs = loftUpgrades[UpgradeId.BETTER_CHAIRS];
+  const deskPlants = loftUpgrades[UpgradeId.DESK_PLANTS];
 
   // Desk top
   context.fillStyle = deskFill;
@@ -103,10 +151,7 @@ function drawDeskPlaceholder(
   context.fill();
   context.stroke();
 
-  // Chair
-  context.fillStyle = CHAIR_FILL;
-  context.fillRect(centerX - 8, centerY + 8, 16, 10);
-  context.strokeRect(centerX - 8, centerY + 8, 16, 10);
+  drawDeskChair(context, centerX, centerY, betterChairs);
 
   // Monitor
   context.fillStyle = SCREEN_FILL;
@@ -117,6 +162,26 @@ function drawDeskPlaceholder(
     context.fillStyle = PLAYER_DESK_ACCENT;
     context.fillRect(centerX - 10, centerY - 2, 20, 3);
   }
+
+  if (deskPlants) {
+    drawDeskPlant(context, centerX, centerY);
+  }
+}
+
+function drawAmberNeon(context, originX, originY, office) {
+  const midX = Math.floor(office.gridWidth / 2);
+  const { screenX, screenY } = gridToScreen(midX, 0);
+  const centerX = originX + screenX;
+  const centerY = originY + screenY - 28;
+
+  context.font = "bold 14px \"IBM Plex Sans\", sans-serif";
+  context.textAlign = "center";
+  context.textBaseline = "middle";
+  context.fillStyle = NEON_SIGN_FILL;
+  context.fillText("WAREWOLF", centerX, centerY);
+  context.strokeStyle = INK;
+  context.lineWidth = 1;
+  context.strokeText("WAREWOLF", centerX, centerY);
 }
 
 function drawBubblerPlaceholder(context, centerX, centerY) {
@@ -252,7 +317,8 @@ function drawFurniturePiece(
   piece,
   staffLookup,
   centerX,
-  centerY
+  centerY,
+  loftUpgrades
 ) {
   if (piece.kind === FurnitureKind.BUBBLER) {
     drawBubblerPlaceholder(context, centerX, centerY);
@@ -268,7 +334,8 @@ function drawFurniturePiece(
     context,
     centerX,
     centerY,
-    Boolean(piece.isPlayerDesk)
+    Boolean(piece.isPlayerDesk),
+    loftUpgrades
   );
 
   const person = staffLookup[piece.staffId];
@@ -284,7 +351,8 @@ function drawWorldEntities(
   player,
   npcs,
   originX,
-  originY
+  originY,
+  loftUpgrades
 ) {
   const drawables = [];
 
@@ -305,7 +373,8 @@ function drawWorldEntities(
           piece,
           staffLookup,
           centerX,
-          centerY
+          centerY,
+          loftUpgrades
         );
       },
     });
@@ -363,6 +432,14 @@ function drawWorldEntities(
   }
 }
 
+function emptyLoftUpgrades() {
+  return {
+    [UpgradeId.DESK_PLANTS]: false,
+    [UpgradeId.BETTER_CHAIRS]: false,
+    [UpgradeId.AMBER_NEON]: false,
+  };
+}
+
 export function drawOffice(
   canvas,
   office,
@@ -370,11 +447,13 @@ export function drawOffice(
   player,
   npcs,
   viewWidth,
-  viewHeight
+  viewHeight,
+  loftUpgrades
 ) {
   const context = canvas.getContext("2d");
   const width = viewWidth || canvas.width;
   const height = viewHeight || canvas.height;
+  const upgrades = loftUpgrades || emptyLoftUpgrades();
 
   context.clearRect(0, 0, width, height);
   context.fillStyle = BONE;
@@ -388,6 +467,10 @@ export function drawOffice(
   );
 
   drawFloor(context, office, originX, originY);
+
+  if (upgrades[UpgradeId.AMBER_NEON]) {
+    drawAmberNeon(context, originX, originY, office);
+  }
 
   if (isPlayerMoving(player)) {
     drawPathTarget(
@@ -405,7 +488,8 @@ export function drawOffice(
     player,
     npcs,
     originX,
-    originY
+    originY,
+    upgrades
   );
 
   return { originX, originY };

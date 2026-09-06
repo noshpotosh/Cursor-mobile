@@ -9,13 +9,15 @@ export async function loadJson(url) {
 }
 
 export async function loadStarterOfficeBundle() {
-  const [office, staff, goals] = await Promise.all([
-    loadJson("./data/starter-office.json"),
-    loadJson("./data/staff.json"),
-    loadJson("./data/goals.json"),
-  ]);
+  const [office, staff, goals, upgrades] =
+    await Promise.all([
+      loadJson("./data/starter-office.json"),
+      loadJson("./data/staff.json"),
+      loadJson("./data/goals.json"),
+      loadJson("./data/upgrades.json"),
+    ]);
 
-  return { office, staff, goals };
+  return { office, staff, goals, upgrades };
 }
 
 export function staffById(staffList) {
