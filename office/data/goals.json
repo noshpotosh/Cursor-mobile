@@ -1,0 +1,30 @@
+[
+  {
+    "id": "ship-phase4-desktop",
+    "title": "Ship the desk desktop OS",
+    "description": "Teams + Directory open from Nosh's PC without breaking the loft.",
+    "rewardBucks": 25,
+    "deadlineLabel": "This sprint"
+  },
+  {
+    "id": "talk-to-three-teammates",
+    "title": "Walk the floor",
+    "description": "Talk to three teammates at their desks (toast counts).",
+    "rewardBucks": 15,
+    "deadlineLabel": "Today"
+  },
+  {
+    "id": "hydrate-once",
+    "title": "Stay hydrated",
+    "description": "Take a drink from the office bubbler.",
+    "rewardBucks": 5,
+    "deadlineLabel": "Anytime"
+  },
+  {
+    "id": "open-directory-profile",
+    "title": "Know the pack",
+    "description": "Open Directory and read one teammate profile.",
+    "rewardBucks": 10,
+    "deadlineLabel": "This week"
+  }
+]

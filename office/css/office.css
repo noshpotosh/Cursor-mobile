@@ -93,3 +93,20 @@ body {
 .office-toast[hidden] {
   display: none;
 }
+
+.bucks-hud {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 2;
+  margin: 0;
+  padding: 0.45rem 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--ink);
+  background: rgba(244, 239, 230, 0.92);
+  border: 2px solid var(--amber);
+  box-shadow: 0 4px 16px var(--shadow);
+  pointer-events: none;
+  user-select: none;
+}

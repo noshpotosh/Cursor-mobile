@@ -3,6 +3,11 @@ import {
   PresenceStatus,
   StaffTeamsStubLine,
 } from "./constants.js";
+import {
+  completeGoal,
+  formatCompanyBucks,
+  listGoals,
+} from "./economy.js";
 
 function presenceForPerson(person, desktopOpen) {
   if (person.isPlayer) {
@@ -226,10 +231,84 @@ function renderDirectoryApp(body, staffList, desktopOpen) {
   body.appendChild(layout);
 }
 
+function renderGoalsApp(body, economy, onGoalComplete) {
+  clearElement(body);
+
+  const layout = createEl("div", "goals-layout");
+  const summary = createEl("p", "goals-summary");
+  const list = createEl("div", "goals-list");
+
+  function refresh() {
+    clearElement(list);
+    summary.textContent =
+      `Company balance: ${formatCompanyBucks(economy.companyBucks)}`;
+
+    for (const goal of listGoals(economy)) {
+      const card = createEl("article", "goal-card");
+
+      if (goal.isComplete) {
+        card.classList.add("is-complete");
+      }
+
+      card.appendChild(
+        createEl("h3", "goal-title", goal.title)
+      );
+      card.appendChild(
+        createEl(
+          "p",
+          "goal-description",
+          goal.description
+        )
+      );
+
+      const meta = createEl("p", "goal-meta");
+      meta.textContent =
+        `${goal.rewardBucks} bucks · ${goal.deadlineLabel}`;
+      card.appendChild(meta);
+
+      if (goal.isComplete) {
+        card.appendChild(
+          createEl("p", "goal-status", "Completed")
+        );
+      } else {
+        const button = createEl(
+          "button",
+          "goal-complete-button",
+          "Mark done"
+        );
+        button.type = "button";
+        button.addEventListener("click", () => {
+          const result = completeGoal(economy, goal.id);
+
+          if (!result.ok) {
+            return;
+          }
+
+          refresh();
+
+          if (onGoalComplete) {
+            onGoalComplete(result);
+          }
+        });
+        card.appendChild(button);
+      }
+
+      list.appendChild(card);
+    }
+  }
+
+  refresh();
+  layout.appendChild(summary);
+  layout.appendChild(list);
+  body.appendChild(layout);
+}
+
 export function createDesktopOs(options) {
   const root = options.root;
   const staffList = options.staffList;
+  const economy = options.economy;
   const onClose = options.onClose;
+  const onGoalComplete = options.onGoalComplete;
 
   const windowEl = root.querySelector(".desktop-window");
   const titleEl = root.querySelector(".window-title");
@@ -242,7 +321,9 @@ export function createDesktopOs(options) {
   const state = {
     root,
     staffList,
+    economy,
     onClose,
+    onGoalComplete,
     windowEl,
     titleEl,
     bodyEl,
@@ -293,6 +374,12 @@ export function createDesktopOs(options) {
     if (appId === DesktopAppId.DIRECTORY) {
       titleEl.textContent = "Employee Directory";
       renderDirectoryApp(bodyEl, staffList, true);
+      return;
+    }
+
+    if (appId === DesktopAppId.GOALS) {
+      titleEl.textContent = "Team Goals";
+      renderGoalsApp(bodyEl, economy, onGoalComplete);
     }
   }
 

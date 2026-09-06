@@ -9,6 +9,11 @@ import {
   openDesktopOs,
 } from "./desktopOs.js";
 import { drawOffice } from "./drawOffice.js";
+import {
+  createEconomy,
+  formatCompanyBucks,
+  subscribeEconomy,
+} from "./economy.js";
 import { findNearbyInteractable } from "./interact.js";
 import { buildRoomOrigin, screenToGrid } from "./isoMath.js";
 import {
@@ -89,19 +94,32 @@ function showToast(toastEl, text) {
   }, TOAST_VISIBLE_MS);
 }
 
+function refreshBucksHud(bucksHud, economy) {
+  if (!bucksHud) {
+    return;
+  }
+
+  bucksHud.textContent = formatCompanyBucks(
+    economy.companyBucks
+  );
+}
+
 async function startOfficeShell() {
   const stage = document.getElementById("office-stage");
   const canvas = document.getElementById("office-canvas");
   const promptEl = document.getElementById("interact-prompt");
   const toastEl = document.getElementById("office-toast");
   const desktopRoot = document.getElementById("desktop-os");
+  const bucksHud = document.getElementById("bucks-hud");
 
   if (!stage || !canvas || !desktopRoot) {
     throw new Error("Missing office stage, canvas, or desktop");
   }
 
-  const { office, staff } = await loadStarterOfficeBundle();
+  const { office, staff, goals } =
+    await loadStarterOfficeBundle();
   const staffLookup = staffById(staff);
+  const economy = createEconomy(goals);
   const walkMap = buildWalkMap(office);
   const spawn = findSpawnNearPlayerDesk(office, walkMap);
   const player = createPlayer(spawn.gridX, spawn.gridY);
@@ -112,18 +130,35 @@ async function startOfficeShell() {
     title.textContent = `Warewolf · ${office.displayName}`;
   }
 
+  refreshBucksHud(bucksHud, economy);
+  subscribeEconomy(economy, () => {
+    refreshBucksHud(bucksHud, economy);
+  });
+
+  let toastTimerId = null;
+
   const desktop = createDesktopOs({
     root: desktopRoot,
     staffList: staff,
+    economy,
     onClose() {
       setPromptText(promptEl, "");
+    },
+    onGoalComplete(result) {
+      if (toastTimerId !== null) {
+        window.clearTimeout(toastTimerId);
+      }
+
+      toastTimerId = showToast(
+        toastEl,
+        `+${result.rewardBucks} bucks — ${result.title}`
+      );
     },
   });
 
   let lastFrameMs = performance.now();
   let roomOrigin = { originX: 0, originY: 0 };
   let nearbyTarget = null;
-  let toastTimerId = null;
 
   function renderFrame(nowMs) {
     const deltaSeconds = Math.min(
