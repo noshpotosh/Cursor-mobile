@@ -1,5 +1,30 @@
 import {
+  CHAIR_DEPTH_BIAS,
+  CHAIR_DISPLAY_SIZE,
+  CHAIR_SCREEN_OFFSET_X,
+  CHAIR_SCREEN_OFFSET_Y,
+  CHAIR_TEXTURE_KEY,
   FurnitureKind,
+  NAMEPLATE_BG,
+  NAMEPLATE_COLOR,
+  NAMEPLATE_DEPTH_BIAS,
+  NAMEPLATE_FONT_PX,
+  NAMEPLATE_ORIGIN_X,
+  NAMEPLATE_ORIGIN_Y,
+  NAMEPLATE_PAD_X,
+  NAMEPLATE_PAD_Y,
+  NAMEPLATE_SCREEN_OFFSET_X,
+  NAMEPLATE_SCREEN_OFFSET_Y,
+  NAMEPLATE_STROKE,
+  NAMEPLATE_STROKE_WIDTH,
+  NOSH_MAT_DEPTH_BIAS,
+  NOSH_MAT_DISPLAY_SIZE,
+  NOSH_MAT_SCREEN_OFFSET_X,
+  NOSH_MAT_SCREEN_OFFSET_Y,
+  NOSH_MAT_TEXTURE_KEY,
+  SPRITE_NO_BOB_Y,
+  SPRITE_ORIGIN_CENTER_X,
+  SPRITE_ORIGIN_FOOT_Y,
   TILE_HEIGHT_PX,
   TILE_WIDTH_PX,
 } from "./constants.js";
@@ -10,6 +35,10 @@ import {
   SPRITE_SHEETS,
   spriteAssetUrl,
 } from "./sprites.js";
+import {
+  floorTextureKey,
+  nameplateLabel,
+} from "./loftDecor.js";
 
 const STAGE_FILL = "#242521";
 const PATH_MARKER = 0xd97706;
@@ -30,6 +59,7 @@ const FURNITURE_TEXTURE = {
   [FurnitureKind.WHITEBOARD]: "whiteboard-pixellab",
   [FurnitureKind.DOOR]: DOOR_TEXTURE_KEY,
 };
+
 
 function ensureDoorTexture(scene) {
   if (scene.textures.exists(DOOR_TEXTURE_KEY)) {
@@ -164,12 +194,7 @@ function createLoftScene(Phaser, host) {
       for (let gridY = 0; gridY < office.gridHeight; gridY += 1) {
         for (let gridX = 0; gridX < office.gridWidth; gridX += 1) {
           const point = gridToScreen(gridX, gridY);
-          const onBorder =
-            gridX === 0
-            || gridY === 0
-            || gridX === office.gridWidth - 1
-            || gridY === office.gridHeight - 1;
-          const key = onBorder ? "floor-wood" : "floor-carpet";
+          const key = floorTextureKey(office, gridX, gridY);
           const tile = this.add.image(
             point.screenX,
             point.screenY,
@@ -240,6 +265,8 @@ function createLoftScene(Phaser, host) {
         if (piece.kind !== FurnitureKind.DESK) {
           continue;
         }
+
+        this.syncDeskKit(piece, shell, wantedIds);
 
         const occupant = shell.npcs.find(
           (npc) => npc.deskId === piece.id && npc.atDesk
@@ -344,6 +371,61 @@ function createLoftScene(Phaser, host) {
       this.pathMarker.strokePath();
     }
 
+    syncDeskKit(piece, shell, wantedIds) {
+      const chairId = `chair:${piece.id}`;
+      wantedIds.add(chairId);
+      this.upsertImage(
+        chairId,
+        piece.gridX,
+        piece.gridY,
+        CHAIR_TEXTURE_KEY,
+        null,
+        CHAIR_DISPLAY_SIZE,
+        CHAIR_DISPLAY_SIZE,
+        SPRITE_ORIGIN_CENTER_X,
+        SPRITE_ORIGIN_FOOT_Y,
+        SPRITE_NO_BOB_Y,
+        CHAIR_SCREEN_OFFSET_X,
+        CHAIR_SCREEN_OFFSET_Y,
+        CHAIR_DEPTH_BIAS
+      );
+
+      if (piece.isPlayerDesk) {
+        const matId = `nosh-mat:${piece.id}`;
+        wantedIds.add(matId);
+        this.upsertImage(
+          matId,
+          piece.gridX,
+          piece.gridY,
+          NOSH_MAT_TEXTURE_KEY,
+          null,
+          NOSH_MAT_DISPLAY_SIZE,
+          NOSH_MAT_DISPLAY_SIZE,
+          SPRITE_ORIGIN_CENTER_X,
+          SPRITE_ORIGIN_FOOT_Y,
+          SPRITE_NO_BOB_Y,
+          NOSH_MAT_SCREEN_OFFSET_X,
+          NOSH_MAT_SCREEN_OFFSET_Y,
+          NOSH_MAT_DEPTH_BIAS
+        );
+      }
+
+      const plateLabel = nameplateLabel(piece, shell);
+
+      if (!plateLabel) {
+        return;
+      }
+
+      const plateId = `nameplate:${piece.id}`;
+      wantedIds.add(plateId);
+      this.upsertNameplate(
+        plateId,
+        piece.gridX,
+        piece.gridY,
+        plateLabel
+      );
+    }
+
     upsertImage(
       id,
       gridX,
@@ -354,7 +436,10 @@ function createLoftScene(Phaser, host) {
       height,
       originX = 0.5,
       originY = 0.92,
-      bobY = 0
+      bobY = 0,
+      offsetX = 0,
+      offsetY = 0,
+      depthBias = 0
     ) {
       let sprite = this.entitySprites.get(id);
       const point = gridToScreen(gridX, gridY);
@@ -369,8 +454,39 @@ function createLoftScene(Phaser, host) {
       }
 
       sprite.setDisplaySize(width, height);
-      sprite.setPosition(point.screenX, point.screenY + bobY);
-      sprite.setData("depth", gridX + gridY);
+      sprite.setPosition(
+        point.screenX + offsetX,
+        point.screenY + offsetY + bobY
+      );
+      sprite.setData("depth", gridX + gridY + depthBias);
+    }
+
+    upsertNameplate(id, gridX, gridY, label) {
+      let plate = this.entitySprites.get(id);
+      const point = gridToScreen(gridX, gridY);
+      const x = point.screenX + NAMEPLATE_SCREEN_OFFSET_X;
+      const y = point.screenY + NAMEPLATE_SCREEN_OFFSET_Y;
+
+      if (!plate) {
+        plate = this.add.text(x, y, label, {
+          fontFamily: '"Pixelify Sans", monospace',
+          fontSize: `${NAMEPLATE_FONT_PX}px`,
+          color: NAMEPLATE_COLOR,
+          backgroundColor: NAMEPLATE_BG,
+          padding: { x: NAMEPLATE_PAD_X, y: NAMEPLATE_PAD_Y },
+          align: "center",
+        });
+        plate.setOrigin(NAMEPLATE_ORIGIN_X, NAMEPLATE_ORIGIN_Y);
+        plate.setStroke(NAMEPLATE_STROKE, NAMEPLATE_STROKE_WIDTH);
+        plate.setDepth(0);
+        this.entityLayer.add(plate);
+        this.entitySprites.set(id, plate);
+      } else {
+        plate.setText(label);
+        plate.setPosition(x, y);
+      }
+
+      plate.setData("depth", gridX + gridY + NAMEPLATE_DEPTH_BIAS);
     }
 
     sortEntities() {
