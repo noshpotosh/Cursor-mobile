@@ -1,57 +1,61 @@
 const sprites = new Map();
 
-// Source rectangles exclude atlas margins; positions are in source pixels.
-const SPRITE_SHEETS = [
-  {
-    path: 'characters/crew-portraits.png',
-    frames: {
-      'nosh-portrait': [0, 0, 512, 512],
-      'fabrizio-cortell-portrait': [512, 0, 512, 512],
-      'maeve-quinn-portrait': [1024, 0, 512, 512],
-      'dex-harlan-portrait': [0, 512, 512, 512],
-      'cal-rook-portrait': [512, 512, 512, 512],
-      'reed-mallory-portrait': [1024, 512, 512, 512],
-    },
+// Portraits stay on one atlas; loft runtime sprites are one PNG each.
+const PORTRAIT_SHEET = {
+  path: 'characters/crew-portraits.png',
+  frames: {
+    'nosh-portrait': [0, 0, 512, 512],
+    'fabrizio-cortell-portrait': [512, 0, 512, 512],
+    'maeve-quinn-portrait': [1024, 0, 512, 512],
+    'dex-harlan-portrait': [0, 512, 512, 512],
+    'cal-rook-portrait': [512, 512, 512, 512],
+    'reed-mallory-portrait': [1024, 512, 512, 512],
   },
-  {
-    path: 'characters/crew-idle.png',
-    frames: {
-      nosh: [252, 3, 202, 493],
-      'fabrizio-cortell': [673, 5, 205, 491],
-      'maeve-quinn': [1071, 14, 216, 482],
-      'dex-harlan': [240, 508, 201, 498],
-      'cal-rook': [668, 507, 206, 499],
-      'reed-mallory': [1071, 508, 178, 498],
-    },
-  },
-  {
-    path: 'furniture/desk-crt.png',
-    frames: { desk: [140, 167, 983, 934] },
-  },
-  {
-    path: 'furniture/loft-props.png',
-    frames: {
-      bubbler: [154, 32, 210, 458],
-      coffee: [582, 61, 319, 445],
-      whiteboard: [1041, 75, 382, 437],
-      chair: [138, 570, 291, 415],
-      plant: [588, 539, 328, 409],
-      'chair-better': [1105, 514, 318, 494],
-    },
-  },
+};
+
+const FULL_FRAME_SPRITES = [
+  { id: 'nosh', path: 'characters/nosh-idle.png' },
+  { id: 'fabrizio-cortell', path: 'characters/fabrizio-idle.png' },
+  { id: 'maeve-quinn', path: 'characters/maeve-idle.png' },
+  { id: 'dex-harlan', path: 'characters/dex-idle.png' },
+  { id: 'cal-rook', path: 'characters/cal-idle.png' },
+  { id: 'reed-mallory', path: 'characters/reed-idle.png' },
+  { id: 'desk', path: 'furniture/desk-basic.png' },
+  { id: 'chair', path: 'furniture/chair-basic.png' },
+  { id: 'chair-better', path: 'furniture/chair-better.png' },
+  { id: 'bubbler', path: 'furniture/bubbler.png' },
+  { id: 'coffee', path: 'furniture/coffee.png' },
+  { id: 'whiteboard', path: 'furniture/whiteboard.png' },
+  { id: 'plant', path: 'furniture/plant-desk.png' },
 ];
 
-async function loadSheet(sheet) {
+async function loadImage(relativePath) {
   const image = new Image();
-  image.src = new URL(`../assets/${sheet.path}`, import.meta.url);
+  image.src = new URL(`../assets/${relativePath}`, import.meta.url);
   await image.decode();
-  for (const [id, crop] of Object.entries(sheet.frames)) {
+  return image;
+}
+
+async function loadPortraitSheet() {
+  const image = await loadImage(PORTRAIT_SHEET.path);
+  for (const [id, crop] of Object.entries(PORTRAIT_SHEET.frames)) {
     sprites.set(id, { image, crop });
   }
 }
 
+async function loadFullFrameSprite(entry) {
+  const image = await loadImage(entry.path);
+  sprites.set(entry.id, {
+    image,
+    crop: [0, 0, image.naturalWidth, image.naturalHeight],
+  });
+}
+
 export async function loadSprites() {
-  await Promise.all(SPRITE_SHEETS.map(loadSheet));
+  await Promise.all([
+    loadPortraitSheet(),
+    ...FULL_FRAME_SPRITES.map(loadFullFrameSprite),
+  ]);
 }
 
 export function drawSprite(context, id, x, y, width, height) {

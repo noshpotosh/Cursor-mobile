@@ -131,9 +131,9 @@ function drawRoomContents(context, office) {
     floorPoint(office.gridWidth - 0.5, -0.5), Paint.wall);
   drawWallDetails(context, office);
   const leftPlant = floorPoint(0, office.gridHeight - 1);
-  drawPlant(context, leftPlant[0], leftPlant[1], 1.15);
+  drawPlant(context, leftPlant[0], leftPlant[1]);
   const rightPlant = floorPoint(office.gridWidth - 1, 0);
-  drawPlant(context, rightPlant[0], rightPlant[1], 1.15);
+  drawPlant(context, rightPlant[0], rightPlant[1]);
 }
 
 export function drawRoom(context, office) {

@@ -48,9 +48,13 @@ export function label(context, text, x, y, size = 8, fill = Paint.ink) {
   context.fillText(text, x, y);
 }
 
-export function drawPlant(context, x, y, scale = 1) {
-  drawSprite(context, 'plant', x - 18 * scale, y - 45 * scale,
-    Math.round(36 * scale), Math.round(45 * scale));
+const PLANT_WIDTH = 20;
+const PLANT_HEIGHT = 28;
+
+export function drawPlant(context, x, y) {
+  drawSprite(context, 'plant',
+    x - PLANT_WIDTH / 2, y - PLANT_HEIGHT,
+    PLANT_WIDTH, PLANT_HEIGHT);
 }
 
 const RANDOM_MULTIPLIER = 1664525;

@@ -185,13 +185,13 @@ export function buildInteractTargetForPiece(
   return buildTalkTarget(piece, person);
 }
 
-// Raised CRTs must select their desk rather than the floor behind them.
+// Hit boxes match native 1× sprite footprints on the tile.
 const FURNITURE_HIT_BOUNDS = {
-  desk: { left: -49, right: 49, top: -70, bottom: 26 },
-  bubbler: { left: -13, right: 17, top: -65, bottom: 3 },
-  coffee: { left: -22, right: 27, top: -48, bottom: 8 },
-  whiteboard: { left: -30, right: 30, top: -61, bottom: 5 },
-};
+  desk: { left: -40, right: 40, top: -70, bottom: 20 },
+  bubbler: { left: -14, right: 14, top: -56, bottom: 2 },
+  coffee: { left: -18, right: 18, top: -48, bottom: 4 },
+  whiteboard: { left: -24, right: 24, top: -52, bottom: 4 },
+}
 
 export function findFurnitureAtScreen(office, screenX, screenY) {
   const frontToBack = [...office.furniture].sort((left, right) =>
