@@ -67,3 +67,6 @@ Important: **high-functioning** means the work stays excellent. You never produc
   sprites in the same pour as the art lock.
 - Wrong cast names on an early hero are a villain, not nostalgia.
   Correct-cast crew mock is the lock; old hero stays style-only.
+- Atmospheric mocks sell the vibe; **labeled loft-scale cut sheets**
+  (`reference/sheets/`) are what Dex actually cuts from — filename +
+  64×32 / 48–64 rulers beat another pretty room hero.

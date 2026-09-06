@@ -18,6 +18,17 @@
 
 Reference mocks stay under `office/assets/reference/` until playtest says the kit holds. Not runtime sprites.
 
+### Implementation cut sheets (loft scale)
+
+Labeled atlas guides at **1× loft px** — Dex cuts pipeline PNGs from these, not from room mood boards:
+
+- [`sheets/tile-atlas-sheet.png`](../../office/assets/reference/sheets/tile-atlas-sheet.png) — carpet / island / wood diamonds + 64×32 rulers
+- [`sheets/furniture-kit-sheet.png`](../../office/assets/reference/sheets/furniture-kit-sheet.png) — desk kit, bubbler, coffee, whiteboard
+- [`sheets/character-sprites-sheet.png`](../../office/assets/reference/sheets/character-sprites-sheet.png) — crew idle (+ Nosh walk) at 48–64 px
+- [`sheets/upgrade-overlays-sheet.png`](../../office/assets/reference/sheets/upgrade-overlays-sheet.png) — catalog overlays only
+
+Still reference-only (not loaded by the game). Contracts: 2:1 iso, tile diamond 64×32, characters 48–64 px, 1px ink `#1A1714`, pipeline filenames as labels.
+
 ## The vibe
 
 Cozy isometric pixel office — warm, readable, a little lived-in. Not cyberpunk, not purple SaaS glow, not photoreal 3D. Think “tiny company that actually works here,” not a diorama flex.

@@ -52,3 +52,10 @@ Open [http://127.0.0.1:8765](http://127.0.0.1:8765).
 - [Crew outfit lineup](assets/reference/crew-outfit-lineup-mock.png)
 - [Crew portraits sheet](assets/reference/crew-portraits-sheet.png) (Directory art lock)
 - [Desk desktop OS](assets/reference/desk-desktop-os-mock.png)
+
+### Implementation cut sheets (1× loft px)
+
+- [Tile atlas](assets/reference/sheets/tile-atlas-sheet.png)
+- [Furniture kit](assets/reference/sheets/furniture-kit-sheet.png)
+- [Character sprites](assets/reference/sheets/character-sprites-sheet.png)
+- [Upgrade overlays](assets/reference/sheets/upgrade-overlays-sheet.png)
