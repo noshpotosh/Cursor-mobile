@@ -13,6 +13,9 @@
   <body>
     <main class="stage" id="office-stage">
       <h1 class="office-title">Warewolf · Starter Loft</h1>
+      <p class="bucks-hud" id="bucks-hud" aria-live="polite">
+        0 bucks
+      </p>
       <canvas
         id="office-canvas"
         aria-label="Isometric starter office"
@@ -53,6 +56,16 @@
             <span class="desktop-icon-label"
               >Directory</span
             >
+          </button>
+          <button
+            type="button"
+            class="desktop-icon"
+            data-app="goals"
+          >
+            <span class="desktop-icon-glyph goals-glyph"
+              >G</span
+            >
+            <span class="desktop-icon-label">Goals</span>
           </button>
         </div>
 

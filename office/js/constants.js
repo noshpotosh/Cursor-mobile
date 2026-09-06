@@ -115,6 +115,7 @@ export const TOAST_VISIBLE_MS = 3200;
 export const DesktopAppId = {
   TEAMS: "teams",
   DIRECTORY: "directory",
+  GOALS: "goals",
 };
 
 export const PresenceStatus = {
@@ -136,3 +137,6 @@ export const StaffTeamsStubLine = {
     "Paste the diff. I'll red-pen it.",
   nosh: "Notes to self land here later.",
 };
+
+export const ECONOMY_STORAGE_KEY = "warewolf-office-economy-v1";
+export const STARTING_COMPANY_BUCKS = 0;
