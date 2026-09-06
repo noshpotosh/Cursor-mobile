@@ -69,15 +69,14 @@
   display: block;
   width: 80px;
   height: 80px;
-  background-image: url("../assets/ui/desktop-symbols.png");
-  background-size: 1040px 80px;
+  background-size: 100% 100%;
   image-rendering: pixelated;
 }
 
-.teams-glyph { background-position: 0 0; }
-.directory-glyph { background-position: -80px 0; }
-.goals-glyph { background-position: -640px 0; }
-.loft-glyph { background-position: -160px 0; }
+.teams-glyph { background-image: url("../assets/ui/icon-teams.svg"); }
+.directory-glyph { background-image: url("../assets/ui/icon-directory.svg"); }
+.goals-glyph { background-image: url("../assets/ui/icon-goals.svg"); }
+.loft-glyph { background-image: url("../assets/ui/icon-loft.svg"); }
 
 .desktop-icon-label {
   padding: 0 9px 2px;
@@ -137,22 +136,21 @@
   width: 36px;
   height: 36px;
   flex: 0 0 36px;
-  background-image: url("../assets/ui/desktop-symbols.png");
-  background-size: 468px 36px;
+  background-size: contain;
   image-rendering: pixelated;
 }
 
 [data-active-app="teams"] .window-title::before {
-  background-position: 0 0;
+  background-image: url("../assets/ui/icon-teams.svg");
 }
 [data-active-app="directory"] .window-title::before {
-  background-position: -36px 0;
+  background-image: url("../assets/ui/icon-directory.svg");
 }
 [data-active-app="goals"] .window-title::before {
-  background-position: -288px 0;
+  background-image: url("../assets/ui/icon-goals.svg");
 }
 [data-active-app="loft"] .window-title::before {
-  background-position: -72px 0;
+  background-image: url("../assets/ui/icon-loft.svg");
 }
 
 .window-controls {
@@ -232,15 +230,9 @@
   flex: 0 0 40px;
   width: 40px;
   height: 40px;
-  background-image: url("../assets/ui/desktop-symbols.png");
-  background-size: 520px 40px;
+  background-size: contain;
   image-rendering: pixelated;
 }
-
-.taskbar-icon.teams-glyph { background-position: 0 0; }
-.taskbar-icon.directory-glyph { background-position: -40px 0; }
-.taskbar-icon.goals-glyph { background-position: -320px 0; }
-.taskbar-icon.loft-glyph { background-position: -80px 0; }
 
 .desktop-sound {
   flex: 0 0 42px;
@@ -254,7 +246,7 @@
   width: 28px;
   height: 28px;
   margin: auto;
-  background: url("../assets/ui/desktop-symbols.png") -336px 0 / 364px 28px;
+  background: url("../assets/ui/icon-sound.svg") center / contain;
   image-rendering: pixelated;
 }
 .desktop-sound[aria-pressed="true"] span { opacity: 0.4; }
@@ -521,11 +513,7 @@
   }
   .window-chrome { gap: 6px; padding: 5px 50px 5px 5px; flex-basis: 36px; }
   .window-title { gap: 6px; font-size: 24px; }
-  .window-title::before { width: 24px; height: 24px; flex-basis: 24px; background-size: 312px 24px; }
-  [data-active-app="teams"] .window-title::before { background-position: 0 0; }
-  [data-active-app="directory"] .window-title::before { background-position: -24px 0; }
-  [data-active-app="goals"] .window-title::before { background-position: -192px 0; }
-  [data-active-app="loft"] .window-title::before { background-position: -48px 0; }
+  .window-title::before { width: 24px; height: 24px; flex-basis: 24px; }
   .teams-layout,
   .directory-layout {
     grid-template-columns: 1fr;
@@ -556,11 +544,7 @@
   #desktop-exit { flex-basis: 42px; height: 44px; }
   .exit-glyph { font-size: 32px; }
   .taskbar-app { height: 44px; padding: 4px; }
-  .taskbar-icon { width: 28px; height: 28px; flex-basis: 28px; background-size: 364px 28px; }
-  .taskbar-icon.teams-glyph { background-position: 0 0; }
-  .taskbar-icon.directory-glyph { background-position: -28px 0; }
-  .taskbar-icon.goals-glyph { background-position: -224px 0; }
-  .taskbar-icon.loft-glyph { background-position: -56px 0; }
+  .taskbar-icon { width: 28px; height: 28px; flex-basis: 28px; }
   .taskbar-apps { gap: 7px; }
   .desktop-sound { display: none; }
   .taskbar-clock { min-width: 92px; font-size: 18px; }
@@ -582,11 +566,7 @@
 @media (max-height: 620px) and (min-width: 721px) {
   .desktop-wallpaper { flex-wrap: wrap; align-content: flex-start; gap: 4px; }
   .desktop-icon { width: 108px; }
-  .desktop-icon-glyph { width: 56px; height: 56px; background-size: 728px 56px; }
-  .teams-glyph { background-position: 0 0; }
-  .directory-glyph { background-position: -56px 0; }
-  .goals-glyph { background-position: -448px 0; }
-  .loft-glyph { background-position: -112px 0; }
+  .desktop-icon-glyph { width: 56px; height: 56px; }
   .desktop-icon-label { font-size: 20px; }
   .desktop-window { height: calc(100% - 130px); }
 }
