@@ -1,8 +1,7 @@
 import {
   DesktopAppId,
+  DESKTOP_CLOCK_INTERVAL_MS,
   MessageRole,
-  PLAYER_STAFF_ID,
-  PresenceStatus,
 } from "./constants.js";
 import {
   ensureThreadGreeting,
@@ -11,89 +10,61 @@ import {
   subscribeAgentBus,
 } from "./agentBus.js";
 import {
+  clearElement,
+  createEl,
+  formatClock,
+  bubbleClassForRole,
+  presenceClass,
+  presenceForPerson,
+} from "./desktopDom.js";
+import { renderLoftApp } from "./desktopLoftApp.js";
+import {
   completeGoal,
   formatCompanyBucks,
   listGoals,
-  listOfficeHistory,
-  listOffices,
-  listUpgrades,
-  purchaseOffice,
-  purchaseUpgrade,
-  selectOwnedOffice,
 } from "./economy.js";
 
-function presenceForPerson(person, desktop, occupancy) {
-  if (person.id === PLAYER_STAFF_ID || person.isPlayer) {
-    return desktop.isOpen
-      ? PresenceStatus.AVAILABLE
-      : PresenceStatus.AWAY;
+function paintTeamsThread(log, agentBus, staffId) {
+  clearElement(log);
+  const messages = listThread(agentBus, staffId);
+
+  if (!messages.length) {
+    log.appendChild(
+      createEl("p", "teams-placeholder", "No messages yet.")
+    );
+    return;
   }
 
-  if (occupancy && occupancy[person.id] === false) {
-    return PresenceStatus.AWAY;
+  for (const message of messages) {
+    log.appendChild(
+      createEl(
+        "p",
+        bubbleClassForRole(message.role),
+        message.text
+      )
+    );
   }
 
-  return PresenceStatus.AVAILABLE;
+  log.scrollTop = log.scrollHeight;
 }
 
-function presenceClass(status) {
-  if (status === PresenceStatus.AVAILABLE) {
-    return "is-available";
-  }
+function buildTeamsRosterRow(person, status, onSelect) {
+  const row = createEl("button", "teams-roster-row");
+  row.type = "button";
 
-  return "is-away";
-}
-
-function clearElement(element) {
-  while (element.firstChild) {
-    element.removeChild(element.firstChild);
-  }
-}
-
-function createEl(tagName, className, text) {
-  const element = document.createElement(tagName);
-
-  if (className) {
-    element.className = className;
-  }
-
-  if (text != null) {
-    element.textContent = text;
-  }
-
-  return element;
-}
-
-function formatClock(date) {
-  return date.toLocaleTimeString([], {
-    hour: "numeric",
-    minute: "2-digit",
+  row.appendChild(
+    createEl("span", `presence-dot ${presenceClass(status)}`)
+  );
+  row.appendChild(
+    createEl("span", "teams-roster-name", person.displayName)
+  );
+  row.appendChild(
+    createEl("span", "teams-roster-status", status)
+  );
+  row.addEventListener("click", () => {
+    onSelect(person);
   });
-}
-
-function formatHistoryStamp(atMs) {
-  try {
-    return new Date(atMs).toLocaleString([], {
-      month: "short",
-      day: "numeric",
-      hour: "numeric",
-      minute: "2-digit",
-    });
-  } catch (error) {
-    return "";
-  }
-}
-
-function bubbleClassForRole(role) {
-  if (role === MessageRole.USER) {
-    return "teams-bubble teams-bubble-me";
-  }
-
-  if (role === MessageRole.SYSTEM) {
-    return "teams-bubble teams-bubble-system";
-  }
-
-  return "teams-bubble teams-bubble-them";
+  return row;
 }
 
 function renderTeamsApp(body, desktop) {
@@ -137,40 +108,12 @@ function renderTeamsApp(body, desktop) {
   input.setAttribute("aria-label", "Teams message");
   sendButton.type = "submit";
 
-  function paintThread(staffId) {
-    clearElement(log);
-    const messages = listThread(agentBus, staffId);
-
-    if (!messages.length) {
-      log.appendChild(
-        createEl(
-          "p",
-          "teams-placeholder",
-          "No messages yet."
-        )
-      );
-      return;
-    }
-
-    for (const message of messages) {
-      log.appendChild(
-        createEl(
-          "p",
-          bubbleClassForRole(message.role),
-          message.text
-        )
-      );
-    }
-
-    log.scrollTop = log.scrollHeight;
-  }
-
   function showThread(person) {
     activeStaffId = person.id;
     title.textContent = person.displayName;
     typing.hidden = true;
     ensureThreadGreeting(agentBus, person.id);
-    paintThread(person.id);
+    paintTeamsThread(log, agentBus, person.id);
   }
 
   subscribeAgentBus(agentBus, (event) => {
@@ -185,11 +128,11 @@ function renderTeamsApp(body, desktop) {
         typing.hidden = true;
       }
 
-      paintThread(activeStaffId);
+      paintTeamsThread(log, agentBus, activeStaffId);
     }
 
     if (event.type === "thread-ready") {
-      paintThread(activeStaffId);
+      paintTeamsThread(log, agentBus, activeStaffId);
     }
   });
 
@@ -199,29 +142,9 @@ function renderTeamsApp(body, desktop) {
       desktop,
       occupancy
     );
-    const row = createEl("button", "teams-roster-row");
-    row.type = "button";
-
-    row.appendChild(
-      createEl(
-        "span",
-        `presence-dot ${presenceClass(status)}`
-      )
+    roster.appendChild(
+      buildTeamsRosterRow(person, status, showThread)
     );
-    row.appendChild(
-      createEl(
-        "span",
-        "teams-roster-name",
-        person.displayName
-      )
-    );
-    row.appendChild(
-      createEl("span", "teams-roster-status", status)
-    );
-    row.addEventListener("click", () => {
-      showThread(person);
-    });
-    roster.appendChild(row);
   }
 
   compose.addEventListener("submit", (event) => {
@@ -412,206 +335,6 @@ function renderGoalsApp(body, economy, onGoalComplete) {
   body.appendChild(layout);
 }
 
-function renderLoftApp(body, desktop) {
-  clearElement(body);
-
-  const economy = desktop.economy;
-  const onUpgradePurchase = desktop.onUpgradePurchase;
-  const onOfficeChange = desktop.onOfficeChange;
-
-  const layout = createEl("div", "loft-layout");
-  const summary = createEl("p", "loft-summary");
-  const upgradeHeading = createEl(
-    "h3",
-    "loft-section-title",
-    "Loft upgrades"
-  );
-  const upgradeList = createEl("div", "loft-list");
-  const officeHeading = createEl(
-    "h3",
-    "loft-section-title",
-    "Office catalog"
-  );
-  const officeList = createEl("div", "loft-list");
-  const historyHeading = createEl(
-    "h3",
-    "loft-section-title",
-    "Office history"
-  );
-  const historyList = createEl("div", "loft-history");
-
-  function refresh() {
-    clearElement(upgradeList);
-    clearElement(officeList);
-    clearElement(historyList);
-    summary.textContent =
-      `Company balance: ${formatCompanyBucks(economy.companyBucks)}`;
-
-    for (const upgrade of listUpgrades(economy)) {
-      const card = createEl("article", "loft-card");
-
-      if (upgrade.isOwned) {
-        card.classList.add("is-owned");
-      }
-
-      card.appendChild(
-        createEl("h3", "loft-title", upgrade.title)
-      );
-      card.appendChild(
-        createEl(
-          "p",
-          "loft-description",
-          upgrade.description
-        )
-      );
-
-      const meta = createEl("p", "loft-meta");
-      meta.textContent = `${upgrade.costBucks} bucks`;
-      card.appendChild(meta);
-
-      if (upgrade.isOwned) {
-        card.appendChild(
-          createEl("p", "loft-status", "Installed")
-        );
-      } else {
-        const canAfford =
-          economy.companyBucks >= upgrade.costBucks;
-        const button = createEl(
-          "button",
-          "loft-buy-button",
-          canAfford ? "Buy" : "Need more bucks"
-        );
-        button.type = "button";
-        button.disabled = !canAfford;
-        button.addEventListener("click", () => {
-          const result = purchaseUpgrade(
-            economy,
-            upgrade.id
-          );
-
-          if (!result.ok) {
-            return;
-          }
-
-          refresh();
-
-          if (onUpgradePurchase) {
-            onUpgradePurchase(result);
-          }
-        });
-        card.appendChild(button);
-      }
-
-      upgradeList.appendChild(card);
-    }
-
-    for (const office of listOffices(economy)) {
-      const card = createEl("article", "loft-card");
-
-      if (office.isCurrent) {
-        card.classList.add("is-owned");
-      }
-
-      card.appendChild(
-        createEl("h3", "loft-title", office.displayName)
-      );
-      card.appendChild(
-        createEl(
-          "p",
-          "loft-description",
-          office.description
-        )
-      );
-
-      const meta = createEl("p", "loft-meta");
-      meta.textContent =
-        office.costBucks === 0
-          ? `Free · ${office.thumbnailLabel}`
-          : `${office.costBucks} bucks · ${office.thumbnailLabel}`;
-      card.appendChild(meta);
-
-      if (office.isCurrent) {
-        card.appendChild(
-          createEl("p", "loft-status", "Current office")
-        );
-      } else if (office.isOwned) {
-        const button = createEl(
-          "button",
-          "loft-buy-button",
-          "Move in"
-        );
-        button.type = "button";
-        button.addEventListener("click", () => {
-          const result = selectOwnedOffice(
-            economy,
-            office.id
-          );
-
-          if (!result.ok) {
-            return;
-          }
-
-          refresh();
-
-          if (onOfficeChange) {
-            onOfficeChange(result);
-          }
-        });
-        card.appendChild(button);
-      } else {
-        const canAfford =
-          economy.companyBucks >= office.costBucks;
-        const button = createEl(
-          "button",
-          "loft-buy-button",
-          canAfford ? "Buy office" : "Need more bucks"
-        );
-        button.type = "button";
-        button.disabled = !canAfford;
-        button.addEventListener("click", () => {
-          const result = purchaseOffice(
-            economy,
-            office.id
-          );
-
-          if (!result.ok) {
-            return;
-          }
-
-          refresh();
-
-          if (onOfficeChange) {
-            onOfficeChange(result);
-          }
-        });
-        card.appendChild(button);
-      }
-
-      officeList.appendChild(card);
-    }
-
-    const history = listOfficeHistory(economy).slice().reverse();
-
-    for (const entry of history) {
-      const row = createEl("p", "loft-history-row");
-      row.textContent =
-        `${entry.displayName} — ${entry.note} `
-        + `(${formatHistoryStamp(entry.atMs)})`;
-      historyList.appendChild(row);
-    }
-  }
-
-  refresh();
-  layout.appendChild(summary);
-  layout.appendChild(upgradeHeading);
-  layout.appendChild(upgradeList);
-  layout.appendChild(officeHeading);
-  layout.appendChild(officeList);
-  layout.appendChild(historyHeading);
-  layout.appendChild(historyList);
-  body.appendChild(layout);
-}
-
 export function createDesktopOs(options) {
   const root = options.root;
   const staffList = options.staffList;
@@ -752,7 +475,7 @@ export function openDesktopOs(desktop) {
   desktop.refreshClock();
   desktop.clockTimerId = window.setInterval(() => {
     desktop.refreshClock();
-  }, 30000);
+  }, DESKTOP_CLOCK_INTERVAL_MS);
 
   const firstIcon = desktop.root.querySelector("[data-app]");
 

@@ -1,4 +1,7 @@
-import { PLAYER_MOVE_TILES_PER_SECOND } from "./constants.js";
+import {
+  PLAYER_MOVE_TILES_PER_SECOND,
+  PLAYER_WALK_BOB_RATE,
+} from "./constants.js";
 import { findPath } from "./pathfind.js";
 
 function prefersReducedMotion() {
@@ -86,7 +89,8 @@ export function updatePlayer(player, deltaSeconds) {
   const stepBudget =
     PLAYER_MOVE_TILES_PER_SECOND * deltaSeconds;
 
-  player.walkBobPhase += deltaSeconds * 10;
+  player.walkBobPhase +=
+    deltaSeconds * PLAYER_WALK_BOB_RATE;
 
   if (distance <= stepBudget) {
     player.gridX = nextStep.gridX;
