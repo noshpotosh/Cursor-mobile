@@ -90,8 +90,11 @@ export function drawOffice(canvas, office, staff, player, npcs,
   }
   drawEntities(context, office, staff, player, npcs, upgrades, time, reduced);
   context.restore();
+  // Integer loft zoom → dest is an exact nearest-neighbor multiple.
+  const blitWidth = pixelWidth * view.scale;
+  const blitHeight = pixelHeight * view.scale;
+
   output.imageSmoothingEnabled = false;
-  output.drawImage(buffer, 0, 0,
-    pixelWidth * view.scale, pixelHeight * view.scale);
+  output.drawImage(buffer, 0, 0, blitWidth, blitHeight);
   return view;
 }

@@ -2,7 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import {
-  buildRoomView, measureRoomBounds, gridToScreen, screenToGrid,
+  buildRoomView, fitLoftZoom, MAXIMUM_LOFT_ZOOM, measureRoomBounds,
+  gridToScreen, screenToGrid,
 } from '../js/isoMath.js';
 import { findFurnitureAtScreen } from '../js/interact.js';
 import {
@@ -11,18 +12,57 @@ import {
 import { findPath } from '../js/pathfind.js';
 
 const viewports = [[1280, 720], [1920, 1080], [390, 844], [720, 480]];
+const HORIZONTAL_FIT_PADDING = 40;
+const CHROME_FIT_PADDING = 124;
+
+function continuousFitScale(bounds, width, height) {
+  const widthFit = (width - HORIZONTAL_FIT_PADDING) / bounds.width;
+  const heightFit = (height - CHROME_FIT_PADDING) / bounds.height;
+  return Math.min(MAXIMUM_LOFT_ZOOM, widthFit, heightFit);
+}
+
 for (const layout of ['starter-office', 'pack-office']) {
   const url = new URL(`../data/${layout}.json`, import.meta.url);
   const office = JSON.parse(await readFile(url, 'utf8'));
-  test(`${layout}: walls and floor fit with room for the HUD`, () => {
+
+  test(`${layout}: loft zoom is an integer crisp scale`, () => {
     const bounds = measureRoomBounds(office.gridWidth, office.gridHeight);
+
     for (const [width, height] of viewports) {
       const view = buildRoomView(office.gridWidth, office.gridHeight,
         width, height);
-      assert.ok(view.originX + bounds.minX * view.scale >= 15);
-      assert.ok(view.originX + bounds.maxX * view.scale <= width - 15);
-      assert.ok(view.originY + bounds.minY * view.scale >= 55);
-      assert.ok(view.originY + bounds.maxY * view.scale <= height - 45);
+      const fitScale = continuousFitScale(bounds, width, height);
+      const expectedScale = fitLoftZoom(fitScale);
+
+      assert.equal(view.scale, expectedScale);
+      assert.equal(view.scale, Math.floor(view.scale));
+      assert.ok(view.scale >= 1);
+      assert.ok(view.scale <= MAXIMUM_LOFT_ZOOM);
+      assert.equal(view.originX % view.scale, 0);
+      assert.equal(view.originY % view.scale, 0);
+    }
+  });
+
+  test(`${layout}: walls and floor fit with room for the HUD`, () => {
+    const bounds = measureRoomBounds(office.gridWidth, office.gridHeight);
+
+    for (const [width, height] of viewports) {
+      const view = buildRoomView(office.gridWidth, office.gridHeight,
+        width, height);
+      const fitScale = continuousFitScale(bounds, width, height);
+
+      // Tiny viewports keep 1× crisp pixels and may overflow HUD gutters.
+      if (fitScale < 1) {
+        assert.equal(view.scale, 1);
+      } else {
+        assert.ok(view.originX + bounds.minX * view.scale >= 15);
+        assert.ok(view.originX + bounds.maxX * view.scale
+          <= width - 15);
+        assert.ok(view.originY + bounds.minY * view.scale >= 55);
+        assert.ok(view.originY + bounds.maxY * view.scale
+          <= height - 45);
+      }
+
       for (const piece of office.furniture) {
         const point = gridToScreen(piece.gridX, piece.gridY);
         const x = view.originX + point.screenX * view.scale;

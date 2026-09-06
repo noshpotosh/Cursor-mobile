@@ -78,22 +78,42 @@ export function measureRoomBounds(gridWidth, gridHeight) {
   };
 }
 
+// Integer loft zoom so buffer→canvas upscale is an exact NN multiple.
+export const MAXIMUM_LOFT_ZOOM = 2;
+
+export function fitLoftZoom(fitScale) {
+  const cappedFit = Math.min(MAXIMUM_LOFT_ZOOM, fitScale);
+
+  // Below 1×, stay at 1× (letterbox/clip) instead of fractional shrink.
+  if (cappedFit < 1) {
+    return 1;
+  }
+
+  return Math.floor(cappedFit);
+}
+
 // Use the same transform for rendering and pointer hit testing.
 export function buildRoomView(gridWidth, gridHeight, width, height) {
   const bounds = measureRoomBounds(gridWidth, gridHeight);
   const horizontalPadding = 40;
   const chromePadding = 124;
-  const minimumScale = 0.1;
-  const maximumScale = 2;
   const verticalOffset = 6;
+
   const widthFit = (width - horizontalPadding) / bounds.width;
   const heightFit = (height - chromePadding) / bounds.height;
-  const scale = Math.max(minimumScale,
-    Math.min(maximumScale, widthFit, heightFit));
-  return {
-    originX: width / 2 - (bounds.minX + bounds.maxX) / 2 * scale,
-    originY: height / 2 - (bounds.minY + bounds.maxY) / 2 * scale
-      + verticalOffset,
-    scale,
-  };
+  const fitScale = Math.min(widthFit, heightFit);
+  const scale = fitLoftZoom(fitScale);
+
+  const rawOriginX =
+    width / 2 - (bounds.minX + bounds.maxX) / 2 * scale;
+  const rawOriginY =
+    height / 2
+    - (bounds.minY + bounds.maxY) / 2 * scale
+    + verticalOffset;
+
+  // Whole buffer pixels before integer upscale — avoids half-pixel draw.
+  const originX = Math.round(rawOriginX / scale) * scale;
+  const originY = Math.round(rawOriginY / scale) * scale;
+
+  return { originX, originY, scale };
 }
