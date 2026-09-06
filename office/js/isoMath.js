@@ -2,7 +2,7 @@ import { TILE_HEIGHT_PX, TILE_WIDTH_PX } from "./constants.js";
 
 // Furniture draws above tile centers (monitors, bubbler bottle).
 // Nudge vertical centering so the room doesn't sit too low.
-export const FURNITURE_TOP_OVERHANG_PX = 28;
+export const FURNITURE_TOP_OVERHANG_PX = 96;
 
 // Convert grid coords to canvas coords (2:1 isometric).
 export function gridToScreen(gridX, gridY) {
@@ -78,40 +78,22 @@ export function measureRoomBounds(gridWidth, gridHeight) {
   };
 }
 
-export function buildRoomOrigin(
-  gridWidth,
-  gridHeight,
-  viewWidth,
-  viewHeight,
-  focusGridX,
-  focusGridY,
-  followBlend
-) {
+// Use the same transform for rendering and pointer hit testing.
+export function buildRoomView(gridWidth, gridHeight, width, height) {
   const bounds = measureRoomBounds(gridWidth, gridHeight);
-
-  const originX =
-    (viewWidth - bounds.width) / 2 - bounds.minX;
-  const originY =
-    (viewHeight - bounds.height) / 2 - bounds.minY;
-
-  if (
-    focusGridX == null
-    || focusGridY == null
-    || !followBlend
-  ) {
-    return { originX, originY };
-  }
-
-  const focus = gridToScreen(focusGridX, focusGridY);
-  const focusOriginX = viewWidth / 2 - focus.screenX;
-  const focusOriginY = viewHeight / 2 - focus.screenY;
-
+  const horizontalPadding = 40;
+  const chromePadding = 124;
+  const minimumScale = 0.1;
+  const maximumScale = 2;
+  const verticalOffset = 6;
+  const widthFit = (width - horizontalPadding) / bounds.width;
+  const heightFit = (height - chromePadding) / bounds.height;
+  const scale = Math.max(minimumScale,
+    Math.min(maximumScale, widthFit, heightFit));
   return {
-    originX:
-      originX * (1 - followBlend)
-      + focusOriginX * followBlend,
-    originY:
-      originY * (1 - followBlend)
-      + focusOriginY * followBlend,
+    originX: width / 2 - (bounds.minX + bounds.maxX) / 2 * scale,
+    originY: height / 2 - (bounds.minY + bounds.maxY) / 2 * scale
+      + verticalOffset,
+    scale,
   };
 }

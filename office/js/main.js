@@ -1,3 +1,4 @@
+import { loadSprites } from './sprites.js';
 import {
   GoalEventKind,
   InteractKind,
@@ -27,9 +28,10 @@ import {
 import {
   buildInteractTargetForPiece,
   findFurnitureAt,
+  findFurnitureAtScreen,
   findNearbyInteractable,
 } from "./interact.js";
-import { buildRoomOrigin, screenToGrid } from "./isoMath.js";
+import { buildRoomView, screenToGrid } from "./isoMath.js";
 import {
   loadStarterOfficeBundle,
   staffById,
@@ -66,8 +68,13 @@ function sizeCanvasToStage(canvas, stage) {
   const height = stage.clientHeight;
   const pixelRatio = window.devicePixelRatio || 1;
 
-  canvas.width = Math.floor(width * pixelRatio);
-  canvas.height = Math.floor(height * pixelRatio);
+  const backingWidth = Math.floor(width * pixelRatio);
+  const backingHeight = Math.floor(height * pixelRatio);
+  if (canvas.width === backingWidth && canvas.height === backingHeight) {
+    return;
+  }
+  canvas.width = backingWidth;
+  canvas.height = backingHeight;
   canvas.style.width = `${width}px`;
   canvas.style.height = `${height}px`;
 
@@ -282,14 +289,12 @@ function handleCanvasClick(event, shell) {
     event,
     shell.stage
   );
-  const localX = clickX - shell.roomOrigin.originX;
-  const localY = clickY - shell.roomOrigin.originY;
+  const scale = shell.roomOrigin.scale || 1;
+  const localX = (clickX - shell.roomOrigin.originX) / scale;
+  const localY = (clickY - shell.roomOrigin.originY) / scale;
   const { gridX, gridY } = screenToGrid(localX, localY);
-  const furniture = findFurnitureAt(
-    shell.office,
-    gridX,
-    gridY
-  );
+  const furniture = findFurnitureAtScreen(shell.office, localX, localY)
+    || findFurnitureAt(shell.office, gridX, gridY);
 
   if (furniture) {
     const target = buildInteractTargetForPiece(
@@ -420,6 +425,8 @@ async function startOfficeShell() {
   }
 
   const bundle = await loadStarterOfficeBundle();
+  await loadSprites();
+  await document.fonts.ready;
   const staffLookup = staffById(bundle.staff);
   const economy = createEconomy(
     bundle.goals,
@@ -529,7 +536,7 @@ async function startOfficeShell() {
     shell.applyOfficeLayout(economy.currentOfficeId);
   }
 
-  shell.roomOrigin = buildRoomOrigin(
+  shell.roomOrigin = buildRoomView(
     shell.office.gridWidth,
     shell.office.gridHeight,
     stage.clientWidth,

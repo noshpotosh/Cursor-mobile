@@ -1,3 +1,4 @@
+import { gridToScreen } from './isoMath.js';
 import {
   BUBBLER_DRINK_LINE,
   COFFEE_SIP_LINE,
@@ -182,4 +183,26 @@ export function buildInteractTargetForPiece(
   }
 
   return buildTalkTarget(piece, person);
+}
+
+// Raised CRTs must select their desk rather than the floor behind them.
+const FURNITURE_HIT_BOUNDS = {
+  desk: { left: -49, right: 49, top: -70, bottom: 26 },
+  bubbler: { left: -13, right: 17, top: -65, bottom: 3 },
+  coffee: { left: -22, right: 27, top: -48, bottom: 8 },
+  whiteboard: { left: -30, right: 30, top: -61, bottom: 5 },
+};
+
+export function findFurnitureAtScreen(office, screenX, screenY) {
+  const frontToBack = [...office.furniture].sort((left, right) =>
+    right.gridX + right.gridY - left.gridX - left.gridY);
+  return frontToBack.find(piece => {
+    const bounds = FURNITURE_HIT_BOUNDS[piece.kind];
+    if (!bounds) return false;
+    const point = gridToScreen(piece.gridX, piece.gridY);
+    const x = screenX - point.screenX;
+    const y = screenY - point.screenY;
+    return x >= bounds.left && x <= bounds.right
+      && y >= bounds.top && y <= bounds.bottom;
+  }) || null;
 }

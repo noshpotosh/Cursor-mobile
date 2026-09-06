@@ -7,8 +7,8 @@
       content="width=device-width, initial-scale=1"
     />
     <title>Warewolf Virtual Office</title>
-    <link rel="stylesheet" href="css/office.css" />
-    <link rel="stylesheet" href="css/desktopOs.css" />
+    <link rel="stylesheet" href="css/office.css?v=art2" />
+    <link rel="stylesheet" href="css/desktopOs.css?v=pixel3" />
   </head>
   <body>
     <main class="stage" id="office-stage">
@@ -42,6 +42,10 @@
         id="interact-prompt"
         hidden
       ></p>
+      <p class="office-controls">
+        Click to walk &nbsp;·&nbsp; <kbd>E</kbd> interact
+        &nbsp;·&nbsp; <kbd>Esc</kbd> back &nbsp;·&nbsp; <kbd>M</kbd> sound
+      </p>
       <p class="office-toast" id="office-toast" hidden></p>
 
       <section
@@ -60,7 +64,6 @@
               class="desktop-icon-glyph teams-glyph"
               aria-hidden="true"
             >
-              <span class="icon-pictogram icon-chat"></span>
             </span>
             <span class="desktop-icon-label">Teams</span>
           </button>
@@ -73,7 +76,6 @@
               class="desktop-icon-glyph directory-glyph"
               aria-hidden="true"
             >
-              <span class="icon-pictogram icon-people"></span>
             </span>
             <span class="desktop-icon-label"
               >Directory</span
@@ -88,7 +90,6 @@
               class="desktop-icon-glyph goals-glyph"
               aria-hidden="true"
             >
-              <span class="icon-pictogram icon-flag"></span>
             </span>
             <span class="desktop-icon-label">Goals</span>
           </button>
@@ -101,7 +102,6 @@
               class="desktop-icon-glyph loft-glyph"
               aria-hidden="true"
             >
-              <span class="icon-pictogram icon-loft"></span>
             </span>
             <span class="desktop-icon-label">Loft</span>
           </button>
@@ -110,6 +110,13 @@
         <div class="desktop-window" hidden>
           <header class="window-chrome">
             <span class="window-title"></span>
+            <div class="window-controls">
+              <button type="button" class="window-minimize"
+                aria-label="Minimize window"><span></span></button>
+              <button type="button" class="window-maximize"
+                aria-label="Maximize window" aria-pressed="false">
+                <span></span>
+              </button>
             <button
               type="button"
               class="window-close"
@@ -117,15 +124,43 @@
             >
               ×
             </button>
+            </div>
           </header>
           <div class="window-body"></div>
         </div>
 
         <footer class="desktop-taskbar">
-          <button type="button" id="desktop-exit">
-            Leave desk
+          <button type="button" id="desktop-exit"
+            aria-label="Leave desk" title="Leave desk">
+            <span class="exit-glyph" aria-hidden="true">↩</span>
+            <span class="exit-label">Leave desk</span>
           </button>
-          <span class="taskbar-clock"></span>
+          <nav class="taskbar-apps" aria-label="Desktop apps">
+            <button type="button" class="taskbar-app" data-app="teams"
+              aria-pressed="false" aria-label="Teams" title="Teams">
+              <span class="taskbar-icon teams-glyph"></span>
+              <span class="taskbar-label">Teams</span>
+            </button>
+            <button type="button" class="taskbar-app" data-app="directory"
+              aria-pressed="false" aria-label="Directory" title="Directory">
+              <span class="taskbar-icon directory-glyph"></span>
+              <span class="taskbar-label">Directory</span>
+            </button>
+            <button type="button" class="taskbar-app" data-app="goals"
+              aria-pressed="false" aria-label="Goals" title="Goals">
+              <span class="taskbar-icon goals-glyph"></span>
+              <span class="taskbar-label">Goals</span>
+            </button>
+            <button type="button" class="taskbar-app" data-app="loft"
+              aria-pressed="false" aria-label="Loft" title="Loft">
+              <span class="taskbar-icon loft-glyph"></span>
+              <span class="taskbar-label">Loft</span>
+            </button>
+          </nav>
+          <button type="button" class="desktop-sound"
+            aria-label="Mute sound" aria-pressed="false"
+            title="Mute sound"><span aria-hidden="true"></span></button>
+          <time class="taskbar-clock"></time>
         </footer>
       </section>
     </main>
