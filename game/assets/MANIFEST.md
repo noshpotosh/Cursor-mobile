@@ -4,6 +4,19 @@ All runtime paths are relative to `game/assets/`; the game never loads the
 parked office project. Preserve source, export, import settings, and runtime
 consumer together when changing art.
 
+## Character animation
+
+- `characters/nosh-motion.png`: 384×96 RGBA sheet; eight 48×96 cells.
+- `characters/nosh-frames.tres`: native SpriteFrames; idle cell 0, run cells
+  1–6 at 10 fps, looping. Cell 7 is an unused alternate idle.
+- Origin: foot pivot `(24,74)` in each cell. One authored left-facing view,
+  mirrored for rightward travel. Six changing limb poses; no four-view claim.
+- Source: `art-source/characters/nosh-motion-source.png`, generated from
+  Nosh's accepted amber-hoodie appearance. Original RGBA retained unchanged.
+- Measured crops/export settings: `art-source/characters/nosh-motion.json`.
+- Tool and full prompts: `art-source/characters/nosh-provenance.md`.
+- Export: `tools/export_character_art.gd`; consumer: `scripts/player_actor.gd`.
+
 ## Desktop OS
 
 - `ui/desktop-symbols.png`: 520×40 atlas; thirteen 40×40 cells, in order:
@@ -42,7 +55,7 @@ selection, and window controls remain live; Teams messaging is not connected.
 - Consumer: `scripts/loft_world.gd`; legacy furniture regions remain in
   `scripts/atlas_sprites.gd`.
 - `characters/crew-idle.png`: 1536×1024 accepted office crew atlas, retained
-  as the current player idle. Nosh region `[252,3,202,493]`, drawn 26×60.
+  as Nosh's identity reference. The player now consumes the motion sheet.
 
 The older world atlases were accepted for the first vertical slice. Their
 large-image-to-small-sprite scaling remains known pixel-density debt, not a
