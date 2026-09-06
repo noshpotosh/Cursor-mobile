@@ -1,20 +1,20 @@
 import { polygon } from './pixelArt.js';
 import { drawSprite } from './sprites.js';
 
-const CHARACTER_WIDTH = 26;
-const CHARACTER_HEIGHT = 60;
-const SEATED_BODY_HEIGHT = 43;
+const CHARACTER_WIDTH = 52;
+const CHARACTER_HEIGHT = 120;
+const SEATED_BODY_HEIGHT = 86;
 
 export function drawCharacter(context, x, y, staffId, seated, bob) {
   context.save();
   context.translate(Math.round(x), Math.round(y + bob));
   if (!seated) {
-    polygon(context, [[-12, 0], [0, -5], [14, 0], [0, 5]],
+    polygon(context, [[-24, 0], [0, -10], [28, 0], [0, 10]],
       '#00000030', null);
   }
   if (seated) {
     context.beginPath();
-    context.rect(-16, -CHARACTER_HEIGHT, 32, SEATED_BODY_HEIGHT);
+    context.rect(-32, -CHARACTER_HEIGHT, 64, SEATED_BODY_HEIGHT);
     context.clip();
   }
   drawSprite(context, staffId, -CHARACTER_WIDTH / 2, -CHARACTER_HEIGHT,
@@ -24,18 +24,18 @@ export function drawCharacter(context, x, y, staffId, seated, bob) {
 
 export function drawNoshSilhouette(context, x, y, phase) {
   drawCharacter(context, x, y, 'nosh',
-    false, Math.sin(phase) * 1.5);
+    false, Math.sin(phase) * 3);
 }
 
 export function drawNpcSilhouette(
   context, x, y, staffId, seconds, reduceMotion, seated = false
 ) {
-  const bob = reduceMotion || seated ? 0 : Math.sin(seconds * 1.6) * 0.7;
+  const bob = reduceMotion || seated ? 0 : Math.sin(seconds * 1.6) * 1.4;
   drawCharacter(context, x, y, staffId, seated, bob);
 }
 
 export function drawPortrait(canvas, staffId) {
-  const portraitSize = 96;
+  const portraitSize = 192;
   canvas.width = portraitSize;
   canvas.height = portraitSize;
   drawSprite(canvas.getContext('2d'), `${staffId}-portrait`,

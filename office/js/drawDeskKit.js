@@ -3,36 +3,38 @@ import { Paint, polygon, rect, line, drawPlant } from './pixelArt.js';
 import { drawSprite } from './sprites.js';
 
 export function drawDeskPlant(context, centerX, centerY) {
-  drawPlant(context, centerX + 26, centerY - 14, 0.5);
+  drawPlant(context, centerX + 52, centerY - 28, 1.0);
 }
 
 export function drawDeskLamp(context, centerX, centerY) {
   context.save();
-  context.translate(centerX - 27, centerY - 24);
-  polygon(context, [[-12, 16], [9, 25], [22, 15], [0, 5]],
+  context.translate(centerX - 54, centerY - 48);
+  polygon(context, [[-24, 32], [18, 50], [44, 30], [0, 10]],
     '#d9ab63', null);
-  rect(context, -5, 7, 12, 3, Paint.ink);
-  line(context, [[1, 8], [1, -17], [9, -23], [15, -21]],
-    Paint.ink, 3);
-  polygon(context, [[10, -23], [16, -23], [21, -15], [7, -15]],
+  rect(context, -10, 14, 24, 6, Paint.ink);
+  line(context, [[2, 16], [2, -34], [18, -46], [30, -42]],
+    Paint.ink, 6);
+  polygon(context, [[20, -46], [32, -46], [42, -30], [14, -30]],
     Paint.chair);
-  rect(context, 9, -15, 10, 2, '#ffe3a1');
+  rect(context, 18, -30, 20, 4, '#ffe3a1');
   context.restore();
 }
 
 export function drawDeskChair(context, x, y, betterChairs) {
-  const sprite = betterChairs ? 'chair-better' : 'chair';
-  const height = betterChairs ? 49 : 43;
-  drawSprite(context, sprite, x + 11, y + 32 - height, 31, height);
+  if (betterChairs) {
+    drawSprite(context, 'chair-better', x + 22, y - 34, 62, 98);
+  } else {
+    drawSprite(context, 'chair-pixellab', x - 64, y - 64, 128, 128);
+  }
 }
 
 export function drawDesk(context, x, y, isPlayerDesk, upgrades) {
   context.save();
   context.translate(Math.round(x), Math.round(y));
-  polygon(context, [[-45, 8], [3, -15], [50, 8], [1, 33]],
+  polygon(context, [[-90, 16], [6, -30], [100, 16], [2, 66]],
     '#00000025', null);
-  drawSprite(context, 'desk', -49, -70, 98, 94);
-  if (isPlayerDesk) rect(context, 9, -42, 3, 3, '#e9ae46');
+  drawSprite(context, 'desk-with-monitor', -64, -128, 128, 128);
+  if (isPlayerDesk) rect(context, 18, -84, 6, 6, '#e9ae46');
   if (upgrades[UpgradeId.DESK_PLANTS]) drawDeskPlant(context, 0, 0);
   if (upgrades[UpgradeId.DESK_LAMPS]) drawDeskLamp(context, 0, 0);
   context.restore();

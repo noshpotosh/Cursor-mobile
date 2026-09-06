@@ -1,5 +1,5 @@
-export const TILE_WIDTH_PX = 64;
-export const TILE_HEIGHT_PX = 32;
+export const TILE_WIDTH_PX = 128;
+export const TILE_HEIGHT_PX = 64;
 
 export const FurnitureKind = {
   DESK: "desk",

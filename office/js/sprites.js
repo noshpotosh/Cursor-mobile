@@ -25,6 +25,18 @@ const SPRITE_SHEETS = [
     },
   },
   {
+    path: 'characters/nosh-motion.png',
+    frames: {
+      'nosh-idle': [0, 0, 48, 96],
+      'nosh-run-1': [48, 0, 48, 96],
+      'nosh-run-2': [96, 0, 48, 96],
+      'nosh-run-3': [144, 0, 48, 96],
+      'nosh-run-4': [192, 0, 48, 96],
+      'nosh-run-5': [240, 0, 48, 96],
+      'nosh-run-6': [288, 0, 48, 96],
+    },
+  },
+  {
     path: 'furniture/desk-crt.png',
     frames: { desk: [140, 167, 983, 934] },
   },
@@ -41,6 +53,18 @@ const SPRITE_SHEETS = [
   },
 ];
 
+const SINGLE_SPRITES = [
+  { id: 'floor-carpet', path: 'tiles/floor-carpet.png' },
+  { id: 'floor-wood', path: 'tiles/floor-wood-border.png' },
+  { id: 'desk-pixellab', path: 'furniture/desk-basic.png' },
+  { id: 'chair-pixellab', path: 'furniture/chair-basic.png' },
+  { id: 'monitor-crt', path: 'furniture/monitor-crt.png' },
+  { id: 'bubbler-pixellab', path: 'furniture/bubbler.png' },
+  { id: 'coffee-pixellab', path: 'furniture/coffee-station.png' },
+  { id: 'whiteboard-pixellab', path: 'furniture/whiteboard.png' },
+  { id: 'desk-with-monitor', path: 'furniture/desk-with-monitor.png' },
+];
+
 async function loadSheet(sheet) {
   const image = new Image();
   image.src = new URL(`../assets/${sheet.path}`, import.meta.url);
@@ -50,8 +74,18 @@ async function loadSheet(sheet) {
   }
 }
 
+async function loadSingleSprite(entry) {
+  const image = new Image();
+  image.src = new URL(`../assets/${entry.path}`, import.meta.url);
+  await image.decode();
+  sprites.set(entry.id, { image, crop: null });
+}
+
 export async function loadSprites() {
-  await Promise.all(SPRITE_SHEETS.map(loadSheet));
+  await Promise.all([
+    ...SPRITE_SHEETS.map(loadSheet),
+    ...SINGLE_SPRITES.map(loadSingleSprite),
+  ]);
 }
 
 export function drawSprite(context, id, x, y, width, height) {
@@ -59,7 +93,21 @@ export function drawSprite(context, id, x, y, width, height) {
   if (!sprite) return false;
 
   context.imageSmoothingEnabled = false;
-  context.drawImage(sprite.image, ...sprite.crop,
-    Math.round(x), Math.round(y), width, height);
+  if (sprite.crop) {
+    context.drawImage(sprite.image, ...sprite.crop,
+      Math.round(x), Math.round(y), width, height);
+  } else {
+    context.drawImage(sprite.image,
+      Math.round(x), Math.round(y), width, height);
+  }
+  return true;
+}
+
+export function drawSpriteNative(context, id, x, y) {
+  const sprite = sprites.get(id);
+  if (!sprite) return false;
+
+  context.imageSmoothingEnabled = false;
+  context.drawImage(sprite.image, Math.round(x), Math.round(y));
   return true;
 }
