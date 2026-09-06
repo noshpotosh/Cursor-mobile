@@ -13,6 +13,9 @@ func _ready() -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if _hud.is_open():
+		if event.is_action_pressed("ui_cancel"):
+			_hud.hide_desk()
+			get_viewport().set_input_as_handled()
 		return
 
 	if event is InputEventMouseButton:

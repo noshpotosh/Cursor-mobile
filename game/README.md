@@ -44,7 +44,9 @@ Expect `SMOKE_OK`.
 
 - Starter loft floor from tile PNGs
 - Click or tap a floor cell to walk (shared input path)
-- Click/tap the desk (or walk beside it) to open the stub **Desk** panel
+- Click/tap the desk (or walk beside it) to open **desk desktop OS**
+  (wallpaper, Teams/Directory icons, taskbar, loft bucks chrome)
+- Esc or Leave desk to return to the loft
 - Nearest-neighbor filtering; y-sorted actors
 
 ## Layout
