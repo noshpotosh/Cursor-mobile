@@ -49,8 +49,9 @@ persona as teammate-owned.
 
 ## Non-negotiable locks
 
-- Nosh alone merges to `main`. Agents may open or update scoped PRs but must not
-  merge without Nosh explicitly authorizing that specific PR.
+- Only Nosh or Fabrizio may merge to `main`. Other agents may open or update
+  scoped PRs but must not merge without Nosh or Fabrizio explicitly authorizing
+  that specific PR. No Cursor auto-merge by default.
 - Keep one concern per branch and PR. Split independently revertible work.
 - Easy-to-read, easy-to-understand code and KISS are the top software
   principles. Apply `docs/coding-standards.md`, not a watered-down summary.

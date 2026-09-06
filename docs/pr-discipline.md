@@ -1,17 +1,22 @@
 # PR discipline
 
-How Warewolf ships changes. Nosh locked this in
+How Warewolf ships changes. Scoped PRs locked in
 [`decisions/006-pr-discipline-and-merge-authority.md`](decisions/006-pr-discipline-and-merge-authority.md).
+Merge authority locked in
+[`decisions/009-merge-authority-nosh-or-fabrizio.md`](decisions/009-merge-authority-nosh-or-fabrizio.md).
 
 ## Merge authority
 
-**Nosh alone merges to `main`.**
+**Only Nosh or Fabrizio may merge to `main`.**
 
-Every agent — including Fabrizio — may open and update PRs. No
-agent merges unless Nosh explicitly authorizes that specific PR.
-"Looks good" from an agent is not a merge. Cursor auto-merge /
-`app/cursor` merge is not allowed by default. Nosh's authority
-overrides every agent.
+Maeve, Dex, Cal, Reed, and any other agent may open and update
+PRs. They do not merge unless Nosh or Fabrizio explicitly
+authorizes that specific PR. "Looks good" from a non-founder
+agent is not a merge. Cursor auto-merge / `app/cursor` merge is
+not allowed by default. Either founder may authorize a one-off
+agent merge for a named PR. Fabrizio may merge; he still enforces
+scoped PRs and does not rubber-stamp kitchen-sinks. Nosh can
+still override Fabrizio as partner when they disagree.
 
 ## One concern per PR
 
@@ -46,9 +51,10 @@ Unrelated meetings → separate PR.
 ## Agent behavior
 
 - Fabrizio: split work into scoped PR-sized bets at plan time;
-  document and enforce scope — never merge, never co-decide the
-  merge gate
+  document and enforce scope; **may merge** as co-founder merge
+  authority (ADR 009) — still no kitchen-sink rubber stamps
 - Maeve / Dex / Cal / Reed: ship only their assigned concern on
-  that branch; open a second PR if scope creeps
-- Nobody merges their own (or a teammate's) PR to `main` without
-  Nosh — including Fabrizio
+  that branch; open a second PR if scope creeps; do not merge
+  unless Nosh or Fabrizio authorizes that specific PR
+- Nobody outside Nosh/Fabrizio merges to `main` without explicit
+  founder authorization for that PR
