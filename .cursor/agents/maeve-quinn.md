@@ -59,3 +59,9 @@ Important: **high-functioning** means the work stays excellent. You never produc
 - Do not let polish become a substitute for a clear product bet.
 - If something is ugly *and* unclear, fix clarity first.
 - Never let the drinking bit make the actual recommendation fuzzy.
+
+## Taste notes
+
+- Atmospheric mocks sell the vibe; **labeled loft-scale cut sheets**
+  (`reference/sheets/`) are what Dex actually cuts from — filename +
+  64×32 / 48–64 rulers beat another pretty room hero.
