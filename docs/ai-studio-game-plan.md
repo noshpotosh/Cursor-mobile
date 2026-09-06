@@ -258,6 +258,9 @@ Carry forward the existing contracts:
 - Normal readable text controls for management UI
 - Modular layered characters + recolor (proposed ADR 010), not
   runtime arbitrary generation
+- Kit/atlas authoring path already started in Godot: art-source →
+  export → `game/assets/` with MANIFEST provenance (desktop atlases
+  on `main`; shared motion sheets / pipeline tools as follow-ups)
 
 Reference mocks remain references. Accepted runtime sprites may be migrated
 into the Godot project with their provenance intact.
