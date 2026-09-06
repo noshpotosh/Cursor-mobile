@@ -2,8 +2,10 @@ extends CharacterBody2D
 
 signal arrived
 
-const MOVE_SPEED := 120.0
+const MOVE_SPEED := 240.0
 const FRAMES := preload("res://assets/characters/nosh-frames.tres")
+## Temporary until crew art is regenerated at ADR 010 world scale.
+const WORLD_SCALE := 2.0
 
 var grid_pos := Vector2i.ZERO
 var body := AnimatedSprite2D.new()
@@ -17,6 +19,7 @@ func _ready() -> void:
 	var foot_pivot: Vector2 = FRAMES.get_meta("foot_pivot")
 	body.offset = -foot_pivot
 	body.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	body.scale = Vector2(WORLD_SCALE, WORLD_SCALE)
 	add_child(body)
 	_idle()
 

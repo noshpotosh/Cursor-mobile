@@ -7,6 +7,8 @@ extends Node2D
 
 func _ready() -> void:
 	_world.desk_used.connect(_hud.show_desk)
+	# ADR 010: 128×64 tiles are 2× prior; zoom keeps loft in 1280×720.
+	_camera.zoom = Vector2(0.5, 0.5)
 	_camera.position = IsoMath.grid_to_screen(4, 3)
 	_camera.make_current()
 

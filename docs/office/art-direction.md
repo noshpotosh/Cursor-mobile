@@ -27,7 +27,10 @@ Labeled atlas guides at **1× loft px** — Dex cuts pipeline PNGs from these, n
 - [`sheets/character-sprites-sheet.png`](../../office/assets/reference/sheets/character-sprites-sheet.png) — crew idle (+ Nosh walk) at 48–64 px
 - [`sheets/upgrade-overlays-sheet.png`](../../office/assets/reference/sheets/upgrade-overlays-sheet.png) — catalog overlays only
 
-Still reference-only (not loaded by the game). Contracts: 2:1 iso, tile diamond 64×32, characters 48–64 px, 1px ink `#1A1714`, pipeline filenames as labels.
+Still reference-only (not loaded by the game). Contracts: 2:1 iso,
+tile diamond **128×64** (ADR 010; mocks still show 64×32 rulers),
+props **128×128**, characters ~96–128 px tall once regenerated,
+1px ink `#1A1714`, pipeline filenames as labels.
 
 ## The vibe
 
@@ -52,9 +55,10 @@ No purple gradients. No glassmorphism. Amber is the brand spark — use it like 
 ## Camera + grid
 
 - **Projection:** classic 2:1 isometric
-- **Base tile:** 64×32 px diamond (logical); art may be drawn at 2× for crispness
-- **Character height:** ~48–64 px tall so silhouettes read at room scale
-- **Room fit:** entire starter office visible without pan on a 1280×720 viewport
+- **Base tile:** **128×64** px diamond (locked — [ADR 010](../decisions/010-128px-world-art-standard.md)). Older mocks use 64×32 rulers; treat those as half-scale guides.
+- **Props:** **128×128** canvases for furniture / interactables
+- **Character height:** ~96–128 px tall at room scale (current Nosh sheet is temporarily ×2 until regen)
+- **Room fit:** entire starter office visible without pan on a 1280×720 viewport (camera zoom, not downscaled art)
 
 ## Floor kit
 

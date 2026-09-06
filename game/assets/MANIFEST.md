@@ -62,19 +62,20 @@ art. Screenshots and fragments are never runtime textures. Text, clock,
 search, employee selection, and window controls remain live; Teams
 messaging is not connected.
 
-## Existing world art
+## World art (starter loft) — ADR 010
 
-- `tiles/floor-carpet.png` and `floor-wood-border.png`: authored 64×32
-  diamonds in the art-direction carpet/clay/ink palette; displayed 1:1.
-- `furniture/desk-crt.png`: 1254×1254 accepted office atlas; desk region
-  `[140,167,983,934]`, displayed 98×94.
-- `furniture/loft-props.png`: 1536×1024 accepted office atlas; chair region
-  `[138,570,291,415]`, displayed 31×43.
-- Consumer: `scripts/loft_world.gd`; legacy furniture regions remain in
-  `scripts/atlas_sprites.gd`.
-- `characters/crew-idle.png`: 1536×1024 accepted office crew atlas, retained
-  as Nosh's identity reference. The player now consumes the motion sheet.
+- `tiles/floor-carpet.png` and `floor-wood-border.png`: **128×64**
+  isometric diamonds (PixelLab tiles-pro; carpet = var 0, wood =
+  var 3). Displayed 1:1.
+- `furniture/desk-with-monitor.png`: **128×128** desk + CRT composite
+  for every crew desk (`desk-basic` + scaled `monitor-crt`).
+- `furniture/chair-basic.png`, `bubbler.png`, `coffee-station.png`,
+  `whiteboard.png`: **128×128** props.
+- Provenance: `art-source/maps/pixellab-office/README.md`.
+- Consumer: `scripts/loft_world.gd` + `data/starter_loft.json`.
+- `IsoMath` tile size is 128×64; camera zoom ~0.5 fits 1280×720.
+- Nosh motion sheet is temporarily scaled ×2 until character regen.
+- `characters/crew-idle.png`: identity reference; player uses motion.
 
-The older world atlases were accepted for the first vertical slice. Their
-large-image-to-small-sprite scaling remains known pixel-density debt, not a
-pattern to copy when authoring new assets.
+Legacy atlases `furniture/desk-crt.png` and `furniture/loft-props.png`
+remain for reference; the loft no longer loads them.

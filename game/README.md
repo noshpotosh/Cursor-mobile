@@ -60,7 +60,7 @@ Expect `SMOKE_OK` and `ANIMATION_OK`.
 | Path | Role |
 | --- | --- |
 | `assets/` | Art pack from Maeve’s P1 brief |
-| `data/starter_loft.json` | Trimmed 10×8 loft (desk + chair) |
+| `data/starter_loft.json` | 10×8 loft (crew desks, bubbler, coffee, whiteboard) |
 | `scenes/main.tscn` | Main scene |
 | `scripts/` | Iso math, loft world, player, HUD |
 
