@@ -13,19 +13,42 @@ import {
 
 const STAGE_FILL = "#242521";
 const PATH_MARKER = 0xd97706;
+const DOOR_TEXTURE_KEY = "door-marker";
 
 const CHARACTER_WIDTH = 52;
 const CHARACTER_HEIGHT = 120;
 const DESK_WIDTH = 128;
 const DESK_HEIGHT = 128;
 const PROP_SIZE = 128;
+const DOOR_WIDTH = 56;
+const DOOR_HEIGHT = 96;
 
 const FURNITURE_TEXTURE = {
   [FurnitureKind.DESK]: "desk-with-monitor",
   [FurnitureKind.BUBBLER]: "bubbler-pixellab",
   [FurnitureKind.COFFEE]: "coffee-pixellab",
   [FurnitureKind.WHITEBOARD]: "whiteboard-pixellab",
+  [FurnitureKind.DOOR]: DOOR_TEXTURE_KEY,
 };
+
+function ensureDoorTexture(scene) {
+  if (scene.textures.exists(DOOR_TEXTURE_KEY)) {
+    return;
+  }
+
+  const width = 48;
+  const height = 80;
+  const graphics = scene.make.graphics({ x: 0, y: 0 });
+
+  graphics.fillStyle(0x3a3228, 1);
+  graphics.fillRect(0, 0, width, height);
+  graphics.fillStyle(0x6b5340, 1);
+  graphics.fillRect(4, 4, width - 8, height - 8);
+  graphics.fillStyle(0xd7ae67, 1);
+  graphics.fillCircle(width - 14, height / 2, 4);
+  graphics.generateTexture(DOOR_TEXTURE_KEY, width, height);
+  graphics.destroy();
+}
 
 function requirePhaser() {
   const Phaser = window.Phaser;
@@ -79,6 +102,7 @@ function createLoftScene(Phaser, host) {
 
     create() {
       registerAtlasFrames(this.textures);
+      ensureDoorTexture(this);
       this.cameras.main.setBackgroundColor(STAGE_FILL);
       this.worldRoot = this.add.container(0, 0);
       this.floorLayer = this.add.container(0, 0);
@@ -182,8 +206,25 @@ function createLoftScene(Phaser, host) {
       for (const piece of shell.office.furniture) {
         const id = `furniture:${piece.id}`;
         const textureKey = FURNITURE_TEXTURE[piece.kind];
-        const size =
-          piece.kind === FurnitureKind.DESK ? DESK_WIDTH : PROP_SIZE;
+
+        if (!textureKey) {
+          continue;
+        }
+
+        let size = PROP_SIZE;
+
+        if (piece.kind === FurnitureKind.DESK) {
+          size = DESK_WIDTH;
+        }
+
+        if (piece.kind === FurnitureKind.DOOR) {
+          size = DOOR_WIDTH;
+        }
+
+        const drawHeight =
+          piece.kind === FurnitureKind.DOOR
+            ? DOOR_HEIGHT
+            : size;
 
         wantedIds.add(id);
         this.upsertImage(
@@ -193,7 +234,7 @@ function createLoftScene(Phaser, host) {
           textureKey,
           null,
           size,
-          size
+          drawHeight
         );
 
         if (piece.kind !== FurnitureKind.DESK) {

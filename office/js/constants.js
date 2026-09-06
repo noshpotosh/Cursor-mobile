@@ -6,6 +6,17 @@ export const FurnitureKind = {
   BUBBLER: "bubbler",
   COFFEE: "coffee",
   WHITEBOARD: "whiteboard",
+  DOOR: "door",
+};
+
+export const RoomId = {
+  FOUNDERS_OFFICE: "founders-office",
+  SHARED_LOFT: "shared-loft",
+};
+
+export const LayoutSource = {
+  FIXED: "fixed",
+  ECONOMY: "economy",
 };
 
 export const PLAYER_STAFF_ID = "nosh";
@@ -43,7 +54,14 @@ export const InteractKind = {
   SIP_COFFEE: "sip-coffee",
   READ_BOARD: "read-board",
   USE_PC: "use-pc",
+  USE_DOOR: "use-door",
 };
+
+// ADR 002: brief flash while swapping rooms (~150–300ms).
+export const ROOM_FLASH_MS = 220;
+export const ROOM_FLASH_REDUCED_MS = 40;
+// Minimum fade-out so the overlay always clears after mid-swap.
+export const ROOM_FLASH_FADE_OUT_MIN_MS = 40;
 
 // Distinct jackets so staff read apart from amber Nosh.
 export const NpcJacketFill = {
@@ -147,6 +165,10 @@ export const UpgradeId = {
 };
 
 export const STARTER_OFFICE_ID = "starter-loft";
+
+// ADR 002: player walks; crew stay seated until station-snap.
+export const NPC_LOFT_MOTION_ENABLED = false;
+
 export const NPC_BUBBLER_VISIT_SECONDS = 18;
 export const NPC_BUBBLER_DWELL_SECONDS = 2.5;
 export const NPC_MOVE_TILES_PER_SECOND = 2.4;
