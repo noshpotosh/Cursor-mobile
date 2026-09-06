@@ -44,6 +44,7 @@ import {
   requestPlayerWalk,
   updatePlayer,
 } from "./player.js";
+import { loadSprites } from "./sprites.js";
 import {
   buildWalkMap,
   findAdjacentWalkable,
@@ -362,6 +363,7 @@ async function startOfficeShell() {
   }
 
   const bundle = await loadStarterOfficeBundle();
+  await loadSprites();
   await document.fonts.ready;
   const staffLookup = staffById(bundle.staff);
   const economy = createEconomy(

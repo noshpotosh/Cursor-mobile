@@ -4,13 +4,42 @@ import {
   TILE_WIDTH_PX,
 } from "./constants.js";
 import { buildRoomView, gridToScreen, screenToGrid } from "./isoMath.js";
+import { isPlayerMoving } from "./player.js";
+import { SPRITE_SHEETS, spriteAssetUrl } from "./sprites.js";
 
 const FLOOR_FILL = 0xc9b8a6;
 const BORDER_FILL = 0x8b603c;
-const DESK_FILL = 0x6b5344;
-const PROP_FILL = 0x5c6b73;
-const PLAYER_FILL = 0xd97706;
 const STAGE_FILL = "#242521";
+const PATH_MARKER = 0xd97706;
+
+const CHARACTER_WIDTH = 26;
+const CHARACTER_HEIGHT = 60;
+const DESK_WIDTH = 72;
+const DESK_HEIGHT = 68;
+const PROP_WIDTH = {
+  bubbler: 28,
+  coffee: 40,
+  whiteboard: 48,
+};
+const PROP_HEIGHT = {
+  bubbler: 64,
+  coffee: 56,
+  whiteboard: 58,
+};
+
+const FURNITURE_FRAME = {
+  [FurnitureKind.DESK]: "desk",
+  [FurnitureKind.BUBBLER]: "bubbler",
+  [FurnitureKind.COFFEE]: "coffee",
+  [FurnitureKind.WHITEBOARD]: "whiteboard",
+};
+
+const FURNITURE_SHEET = {
+  desk: "furniture/desk-crt.png",
+  bubbler: "furniture/loft-props.png",
+  coffee: "furniture/loft-props.png",
+  whiteboard: "furniture/loft-props.png",
+};
 
 function requirePhaser() {
   const Phaser = window.Phaser;
@@ -26,7 +55,7 @@ function drawIsoDiamond(graphics, screenX, screenY, fill) {
   const halfWidth = TILE_WIDTH_PX / 2;
   const halfHeight = TILE_HEIGHT_PX / 2;
 
-  graphics.fillStyle(fill);
+  graphics.fillStyle(fill, 1);
   graphics.beginPath();
   graphics.moveTo(screenX, screenY - halfHeight);
   graphics.lineTo(screenX + halfWidth, screenY);
@@ -36,12 +65,24 @@ function drawIsoDiamond(graphics, screenX, screenY, fill) {
   graphics.fillPath();
 }
 
-function furnitureFill(kind) {
-  if (kind === FurnitureKind.DESK) {
-    return DESK_FILL;
-  }
+function registerAtlasFrames(textures) {
+  for (const sheet of SPRITE_SHEETS) {
+    if (!textures.exists(sheet.path)) {
+      continue;
+    }
 
-  return PROP_FILL;
+    const texture = textures.get(sheet.path);
+
+    for (const [frameId, crop] of Object.entries(sheet.frames)) {
+      const [x, y, width, height] = crop;
+
+      if (texture.has(frameId)) {
+        continue;
+      }
+
+      texture.add(frameId, 0, x, y, width, height);
+    }
+  }
 }
 
 function createLoftScene(Phaser, host) {
@@ -54,11 +95,20 @@ function createLoftScene(Phaser, host) {
       this.lastHeight = 0;
     }
 
+    preload() {
+      for (const sheet of SPRITE_SHEETS) {
+        this.load.image(sheet.path, spriteAssetUrl(sheet.path));
+      }
+    }
+
     create() {
+      registerAtlasFrames(this.textures);
       this.cameras.main.setBackgroundColor(STAGE_FILL);
       this.worldRoot = this.add.container(0, 0);
       this.floorGraphics = this.add.graphics();
       this.worldRoot.add(this.floorGraphics);
+      this.pathMarker = this.add.graphics();
+      this.worldRoot.add(this.pathMarker);
       this.entityLayer = this.add.container(0, 0);
       this.worldRoot.add(this.entityLayer);
       this.entitySprites = new Map();
@@ -141,28 +191,96 @@ function createLoftScene(Phaser, host) {
 
     syncEntities(shell) {
       const wantedIds = new Set();
+      const reduced = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      ).matches;
 
       for (const piece of shell.office.furniture) {
         const id = `furniture:${piece.id}`;
+        const frame = FURNITURE_FRAME[piece.kind];
 
         wantedIds.add(id);
-        this.upsertMarker(
+        this.upsertSprite(
           id,
           piece.gridX,
           piece.gridY,
-          furnitureFill(piece.kind),
-          piece.kind === FurnitureKind.DESK ? 36 : 28
+          FURNITURE_SHEET[frame],
+          frame,
+          piece.kind === FurnitureKind.DESK
+            ? DESK_WIDTH
+            : PROP_WIDTH[frame],
+          piece.kind === FurnitureKind.DESK
+            ? DESK_HEIGHT
+            : PROP_HEIGHT[frame]
+        );
+
+        if (piece.kind !== FurnitureKind.DESK) {
+          continue;
+        }
+
+        const occupant = shell.npcs.find(
+          (npc) => npc.deskId === piece.id && npc.atDesk
+        );
+
+        if (!occupant) {
+          continue;
+        }
+
+        const seatedId = `npc-seated:${occupant.staffId}`;
+
+        wantedIds.add(seatedId);
+        this.upsertSprite(
+          seatedId,
+          piece.gridX,
+          piece.gridY,
+          "characters/crew-idle.png",
+          occupant.staffId,
+          CHARACTER_WIDTH,
+          CHARACTER_HEIGHT,
+          0.55,
+          0.95
         );
       }
 
+      for (const npc of shell.npcs) {
+        if (npc.atDesk) {
+          continue;
+        }
+
+        const id = `npc-walk:${npc.staffId}`;
+
+        wantedIds.add(id);
+        this.upsertSprite(
+          id,
+          npc.gridX,
+          npc.gridY,
+          "characters/crew-idle.png",
+          npc.staffId,
+          CHARACTER_WIDTH,
+          CHARACTER_HEIGHT
+        );
+      }
+
+      const bob =
+        isPlayerMoving(shell.player) && !reduced
+          ? Math.sin(shell.player.walkBobPhase) * 1.5
+          : 0;
+
       wantedIds.add("player:nosh");
-      this.upsertMarker(
+      this.upsertSprite(
         "player:nosh",
         shell.player.gridX,
         shell.player.gridY,
-        PLAYER_FILL,
-        22
+        "characters/crew-idle.png",
+        "nosh",
+        CHARACTER_WIDTH,
+        CHARACTER_HEIGHT,
+        0.5,
+        0.95,
+        bob
       );
+
+      this.drawPathMarker(shell, reduced);
 
       for (const [id, sprite] of this.entitySprites) {
         if (wantedIds.has(id)) {
@@ -176,18 +294,57 @@ function createLoftScene(Phaser, host) {
       this.sortEntities();
     }
 
-    upsertMarker(id, gridX, gridY, fill, size) {
+    drawPathMarker(shell, reduced) {
+      this.pathMarker.clear();
+
+      if (reduced || !isPlayerMoving(shell.player)) {
+        return;
+      }
+
+      const target = shell.player.path[shell.player.path.length - 1];
+
+      if (!target) {
+        return;
+      }
+
+      const point = gridToScreen(target.gridX, target.gridY);
+
+      this.pathMarker.fillStyle(PATH_MARKER, 0.2);
+      this.pathMarker.lineStyle(1, 0xd7ae67, 1);
+      this.pathMarker.beginPath();
+      this.pathMarker.moveTo(point.screenX, point.screenY - 11);
+      this.pathMarker.lineTo(point.screenX + 22, point.screenY);
+      this.pathMarker.lineTo(point.screenX, point.screenY + 11);
+      this.pathMarker.lineTo(point.screenX - 22, point.screenY);
+      this.pathMarker.closePath();
+      this.pathMarker.fillPath();
+      this.pathMarker.strokePath();
+    }
+
+    upsertSprite(
+      id,
+      gridX,
+      gridY,
+      sheetKey,
+      frame,
+      width,
+      height,
+      originX = 0.5,
+      originY = 0.92,
+      bobY = 0
+    ) {
       let sprite = this.entitySprites.get(id);
       const point = gridToScreen(gridX, gridY);
 
       if (!sprite) {
-        sprite = this.add.rectangle(0, 0, size, size, fill);
-        sprite.setOrigin(0.5, 0.85);
+        sprite = this.add.image(0, 0, sheetKey, frame);
+        sprite.setOrigin(originX, originY);
         this.entityLayer.add(sprite);
         this.entitySprites.set(id, sprite);
       }
 
-      sprite.setPosition(point.screenX, point.screenY);
+      sprite.setDisplaySize(width, height);
+      sprite.setPosition(point.screenX, point.screenY + bobY);
       sprite.setData("depth", gridX + gridY);
     }
 
