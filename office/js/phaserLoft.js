@@ -5,40 +5,26 @@ import {
 } from "./constants.js";
 import { buildRoomView, gridToScreen, screenToGrid } from "./isoMath.js";
 import { isPlayerMoving } from "./player.js";
-import { SPRITE_SHEETS, spriteAssetUrl } from "./sprites.js";
+import {
+  SINGLE_SPRITES,
+  SPRITE_SHEETS,
+  spriteAssetUrl,
+} from "./sprites.js";
 
-const FLOOR_FILL = 0xc9b8a6;
-const BORDER_FILL = 0x8b603c;
 const STAGE_FILL = "#242521";
 const PATH_MARKER = 0xd97706;
 
-const CHARACTER_WIDTH = 26;
-const CHARACTER_HEIGHT = 60;
-const DESK_WIDTH = 72;
-const DESK_HEIGHT = 68;
-const PROP_WIDTH = {
-  bubbler: 28,
-  coffee: 40,
-  whiteboard: 48,
-};
-const PROP_HEIGHT = {
-  bubbler: 64,
-  coffee: 56,
-  whiteboard: 58,
-};
+const CHARACTER_WIDTH = 52;
+const CHARACTER_HEIGHT = 120;
+const DESK_WIDTH = 128;
+const DESK_HEIGHT = 128;
+const PROP_SIZE = 128;
 
-const FURNITURE_FRAME = {
-  [FurnitureKind.DESK]: "desk",
-  [FurnitureKind.BUBBLER]: "bubbler",
-  [FurnitureKind.COFFEE]: "coffee",
-  [FurnitureKind.WHITEBOARD]: "whiteboard",
-};
-
-const FURNITURE_SHEET = {
-  desk: "furniture/desk-crt.png",
-  bubbler: "furniture/loft-props.png",
-  coffee: "furniture/loft-props.png",
-  whiteboard: "furniture/loft-props.png",
+const FURNITURE_TEXTURE = {
+  [FurnitureKind.DESK]: "desk-with-monitor",
+  [FurnitureKind.BUBBLER]: "bubbler-pixellab",
+  [FurnitureKind.COFFEE]: "coffee-pixellab",
+  [FurnitureKind.WHITEBOARD]: "whiteboard-pixellab",
 };
 
 function requirePhaser() {
@@ -49,20 +35,6 @@ function requirePhaser() {
   }
 
   return Phaser;
-}
-
-function drawIsoDiamond(graphics, screenX, screenY, fill) {
-  const halfWidth = TILE_WIDTH_PX / 2;
-  const halfHeight = TILE_HEIGHT_PX / 2;
-
-  graphics.fillStyle(fill, 1);
-  graphics.beginPath();
-  graphics.moveTo(screenX, screenY - halfHeight);
-  graphics.lineTo(screenX + halfWidth, screenY);
-  graphics.lineTo(screenX, screenY + halfHeight);
-  graphics.lineTo(screenX - halfWidth, screenY);
-  graphics.closePath();
-  graphics.fillPath();
 }
 
 function registerAtlasFrames(textures) {
@@ -99,19 +71,24 @@ function createLoftScene(Phaser, host) {
       for (const sheet of SPRITE_SHEETS) {
         this.load.image(sheet.path, spriteAssetUrl(sheet.path));
       }
+
+      for (const entry of SINGLE_SPRITES) {
+        this.load.image(entry.id, spriteAssetUrl(entry.path));
+      }
     }
 
     create() {
       registerAtlasFrames(this.textures);
       this.cameras.main.setBackgroundColor(STAGE_FILL);
       this.worldRoot = this.add.container(0, 0);
-      this.floorGraphics = this.add.graphics();
-      this.worldRoot.add(this.floorGraphics);
+      this.floorLayer = this.add.container(0, 0);
+      this.worldRoot.add(this.floorLayer);
       this.pathMarker = this.add.graphics();
       this.worldRoot.add(this.pathMarker);
       this.entityLayer = this.add.container(0, 0);
       this.worldRoot.add(this.entityLayer);
       this.entitySprites = new Map();
+      this.floorTiles = [];
 
       this.input.on("pointerdown", (pointer) => {
         this.handlePointer(pointer);
@@ -154,7 +131,11 @@ function createLoftScene(Phaser, host) {
     }
 
     drawFloor(office) {
-      this.floorGraphics.clear();
+      for (const tile of this.floorTiles) {
+        tile.destroy();
+      }
+
+      this.floorTiles = [];
 
       for (let gridY = 0; gridY < office.gridHeight; gridY += 1) {
         for (let gridX = 0; gridX < office.gridWidth; gridX += 1) {
@@ -164,14 +145,17 @@ function createLoftScene(Phaser, host) {
             || gridY === 0
             || gridX === office.gridWidth - 1
             || gridY === office.gridHeight - 1;
-          const fill = onBorder ? BORDER_FILL : FLOOR_FILL;
-
-          drawIsoDiamond(
-            this.floorGraphics,
+          const key = onBorder ? "floor-wood" : "floor-carpet";
+          const tile = this.add.image(
             point.screenX,
             point.screenY,
-            fill
+            key
           );
+
+          tile.setOrigin(0.5, 0.5);
+          tile.setDisplaySize(TILE_WIDTH_PX, TILE_HEIGHT_PX);
+          this.floorLayer.add(tile);
+          this.floorTiles.push(tile);
         }
       }
     }
@@ -197,21 +181,19 @@ function createLoftScene(Phaser, host) {
 
       for (const piece of shell.office.furniture) {
         const id = `furniture:${piece.id}`;
-        const frame = FURNITURE_FRAME[piece.kind];
+        const textureKey = FURNITURE_TEXTURE[piece.kind];
+        const size =
+          piece.kind === FurnitureKind.DESK ? DESK_WIDTH : PROP_SIZE;
 
         wantedIds.add(id);
-        this.upsertSprite(
+        this.upsertImage(
           id,
           piece.gridX,
           piece.gridY,
-          FURNITURE_SHEET[frame],
-          frame,
-          piece.kind === FurnitureKind.DESK
-            ? DESK_WIDTH
-            : PROP_WIDTH[frame],
-          piece.kind === FurnitureKind.DESK
-            ? DESK_HEIGHT
-            : PROP_HEIGHT[frame]
+          textureKey,
+          null,
+          size,
+          size
         );
 
         if (piece.kind !== FurnitureKind.DESK) {
@@ -229,7 +211,7 @@ function createLoftScene(Phaser, host) {
         const seatedId = `npc-seated:${occupant.staffId}`;
 
         wantedIds.add(seatedId);
-        this.upsertSprite(
+        this.upsertImage(
           seatedId,
           piece.gridX,
           piece.gridY,
@@ -250,7 +232,7 @@ function createLoftScene(Phaser, host) {
         const id = `npc-walk:${npc.staffId}`;
 
         wantedIds.add(id);
-        this.upsertSprite(
+        this.upsertImage(
           id,
           npc.gridX,
           npc.gridY,
@@ -263,11 +245,11 @@ function createLoftScene(Phaser, host) {
 
       const bob =
         isPlayerMoving(shell.player) && !reduced
-          ? Math.sin(shell.player.walkBobPhase) * 1.5
+          ? Math.sin(shell.player.walkBobPhase) * 3
           : 0;
 
       wantedIds.add("player:nosh");
-      this.upsertSprite(
+      this.upsertImage(
         "player:nosh",
         shell.player.gridX,
         shell.player.gridY,
@@ -310,22 +292,22 @@ function createLoftScene(Phaser, host) {
       const point = gridToScreen(target.gridX, target.gridY);
 
       this.pathMarker.fillStyle(PATH_MARKER, 0.2);
-      this.pathMarker.lineStyle(1, 0xd7ae67, 1);
+      this.pathMarker.lineStyle(2, 0xd7ae67, 1);
       this.pathMarker.beginPath();
-      this.pathMarker.moveTo(point.screenX, point.screenY - 11);
-      this.pathMarker.lineTo(point.screenX + 22, point.screenY);
-      this.pathMarker.lineTo(point.screenX, point.screenY + 11);
-      this.pathMarker.lineTo(point.screenX - 22, point.screenY);
+      this.pathMarker.moveTo(point.screenX, point.screenY - 22);
+      this.pathMarker.lineTo(point.screenX + 44, point.screenY);
+      this.pathMarker.lineTo(point.screenX, point.screenY + 22);
+      this.pathMarker.lineTo(point.screenX - 44, point.screenY);
       this.pathMarker.closePath();
       this.pathMarker.fillPath();
       this.pathMarker.strokePath();
     }
 
-    upsertSprite(
+    upsertImage(
       id,
       gridX,
       gridY,
-      sheetKey,
+      textureKey,
       frame,
       width,
       height,
@@ -337,7 +319,9 @@ function createLoftScene(Phaser, host) {
       const point = gridToScreen(gridX, gridY);
 
       if (!sprite) {
-        sprite = this.add.image(0, 0, sheetKey, frame);
+        sprite = frame
+          ? this.add.image(0, 0, textureKey, frame)
+          : this.add.image(0, 0, textureKey);
         sprite.setOrigin(originX, originY);
         this.entityLayer.add(sprite);
         this.entitySprites.set(id, sprite);
