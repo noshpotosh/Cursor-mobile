@@ -33,6 +33,16 @@ function buildDrinkTarget(piece) {
   };
 }
 
+function buildUsePcTarget(piece) {
+  return {
+    kind: InteractKind.USE_PC,
+    pieceId: piece.id,
+    staffId: null,
+    prompt: "Press E to use your desk PC",
+    toastText: null,
+  };
+}
+
 export function findNearbyInteractable(
   player,
   office,
@@ -61,15 +71,15 @@ export function findNearbyInteractable(
       target = buildDrinkTarget(piece);
     }
 
-    if (
-      piece.kind === FurnitureKind.DESK
-      && !piece.isPlayerDesk
-      && piece.staffId
-    ) {
-      const person = staffLookup[piece.staffId];
+    if (piece.kind === FurnitureKind.DESK) {
+      if (piece.isPlayerDesk) {
+        target = buildUsePcTarget(piece);
+      } else if (piece.staffId) {
+        const person = staffLookup[piece.staffId];
 
-      if (person) {
-        target = buildTalkTarget(piece, person);
+        if (person) {
+          target = buildTalkTarget(piece, person);
+        }
       }
     }
 

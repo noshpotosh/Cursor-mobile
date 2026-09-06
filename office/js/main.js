@@ -1,4 +1,13 @@
-import { TOAST_VISIBLE_MS } from "./constants.js";
+import {
+  InteractKind,
+  TOAST_VISIBLE_MS,
+} from "./constants.js";
+import {
+  createDesktopOs,
+  handleDesktopOsKeydown,
+  isDesktopOsOpen,
+  openDesktopOs,
+} from "./desktopOs.js";
 import { drawOffice } from "./drawOffice.js";
 import { findNearbyInteractable } from "./interact.js";
 import { buildRoomOrigin, screenToGrid } from "./isoMath.js";
@@ -67,7 +76,7 @@ function setPromptText(promptEl, text) {
 }
 
 function showToast(toastEl, text) {
-  if (!toastEl) {
+  if (!toastEl || !text) {
     return null;
   }
 
@@ -85,9 +94,10 @@ async function startOfficeShell() {
   const canvas = document.getElementById("office-canvas");
   const promptEl = document.getElementById("interact-prompt");
   const toastEl = document.getElementById("office-toast");
+  const desktopRoot = document.getElementById("desktop-os");
 
-  if (!stage || !canvas) {
-    throw new Error("Missing office stage or canvas");
+  if (!stage || !canvas || !desktopRoot) {
+    throw new Error("Missing office stage, canvas, or desktop");
   }
 
   const { office, staff } = await loadStarterOfficeBundle();
@@ -102,6 +112,14 @@ async function startOfficeShell() {
     title.textContent = `Warewolf · ${office.displayName}`;
   }
 
+  const desktop = createDesktopOs({
+    root: desktopRoot,
+    staffList: staff,
+    onClose() {
+      setPromptText(promptEl, "");
+    },
+  });
+
   let lastFrameMs = performance.now();
   let roomOrigin = { originX: 0, originY: 0 };
   let nearbyTarget = null;
@@ -114,18 +132,23 @@ async function startOfficeShell() {
     );
     lastFrameMs = nowMs;
 
-    updatePlayer(player, deltaSeconds);
-    nearbyTarget = findNearbyInteractable(
-      player,
-      office,
-      staffLookup
-    );
-    setPromptText(
-      promptEl,
-      nearbyTarget ? nearbyTarget.prompt : ""
-    );
-    sizeCanvasToStage(canvas, stage);
+    if (!isDesktopOsOpen(desktop)) {
+      updatePlayer(player, deltaSeconds);
+      nearbyTarget = findNearbyInteractable(
+        player,
+        office,
+        staffLookup
+      );
+      setPromptText(
+        promptEl,
+        nearbyTarget ? nearbyTarget.prompt : ""
+      );
+    } else {
+      nearbyTarget = null;
+      setPromptText(promptEl, "");
+    }
 
+    sizeCanvasToStage(canvas, stage);
     roomOrigin = drawOffice(
       canvas,
       office,
@@ -140,6 +163,10 @@ async function startOfficeShell() {
   }
 
   canvas.addEventListener("click", (event) => {
+    if (isDesktopOsOpen(desktop)) {
+      return;
+    }
+
     const { clickX, clickY } = readClickInStage(event, stage);
     const localX = clickX - roomOrigin.originX;
     const localY = clickY - roomOrigin.originY;
@@ -153,6 +180,10 @@ async function startOfficeShell() {
   });
 
   window.addEventListener("keydown", (event) => {
+    if (handleDesktopOsKeydown(desktop, event)) {
+      return;
+    }
+
     if (event.key !== "e" && event.key !== "E") {
       return;
     }
@@ -161,11 +192,19 @@ async function startOfficeShell() {
       return;
     }
 
+    if (nearbyTarget.kind === InteractKind.USE_PC) {
+      openDesktopOs(desktop);
+      return;
+    }
+
     if (toastTimerId !== null) {
       window.clearTimeout(toastTimerId);
     }
 
-    toastTimerId = showToast(toastEl, nearbyTarget.toastText);
+    toastTimerId = showToast(
+      toastEl,
+      nearbyTarget.toastText
+    );
   });
 
   // Warm origin before the first paint so early clicks map.
