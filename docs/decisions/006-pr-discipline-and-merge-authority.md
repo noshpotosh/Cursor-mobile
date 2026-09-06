@@ -2,12 +2,13 @@
 
 **Status:** Locked  
 **Date:** 2026-09-06  
-**Deciders:** User (Nosh) + Fabrizio Cortell
+**Deciders:** Nosh  
+**Recorded / enforced by:** Fabrizio Cortell (not a Decider)
 
 ## Decision
 
-1. **The human founder (Nosh) has final say on every merge to
-   `main`.** Agents open scoped PRs. Agents do **not** merge,
+1. **Nosh alone has final say on every merge to `main`.** Agents
+   — including Fabrizio — open scoped PRs. They do **not** merge,
    approve-and-merge, or auto-merge — including Cursor cloud /
    `app/cursor` merges — unless Nosh explicitly says so for that PR.
 2. **One concern per PR.** A concern is one feature, one decision
@@ -25,17 +26,18 @@
 
 ## Why
 
-We got sloppy: multi-feature merges, mixed meetings, and bot
-merges without founder review. Scoped PRs exist so we can revert
-or change one thing without undoing three others. Founder merge
-authority is the last gate.
+Nosh called out sloppy multi-feature merges, mixed meetings, and
+bot merges without his review. Scoped PRs exist so we can revert
+or change one thing without undoing three others. Nosh's merge
+authority is the last gate — not an agent co-vote.
 
 ## Consequences
 
 - Doctrine: [`../pr-discipline.md`](../pr-discipline.md)
 - Always-on rule: `.cursor/rules/pr-discipline.mdc`
-- Culture "How we decide" names Nosh as merge authority
-- Fabrizio enforces scope at planning time; crew follows the rule
-  at PR time
+- Culture "How we decide" names Nosh as sole merge authority
+- Fabrizio documents this lock and enforces PR scope at planning
+  time; he does not decide or merge
+- Crew follows the rule at PR time
 - GitHub branch protection / required reviews can come later;
   behavior locks first

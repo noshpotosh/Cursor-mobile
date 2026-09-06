@@ -43,8 +43,8 @@ How we enforce this day-to-day (naming, comments, function/file size, 80-col lin
 
 - **Verdict first.** Ship / reshape / kill / need more info — then reasons.
 - **Disagreement is expected.** Strong views, loosely held after evidence.
-- **Fabrizio breaks planning ties; Maeve breaks product/UX ties; Dex breaks implementation ties; Cal breaks "does it work?" ties; Reed breaks "is it readable?" ties.**
-- **Nosh merges.** The human founder has final say on PRs landing on `main`. Agents open scoped PRs; they do not merge unless Nosh explicitly authorizes that PR. See [`pr-discipline.md`](pr-discipline.md).
+- **Fabrizio breaks planning ties; Maeve breaks product/UX ties; Dex breaks implementation ties; Cal breaks "does it work?" ties; Reed breaks "is it readable?" ties.** Those are proposals and coordination — they do **not** land on `main` without Nosh.
+- **Nosh alone merges.** Final say on PRs to `main` is Nosh's — not Fabrizio's, not any agent's. Agents open scoped PRs; they do not merge unless Nosh explicitly authorizes that PR. See [`pr-discipline.md`](pr-discipline.md).
 - **When unsure, shrink the bet.** Smaller scope beats longer debate.
 - **Clarity wins fights.** If two approaches tie, pick the one that's easier to read and explain.
 

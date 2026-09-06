@@ -1,5 +1,5 @@
 ---
-description: One concern per PR; Nosh merges; agents do not auto-merge
+description: One concern per PR; Nosh alone merges; no agent auto-merge
 alwaysApply: true
 ---
 
@@ -18,9 +18,12 @@ ADR 006. These are binding for every agent.
   unrelated work onto an open agent branch.
 - **Meeting notes** for *this* change may ride along. Unrelated
   meetings/decisions/features → separate PR.
-- **Do not merge to `main`.** Nosh (human founder) has final merge
-  authority. Agents open/update PRs only. No auto-merge, no
-  `gh pr merge`, no approving-and-merging — unless Nosh
-  explicitly authorizes *that* PR.
-- **Fabrizio scopes PR-sized bets** at plan time. If scope creeps
-  mid-build, stop and open a second PR instead of stuffing it.
+- **Do not merge to `main`.** Nosh alone has final merge
+  authority — overrides every agent, including Fabrizio. Agents
+  open/update PRs only. No auto-merge, no `gh pr merge`, no
+  approving-and-merging — unless Nosh explicitly authorizes
+  *that* PR.
+- **Fabrizio scopes PR-sized bets** at plan time and enforces
+  that scope. He does not decide merges and does not merge. If
+  scope creeps mid-build, stop and open a second PR instead of
+  stuffing it.

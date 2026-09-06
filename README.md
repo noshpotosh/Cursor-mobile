@@ -32,7 +32,7 @@ Definitions: [`.cursor/agents/`](.cursor/agents/). Cursor can auto-delegate from
 3. **Dex** builds the smallest honest slice.
 4. **Cal** tries to break it.
 5. **Reed** does the final readability pass before we say shipped.
-6. **Nosh** merges to `main` — one concern per PR. Agents open PRs; they don't merge. See [`docs/pr-discipline.md`](docs/pr-discipline.md).
+6. **Nosh alone** merges to `main` — one concern per PR. Agents (including Fabrizio) open PRs; they don't merge. See [`docs/pr-discipline.md`](docs/pr-discipline.md).
 
 Keep the team lean on purpose. New seats only when the work actually demands a new lane.
 

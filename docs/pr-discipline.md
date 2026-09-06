@@ -1,16 +1,17 @@
 # PR discipline
 
-How Warewolf ships changes. Locked in
+How Warewolf ships changes. Nosh locked this in
 [`decisions/006-pr-discipline-and-merge-authority.md`](decisions/006-pr-discipline-and-merge-authority.md).
 
 ## Merge authority
 
-**Nosh (human founder) merges to `main`.**
+**Nosh alone merges to `main`.**
 
-Agents may open and update PRs. Agents do **not** merge unless
-Nosh explicitly authorizes that specific PR. "Looks good" from an
-agent is not a merge. Cursor auto-merge / `app/cursor` merge is
-not allowed by default.
+Every agent — including Fabrizio — may open and update PRs. No
+agent merges unless Nosh explicitly authorizes that specific PR.
+"Looks good" from an agent is not a merge. Cursor auto-merge /
+`app/cursor` merge is not allowed by default. Nosh's authority
+overrides every agent.
 
 ## One concern per PR
 
@@ -44,8 +45,10 @@ Unrelated meetings → separate PR.
 
 ## Agent behavior
 
-- Fabrizio: split work into scoped PR-sized bets at plan time
+- Fabrizio: split work into scoped PR-sized bets at plan time;
+  document and enforce scope — never merge, never co-decide the
+  merge gate
 - Maeve / Dex / Cal / Reed: ship only their assigned concern on
   that branch; open a second PR if scope creeps
 - Nobody merges their own (or a teammate's) PR to `main` without
-  Nosh
+  Nosh — including Fabrizio
