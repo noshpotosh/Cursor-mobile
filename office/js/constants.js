@@ -25,6 +25,16 @@ export const FloorFill = {
   [FloorTileKind.WOOD]: "#8b6914",
 };
 
+// Aisle reads lighter than desk islands so paths stay obvious.
+export const FLOOR_AISLE_FILL = "#d6c6b4";
+export const FLOOR_ISLAND_FILL = "#b7a48f";
+export const DESK_SHADOW_FILL = "rgba(26, 23, 20, 0.18)";
+export const DESK_LEG_FILL = "#8a6a4e";
+export const DESK_EDGE_FILL = "#a88968";
+export const MONITOR_BEZEL_FILL = "#2a2622";
+export const MONITOR_STAND_FILL = "#4a433c";
+export const NOSH_DESK_MAT_FILL = "#d97706";
+
 export const FurnitureFill = {
   [FurnitureKind.DESK]: "#c4a484",
   [FurnitureKind.BUBBLER]: "#6b8f71",
@@ -214,12 +224,34 @@ export const CHAIR_HALF_WIDTH_PX = 8;
 export const CHAIR_WIDTH_PX = 16;
 export const CHAIR_HEIGHT_PX = 10;
 export const CHAIR_Y_OFFSET_PX = 8;
+export const CHAIR_LEG_WIDTH_PX = 2;
+export const CHAIR_LEG_HEIGHT_PX = 4;
+export const CHAIR_LEG_INSET_PX = 2;
 export const BETTER_CHAIR_HALF_WIDTH_PX = 9;
 export const BETTER_CHAIR_WIDTH_PX = 18;
 export const BETTER_CHAIR_HEIGHT_PX = 14;
 export const BETTER_CHAIR_Y_OFFSET_PX = 6;
 export const BETTER_CHAIR_BACK_HEIGHT_PX = 5;
 export const BETTER_CHAIR_BACK_Y_OFFSET_PX = 2;
+
+export const DESK_LEG_HALF_WIDTH_PX = 18;
+export const DESK_LEG_WIDTH_PX = 4;
+export const DESK_LEG_HEIGHT_PX = 8;
+export const DESK_LEG_Y_OFFSET_PX = 10;
+export const DESK_THICKNESS_Y_PX = 4;
+export const MONITOR_STAND_HALF_WIDTH_PX = 3;
+export const MONITOR_STAND_WIDTH_PX = 6;
+export const MONITOR_STAND_HEIGHT_PX = 4;
+export const MONITOR_STAND_Y_OFFSET_PX = 4;
+export const MONITOR_BEZEL_INSET_PX = 1;
+export const NOSH_MAT_HALF_WIDTH_PX = 12;
+export const NOSH_MAT_WIDTH_PX = 24;
+export const NOSH_MAT_HEIGHT_PX = 6;
+export const NOSH_MAT_Y_OFFSET_PX = 2;
+export const DESK_SHADOW_HALF_WIDTH_PX = 26;
+export const DESK_SHADOW_TOP_OFFSET_PX = 6;
+export const DESK_SHADOW_SIDE_Y_PX = 2;
+export const DESK_SHADOW_BOTTOM_OFFSET_PX = 14;
 
 export const PLANT_POT_X_OFFSET_PX = 12;
 export const PLANT_POT_Y_OFFSET_PX = 8;
@@ -295,10 +327,67 @@ export const CHAR_TORSO_Y_OFFSET_PX = 2;
 export const CHAR_HEAD_RADIUS_PX = 6;
 export const CHAR_HEAD_Y_OFFSET_PX = 10;
 export const CHAR_HAIR_Y_OFFSET_PX = 12;
+export const CHAR_ARM_WIDTH_PX = 3;
+export const CHAR_ARM_HEIGHT_PX = 8;
+export const CHAR_ARM_X_OFFSET_PX = 9;
+export const CHAR_ARM_Y_OFFSET_PX = 0;
 export const NOSH_FEET_Y_OFFSET_PX = 6;
 export const NOSH_BODY_Y_OFFSET_PX = 6;
 export const NOSH_WALK_BOB_AMPLITUDE_PX = 1.5;
 export const NPC_FEET_Y_OFFSET_PX = 8;
 export const NPC_BODY_Y_OFFSET_PX = 2;
+export const NPC_IDLE_BOB_AMPLITUDE_PX = 0.8;
+export const NPC_IDLE_BOB_RATE = 1.6;
 export const NAMEPLATE_Y_OFFSET_PX = 22;
 export const NEON_SIGN_Y_OFFSET_PX = 28;
+export const LAMP_GLOW_PULSE_AMPLITUDE = 0.12;
+export const LAMP_GLOW_PULSE_RATE = 2.2;
+export const COFFEE_STEAM_WAVE_PX = 2;
+export const COFFEE_STEAM_WAVE_RATE = 3;
+
+// Per-staff silhouette cues — posture + hair, not face detail.
+export const SilhouetteStyle = {
+  nosh: {
+    hairKind: "crest",
+    torsoScale: 1,
+    postureY: 0,
+    hairFill: PLAYER_HAIR_FILL,
+  },
+  "fabrizio-cortell": {
+    hairKind: "short",
+    torsoScale: 1.08,
+    postureY: 1,
+    hairFill: "#1f1510",
+  },
+  "maeve-quinn": {
+    hairKind: "sweep",
+    torsoScale: 0.92,
+    postureY: -1,
+    hairFill: "#3a2018",
+  },
+  "dex-harlan": {
+    hairKind: "tuft",
+    torsoScale: 1,
+    postureY: 0,
+    hairFill: "#2a1c14",
+  },
+  "cal-rook": {
+    hairKind: "sharp",
+    torsoScale: 0.96,
+    postureY: -2,
+    hairFill: "#241810",
+  },
+  "reed-mallory": {
+    hairKind: "bowl",
+    torsoScale: 1.04,
+    postureY: 2,
+    hairFill: "#3d342c",
+  },
+};
+
+export const DEFAULT_SILHOUETTE = {
+  hairKind: "short",
+  torsoScale: 1,
+  postureY: 0,
+  hairFill: NPC_HAIR_FILL,
+};

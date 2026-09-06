@@ -14,27 +14,36 @@ import {
 } from "./economy.js";
 
 function buildUpgradeCard(upgrade, economy, onRefresh, onBuy) {
-  const card = createEl("article", "loft-card");
+  const card = createEl("article", "loft-card loft-shop-row");
 
   if (upgrade.isOwned) {
     card.classList.add("is-owned");
   }
 
-  card.appendChild(
+  const swatch = createEl(
+    "div",
+    `loft-swatch loft-swatch-${upgrade.id}`
+  );
+  swatch.setAttribute("aria-hidden", "true");
+  card.appendChild(swatch);
+
+  const copy = createEl("div", "loft-card-copy");
+  copy.appendChild(
     createEl("h3", "loft-title", upgrade.title)
   );
-  card.appendChild(
+  copy.appendChild(
     createEl("p", "loft-description", upgrade.description)
   );
 
   const meta = createEl("p", "loft-meta");
   meta.textContent = `${upgrade.costBucks} bucks`;
-  card.appendChild(meta);
+  copy.appendChild(meta);
 
   if (upgrade.isOwned) {
-    card.appendChild(
+    copy.appendChild(
       createEl("p", "loft-status", "Installed")
     );
+    card.appendChild(copy);
     return card;
   }
 
@@ -60,7 +69,8 @@ function buildUpgradeCard(upgrade, economy, onRefresh, onBuy) {
       onBuy(result);
     }
   });
-  card.appendChild(button);
+  copy.appendChild(button);
+  card.appendChild(copy);
   return card;
 }
 

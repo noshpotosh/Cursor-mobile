@@ -41,21 +41,102 @@ body {
 }
 
 .office-title {
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
-  z-index: 2;
   margin: 0;
-  padding: 0.45rem 0.75rem;
+  padding: 0;
   font-size: 0.95rem;
   font-weight: 700;
   letter-spacing: 0.02em;
   color: var(--ink);
-  background: rgba(244, 239, 230, 0.88);
+  pointer-events: none;
+  user-select: none;
+  background: none;
+  border: 0;
+  box-shadow: none;
+}
+
+.loft-chrome {
+  position: absolute;
+  top: 0.85rem;
+  left: 0.85rem;
+  right: 0.85rem;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.4rem 0.55rem 0.4rem 0.75rem;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(244, 239, 230, 0.96),
+      rgba(244, 239, 230, 0.88)
+    );
   border: 2px solid var(--clay);
   box-shadow: 0 4px 16px var(--shadow);
   pointer-events: none;
+}
+
+.loft-chrome-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  pointer-events: auto;
+}
+
+.bucks-hud {
+  position: static;
+  top: auto;
+  right: auto;
+  z-index: auto;
+  margin: 0;
+  padding: 0.28rem 0.55rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--ink);
+  background: rgba(217, 119, 6, 0.16);
+  border: 2px solid var(--amber);
+  box-shadow: none;
+  pointer-events: none;
   user-select: none;
+}
+
+.mute-button {
+  position: static;
+  top: auto;
+  right: auto;
+  z-index: auto;
+  margin: 0;
+  padding: 0.28rem 0.55rem;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--ink);
+  background: rgba(244, 239, 230, 0.96);
+  border: 2px solid var(--clay);
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.mute-button:hover,
+.mute-button:focus-visible {
+  border-color: var(--amber);
+  outline: none;
+}
+
+.mute-button[aria-pressed="true"] {
+  border-color: var(--ink);
+  opacity: 0.8;
+}
+
+@media (max-width: 640px) {
+  .loft-chrome {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .office-title {
+    font-size: 0.88rem;
+  }
 }
 
 .interact-prompt,
@@ -93,49 +174,4 @@ body {
 .interact-prompt[hidden],
 .office-toast[hidden] {
   display: none;
-}
-
-.bucks-hud {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  z-index: 2;
-  margin: 0;
-  padding: 0.45rem 0.75rem;
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: var(--ink);
-  background: rgba(244, 239, 230, 0.92);
-  border: 2px solid var(--amber);
-  box-shadow: 0 4px 16px var(--shadow);
-  pointer-events: none;
-  user-select: none;
-}
-
-.mute-button {
-  position: absolute;
-  top: 3.4rem;
-  right: 1rem;
-  z-index: 2;
-  margin: 0;
-  padding: 0.4rem 0.75rem;
-  font: inherit;
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--ink);
-  background: rgba(244, 239, 230, 0.92);
-  border: 2px solid var(--clay);
-  box-shadow: 0 4px 16px var(--shadow);
-  cursor: pointer;
-}
-
-.mute-button:hover,
-.mute-button:focus-visible {
-  border-color: var(--amber);
-  outline: none;
-}
-
-.mute-button[aria-pressed="true"] {
-  border-color: var(--ink);
-  opacity: 0.8;
 }
