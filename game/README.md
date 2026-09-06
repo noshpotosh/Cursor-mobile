@@ -3,11 +3,42 @@
 **Engine:** Godot **4.7.2** (ADR 008)  
 **Slice:** P1 loft walk-to-desk
 
-## Run
+## Run (exact steps)
 
-1. Install Godot 4.7.2 stable.
-2. Open `game/project.godot` (or import the `game/` folder).
-3. Press Play (`F5`). Window is 1280×720.
+1. Install **Godot 4.7.2** stable (standard build, not .NET / Mono):
+   https://godotengine.org/download
+2. In the Project Manager, click **Import**.
+3. Choose this file — not the repo root:
+
+   `game/project.godot`
+
+4. Open the project. First open reimports textures (a few seconds).
+5. Press Play (`F5`). Window is 1280×720.
+
+### Do not
+
+- Open / import the **repo root** (`ware-wolf/`). There is no
+  `project.godot` there — Godot will fail or hang looking for one.
+- Use Godot 4.3 / 4.4 / 4.5 / 4.6. This project tags `4.7` features.
+- Use the **.NET** Godot build unless you know you need C# (we don’t).
+
+## If import / open fails
+
+| Symptom | Fix |
+| --- | --- |
+| “No project.godot” / import does nothing | Select `game/project.godot`, not the parent folder |
+| Version / features warning | Install Godot **4.7.2** and open with that binary |
+| Pink textures / missing assets | Delete `game/.godot/` (local cache), reopen project |
+| Scripts show errors on first open | Wait for import to finish; then **Project → Reload Current Project** |
+| Still broken after that | From `game/`: run headless smoke (below) and paste the log |
+
+### Headless smoke
+
+```bash
+godot --headless --path game -s res://scripts/smoke_check.gd
+```
+
+Expect `SMOKE_OK`.
 
 ## P1 proof
 
