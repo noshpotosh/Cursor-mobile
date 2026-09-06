@@ -1,6 +1,6 @@
 # Warewolf AI studio game plan
 
-**Status:** Proposed implementation plan
+**Status:** Implementation plan under [ADR 008][product-contract]
 
 **Date:** 2026-09-06
 
@@ -10,7 +10,10 @@
 
 **Product thesis:** [ADR 007][product-thesis]
 
+**Product contract (P0):** [ADR 008][product-contract]
+
 [product-thesis]: decisions/007-honest-ai-studio-tycoon.md
+[product-contract]: decisions/008-ai-studio-product-contract.md
 
 ## Verdict
 
@@ -196,8 +199,8 @@ understandable reason is not strategy.
 
 ## Godot implementation direction
 
-The recommended engine path is Godot 4.7.2 stable with GDScript. ADR 007 does
-not lock an engine or authorize a build; P0 must lock that call first.
+Engine path is Godot 4.7.2 stable with GDScript, locked in ADR 008.
+P0 authorizes the Godot project in P1; this plan does not create it.
 
 Start desktop-first at 1280x720. Make click and tap share the same interaction
 path, and keep management controls touch-safe. Do not commit to phone layouts
@@ -314,10 +317,12 @@ Each phase is one concern and lands through its own branch and PR.
 
 ### P0 - Lock the product contract
 
-Define the player promise, source-deletion policy, retained evidence, target
-platform, supported first project type, and maximum live-agent cost.
+**Done in ADR 008.** Player promise, source-deletion policy, retained
+evidence, target platform, first project type, live-agent cost
+ceiling shape, and Godot 4.7.2 vehicle are locked.
 
-**Proof:** a locked decision removes the open product and trust questions.
+**Proof:** locked decision removes the open product and trust
+questions.
 
 **Owners:** Nosh and Fabrizio
 
@@ -425,20 +430,18 @@ be locked after observing the first playable build.
 - Arbitrary programming languages and toolchains
 - Mobile store launch before desktop validation
 
-## Founder decisions still required
+## Founder decisions — locked in ADR 008
 
-1. Desktop-first, mobile-first, or desktop with touch-safe UI
-2. Warewolf crew as public cast or internal demo cast only
-3. Immediate source deletion or a short retry window
-4. First supported project type
-5. Maximum live-agent cost per player session
-6. Exact retained evidence: counts, sanitized logs, or named checks
-
-Recommended defaults are desktop-first with touch-safe UI, internal Warewolf
-cast, immediate source deletion, greenfield web-app projects, a hard per-session
-cost ceiling, and retained structured summaries without raw source.
+1. Desktop-first with touch-safe UI (1280×720)
+2. Warewolf crew as internal demo cast only
+3. Immediate source deletion
+4. First supported project type: greenfield web-app
+5. Hard per-session live-agent cost ceiling (`$` named before P5)
+6. Retained evidence: structured summaries (counts + sanitized
+   outcomes); no raw logs or source
+7. Engine: Godot 4.7.2 + GDScript; no separate web prototype
 
 ## Next move
 
-Lock P0 as a dedicated decision before creating the Godot project. Then Maeve
-defines the vertical-slice experience and asset cut before Dex begins P1.
+Maeve defines the P1 vertical-slice experience and asset cut. Then
+Dex creates the Godot project and migrates one loft’s accepted art.

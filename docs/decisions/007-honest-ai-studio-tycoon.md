@@ -1,6 +1,7 @@
 # ADR 007 — Honest AI studio tycoon (office on hold)
 
-**Status:** Locked  
+**Status:** Locked (vehicle / build guidance amended by
+[ADR 008](008-ai-studio-product-contract.md))  
 **Date:** 2026-09-06  
 **Deciders:** Nosh + Fabrizio Cortell  
 **Meeting:** [`../meetings/2026-09-06-ai-studio-tycoon-pivot.md`](../meetings/2026-09-06-ai-studio-tycoon-pivot.md)
@@ -22,9 +23,10 @@
    internal artifact. No new office feature work until Nosh reopens
    it. Do not delete `office/`; do not treat it as this game’s
    shipping vehicle without a fresh lock.
-5. **No build yet.** Nosh is investigating. No engine, mobile shell,
-   monetization, or agent-orchestration implementation is authorized
-   by this ADR — only the product thesis and the hold.
+5. **No build in this ADR.** This decision locks thesis and hold
+   only. Engine, platform, source-deletion policy, and P1 build
+   authorization live in
+   [ADR 008](008-ai-studio-product-contract.md).
 
 ## Why
 
@@ -37,17 +39,20 @@ vehicle we are not driving.
 
 ## Non-goals (this ADR)
 
-- Choosing Unity vs Godot vs web
 - App Store launch plan
-- IP harvest / product-lab ToS (still open — decide before any
-  “we keep the code” productization)
-- Implementing the game in this repository yet
+- Implementing the game in this ADR (see ADR 008 for vehicle)
+
+## Amended by ADR 008
+
+ADR 008 supersedes the earlier “web prototype first / no engine
+yet” guidance: Godot 4.7.2 desktop-first is the shipping vehicle,
+immediate source deletion is locked, and P1 may create the Godot
+project. The loft remains on hold as a web toy; accepted art may
+migrate into Godot with provenance.
 
 ## Consequences
 
 - Office docs and README mark the loft **on hold**
-- New work waits on Nosh’s follow-up investigation
-- Smallest later slice (when unblocked): web prototype, one project
-  type, one async agent milestone → pass/fail UI — not a mobile
-  launch
-- Engine choice only after the thesis survives that slice
+- Product thesis here; contract and vehicle in ADR 008
+- Implementation plan:
+  [`../ai-studio-game-plan.md`](../ai-studio-game-plan.md)

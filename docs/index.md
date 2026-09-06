@@ -9,7 +9,8 @@ One map. Not a pile of READMEs.
 | [`pr-discipline.md`](pr-discipline.md) | Scoped PRs + who merges |
 | [`brand.md`](brand.md) | Name, logo, visual system |
 | [`decisions/007-honest-ai-studio-tycoon.md`](decisions/007-honest-ai-studio-tycoon.md) | Active product thesis (office on hold) |
-| [`ai-studio-game-plan.md`](ai-studio-game-plan.md) | Proposed Godot implementation plan |
+| [`decisions/008-ai-studio-product-contract.md`](decisions/008-ai-studio-product-contract.md) | P0 product / trust / Godot vehicle lock |
+| [`ai-studio-game-plan.md`](ai-studio-game-plan.md) | Implementation plan under ADR 008 |
 | [`office/`](office/) | Virtual office art bible, ADRs, pipeline (**on hold**) |
 | [`meetings/`](meetings/) | Meeting / conversation summaries |
 | [`decisions/`](decisions/) | Locked calls (ADRs-lite) |
