@@ -4,8 +4,19 @@
 **Status:** Draft lock for Phase 0  
 **Date:** 2026-09-05
 
-Hero mock: [`office/assets/reference/starter-office-hero-mock.png`](../../office/assets/reference/starter-office-hero-mock.png)  
-Desktop mock: [`office/assets/reference/desk-desktop-os-mock.png`](../../office/assets/reference/desk-desktop-os-mock.png)
+### Reference mocks (Phase 0)
+
+| Mock | Path | Role |
+| --- | --- | --- |
+| Starter loft (wrong cast names) | [`starter-office-hero-mock.png`](../../office/assets/reference/starter-office-hero-mock.png) | Original kit/style lock — **Mara/Jory/etc. are wrong**; do not perpetuate those names |
+| Starter loft + real pack | [`starter-office-hero-crew-mock.png`](../../office/assets/reference/starter-office-hero-crew-mock.png) | **Correct-cast lock** — Nosh, Fabrizio, Maeve, Dex, Cal, Reed at starter (~10×8) scale |
+| Pack Loft | [`pack-office-hero-mock.png`](../../office/assets/reference/pack-office-hero-mock.png) | Bigger loft (~12×10 feel), same kit language + real crew |
+| Decor upgrades sheet | [`office-decor-upgrades-sheet.png`](../../office/assets/reference/office-decor-upgrades-sheet.png) | Labeled before/after for catalog upgrades only (`desk-plants`, `desk-lamps`, `better-chairs`, `amber-neon`) |
+| Crew outfit lineup | [`crew-outfit-lineup-mock.png`](../../office/assets/reference/crew-outfit-lineup-mock.png) | Silhouette-first outfit cues at loft-readable scale |
+| Crew portraits sheet | [`crew-portraits-sheet.png`](../../office/assets/reference/crew-portraits-sheet.png) | Directory headshot lock — naming targets `characters/<id>-portrait.png` later |
+| Desk desktop OS | [`desk-desktop-os-mock.png`](../../office/assets/reference/desk-desktop-os-mock.png) | Fake OS chrome lock |
+
+Reference mocks stay under `office/assets/reference/` until playtest says the kit holds. Not runtime sprites.
 
 ## The vibe
 
