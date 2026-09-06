@@ -12,6 +12,10 @@ import {
   PLAYER_HAIR_FILL,
   PLAYER_JACKET_FILL,
   PLAYER_PANTS_FILL,
+  NPC_HAIR_FILL,
+  NPC_PANTS_FILL,
+  NPC_SHOE_FILL,
+  NPC_SKIN_FILL,
   PLAYER_SHOE_FILL,
   PLAYER_SKIN_FILL,
   SCREEN_FILL,
@@ -207,6 +211,42 @@ function drawNoshPlaceholder(
   context.fill();
 }
 
+
+function drawNpcPlaceholder(
+  context,
+  centerX,
+  centerY,
+  jacketFill
+) {
+  // Seated cue: slightly lower than a standing walker.
+  const feetY = centerY + 8;
+  const bodyY = centerY - 2;
+
+  context.fillStyle = NPC_SHOE_FILL;
+  context.fillRect(centerX - 7, feetY, 5, 3);
+  context.fillRect(centerX + 2, feetY, 5, 3);
+
+  context.fillStyle = NPC_PANTS_FILL;
+  context.fillRect(centerX - 6, bodyY + 10, 12, 8);
+
+  context.fillStyle = jacketFill;
+  context.fillRect(centerX - 8, bodyY - 2, 16, 14);
+  context.strokeStyle = INK;
+  context.lineWidth = 1;
+  context.strokeRect(centerX - 8, bodyY - 2, 16, 14);
+
+  context.fillStyle = NPC_SKIN_FILL;
+  context.beginPath();
+  context.arc(centerX, bodyY - 10, 6, 0, Math.PI * 2);
+  context.fill();
+  context.stroke();
+
+  context.fillStyle = NPC_HAIR_FILL;
+  context.beginPath();
+  context.arc(centerX, bodyY - 12, 6, Math.PI, 0);
+  context.fill();
+}
+
 function drawFurniturePiece(
   context,
   piece,
@@ -242,6 +282,7 @@ function drawWorldEntities(
   office,
   staffLookup,
   player,
+  npcs,
   originX,
   originY
 ) {
@@ -265,6 +306,28 @@ function drawWorldEntities(
           staffLookup,
           centerX,
           centerY
+        );
+      },
+    });
+  }
+
+  for (const npc of npcs) {
+    const depth = npc.gridX + npc.gridY + 0.1;
+    const { screenX, screenY } = gridToScreen(
+      npc.gridX,
+      npc.gridY
+    );
+    const centerX = originX + screenX;
+    const centerY = originY + screenY;
+
+    drawables.push({
+      depth,
+      draw() {
+        drawNpcPlaceholder(
+          context,
+          centerX,
+          centerY,
+          npc.jacketFill
         );
       },
     });
@@ -305,6 +368,7 @@ export function drawOffice(
   office,
   staffLookup,
   player,
+  npcs,
   viewWidth,
   viewHeight
 ) {
@@ -339,6 +403,7 @@ export function drawOffice(
     office,
     staffLookup,
     player,
+    npcs,
     originX,
     originY
   );

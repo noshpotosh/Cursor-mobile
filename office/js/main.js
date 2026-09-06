@@ -1,9 +1,12 @@
+import { TOAST_VISIBLE_MS } from "./constants.js";
 import { drawOffice } from "./drawOffice.js";
+import { findNearbyInteractable } from "./interact.js";
 import { buildRoomOrigin, screenToGrid } from "./isoMath.js";
 import {
   loadStarterOfficeBundle,
   staffById,
 } from "./loadOfficeData.js";
+import { createNpcs } from "./npcs.js";
 import {
   createPlayer,
   requestPlayerWalk,
@@ -48,9 +51,40 @@ function readClickInStage(event, stage) {
   };
 }
 
+function setPromptText(promptEl, text) {
+  if (!promptEl) {
+    return;
+  }
+
+  if (!text) {
+    promptEl.hidden = true;
+    promptEl.textContent = "";
+    return;
+  }
+
+  promptEl.hidden = false;
+  promptEl.textContent = text;
+}
+
+function showToast(toastEl, text) {
+  if (!toastEl) {
+    return null;
+  }
+
+  toastEl.hidden = false;
+  toastEl.textContent = text;
+
+  return window.setTimeout(() => {
+    toastEl.hidden = true;
+    toastEl.textContent = "";
+  }, TOAST_VISIBLE_MS);
+}
+
 async function startOfficeShell() {
   const stage = document.getElementById("office-stage");
   const canvas = document.getElementById("office-canvas");
+  const promptEl = document.getElementById("interact-prompt");
+  const toastEl = document.getElementById("office-toast");
 
   if (!stage || !canvas) {
     throw new Error("Missing office stage or canvas");
@@ -61,6 +95,7 @@ async function startOfficeShell() {
   const walkMap = buildWalkMap(office);
   const spawn = findSpawnNearPlayerDesk(office, walkMap);
   const player = createPlayer(spawn.gridX, spawn.gridY);
+  const npcs = createNpcs(office, staffLookup);
   const title = document.querySelector(".office-title");
 
   if (title && office.displayName) {
@@ -69,6 +104,8 @@ async function startOfficeShell() {
 
   let lastFrameMs = performance.now();
   let roomOrigin = { originX: 0, originY: 0 };
+  let nearbyTarget = null;
+  let toastTimerId = null;
 
   function renderFrame(nowMs) {
     const deltaSeconds = Math.min(
@@ -78,6 +115,15 @@ async function startOfficeShell() {
     lastFrameMs = nowMs;
 
     updatePlayer(player, deltaSeconds);
+    nearbyTarget = findNearbyInteractable(
+      player,
+      office,
+      staffLookup
+    );
+    setPromptText(
+      promptEl,
+      nearbyTarget ? nearbyTarget.prompt : ""
+    );
     sizeCanvasToStage(canvas, stage);
 
     roomOrigin = drawOffice(
@@ -85,6 +131,7 @@ async function startOfficeShell() {
       office,
       staffLookup,
       player,
+      npcs,
       stage.clientWidth,
       stage.clientHeight
     );
@@ -103,6 +150,22 @@ async function startOfficeShell() {
     }
 
     requestPlayerWalk(player, walkMap, gridX, gridY);
+  });
+
+  window.addEventListener("keydown", (event) => {
+    if (event.key !== "e" && event.key !== "E") {
+      return;
+    }
+
+    if (!nearbyTarget) {
+      return;
+    }
+
+    if (toastTimerId !== null) {
+      window.clearTimeout(toastTimerId);
+    }
+
+    toastTimerId = showToast(toastEl, nearbyTarget.toastText);
   });
 
   // Warm origin before the first paint so early clicks map.
