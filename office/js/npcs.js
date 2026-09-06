@@ -3,6 +3,9 @@ import {
   FurnitureKind,
   NPC_BUBBLER_DWELL_SECONDS,
   NPC_BUBBLER_VISIT_SECONDS,
+  NPC_MOVE_TILES_PER_SECOND,
+  NPC_VISIT_JITTER_BASE,
+  NPC_VISIT_JITTER_SPAN,
   NpcJacketFill,
   PLAYER_STAFF_ID,
 } from "./constants.js";
@@ -55,7 +58,9 @@ export function createNpcs(office, staffLookup) {
       path: [],
       atDesk: true,
       visitCooldown:
-        NPC_BUBBLER_VISIT_SECONDS * (0.6 + Math.random() * 0.8),
+        NPC_BUBBLER_VISIT_SECONDS
+        * (NPC_VISIT_JITTER_BASE
+          + Math.random() * NPC_VISIT_JITTER_SPAN),
       dwellSeconds: 0,
       waitingAtBubbler: false,
       returningToDesk: false,
@@ -78,7 +83,8 @@ function advanceNpcAlongPath(npc, deltaSeconds) {
   const deltaX = nextStep.gridX - npc.gridX;
   const deltaY = nextStep.gridY - npc.gridY;
   const distance = Math.hypot(deltaX, deltaY);
-  const stepBudget = 2.4 * deltaSeconds;
+  const stepBudget =
+    NPC_MOVE_TILES_PER_SECOND * deltaSeconds;
 
   if (distance <= stepBudget) {
     npc.gridX = nextStep.gridX;
@@ -227,6 +233,7 @@ export function updateNpcs(npcs, office, walkMap, deltaSeconds) {
     npc.waitingAtBubbler = true;
     npc.dwellSeconds = NPC_BUBBLER_DWELL_SECONDS;
     npc.visitCooldown =
-      NPC_BUBBLER_VISIT_SECONDS * (0.8 + Math.random());
+      NPC_BUBBLER_VISIT_SECONDS
+      * (NPC_VISIT_JITTER_SPAN + Math.random());
   }
 }
