@@ -44,8 +44,7 @@ export function drawDeskChair(context, x, y, betterChairs) {
 export function drawDesk(context, x, y, isPlayerDesk, upgrades) {
   context.save();
   context.translate(Math.round(x), Math.round(y));
-  polygon(context, [[-36, 6], [2, -12], [40, 6], [1, 24]],
-    '#00000025', null);
+  // Desk PNG bakes its own ground shadow.
   drawSprite(context, 'desk',
     -DESK_WIDTH / 2, -DESK_HEIGHT, DESK_WIDTH, DESK_HEIGHT);
   if (isPlayerDesk) rect(context, 8, -38, 3, 3, '#e9ae46');

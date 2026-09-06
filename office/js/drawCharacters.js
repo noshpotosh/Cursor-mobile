@@ -1,4 +1,3 @@
-import { polygon } from './pixelArt.js';
 import { drawSprite } from './sprites.js';
 
 const CHARACTER_WIDTH = 34;
@@ -8,10 +7,7 @@ const SEATED_BODY_HEIGHT = 40;
 export function drawCharacter(context, x, y, staffId, seated, bob) {
   context.save();
   context.translate(Math.round(x), Math.round(y + bob));
-  if (!seated) {
-    polygon(context, [[-14, 0], [0, -5], [16, 0], [0, 5]],
-      '#00000030', null);
-  }
+  // Sprite PNGs already bake a foot shadow — no procedural blob.
   if (seated) {
     context.beginPath();
     context.rect(-20, -CHARACTER_HEIGHT, 40, SEATED_BODY_HEIGHT);
