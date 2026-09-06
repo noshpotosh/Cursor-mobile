@@ -3,6 +3,10 @@
 **Engine:** Godot **4.7.2** (ADR 008)  
 **Slice:** P1 loft walk-to-desk
 
+**Adding art:** read the [Godot asset pipeline](../docs/game-asset-pipeline.md)
+and [runtime manifest](assets/MANIFEST.md). Rebuild exported art with
+`bash game/tools/export_art.sh` (set `GODOT_BIN` if Godot is not on PATH).
+
 ## Run (exact steps)
 
 1. Install **Godot 4.7.2** stable (standard build, not .NET / Mono):
