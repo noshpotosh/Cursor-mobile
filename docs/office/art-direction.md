@@ -58,7 +58,9 @@ No purple gradients. No glassmorphism. Amber is the brand spark — use it like 
 - **Base tile:** **128×64** px diamond (locked — [ADR 010](../decisions/010-128px-world-art-standard.md)). Older mocks use 64×32 rulers; treat those as half-scale guides.
 - **Props:** **128×128** canvases for furniture / interactables
 - **Character height:** ~96–128 px tall at room scale (current Nosh sheet is temporarily ×2 until regen)
-- **Room fit:** entire starter office visible without pan on a 1280×720 viewport (camera zoom, not downscaled art)
+- **Room fit:** camera follows Nosh at zoom **1.0** so 128px art
+  reads natively; explore the loft by walking (not a single
+  no-pan overview frame)
 
 ## Floor kit
 

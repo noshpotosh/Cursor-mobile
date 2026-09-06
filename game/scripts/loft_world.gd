@@ -247,6 +247,15 @@ func _spawn_player() -> void:
 	_player.arrived.connect(_on_player_arrived)
 
 
+func camera_target() -> Vector2:
+	if _player == null:
+		return IsoMath.grid_to_screen(
+			player_start.x,
+			player_start.y
+		)
+	return _player.position
+
+
 func _desk_stand_cell() -> Vector2i:
 	var candidates: Array[Vector2i] = [
 		Vector2i(desk_cell.x - 1, desk_cell.y),

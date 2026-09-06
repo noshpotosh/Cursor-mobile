@@ -4,13 +4,21 @@ extends Node2D
 @onready var _camera: Camera2D = $Camera2D
 @onready var _hud: CanvasLayer = $DeskHud
 
+## Native 128px world scale (ADR 010). Zoom 0.5 made tiles look 64px.
+const LOFT_ZOOM := 1.0
+
 
 func _ready() -> void:
 	_world.desk_used.connect(_hud.show_desk)
-	# ADR 010: 128×64 tiles are 2× prior; zoom keeps loft in 1280×720.
-	_camera.zoom = Vector2(0.5, 0.5)
-	_camera.position = IsoMath.grid_to_screen(4, 3)
+	_camera.zoom = Vector2(LOFT_ZOOM, LOFT_ZOOM)
+	_camera.position = _world.camera_target()
 	_camera.make_current()
+
+
+func _process(_delta: float) -> void:
+	if _hud.is_open():
+		return
+	_camera.position = _world.camera_target()
 
 
 func _unhandled_input(event: InputEvent) -> void:

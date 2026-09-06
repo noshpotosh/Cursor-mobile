@@ -73,7 +73,8 @@ messaging is not connected.
   `whiteboard.png`: **128×128** props.
 - Provenance: `art-source/maps/pixellab-office/README.md`.
 - Consumer: `scripts/loft_world.gd` + `data/starter_loft.json`.
-- `IsoMath` tile size is 128×64; camera zoom ~0.5 fits 1280×720.
+- `IsoMath` tile size is 128×64; loft camera zoom is **1.0** and
+  follows Nosh (native on-screen scale).
 - Nosh motion sheet is temporarily scaled ×2 until character regen.
 - `characters/crew-idle.png`: identity reference; player uses motion.
 

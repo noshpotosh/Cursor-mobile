@@ -12,9 +12,10 @@
 2. **Runtime matches authoring.** Godot loads these PNGs 1:1 with
    nearest filtering. `IsoMath` tile size is **128×64**
    (`TILE_WIDTH` / `TILE_HEIGHT`).
-3. **Viewport fit stays 1280×720.** The starter loft remains fully
-   visible without pan via camera zoom (~0.5), not by downscaling
-   art.
+3. **On-screen scale is native.** Camera zoom is **1.0** so 128px
+   art reads as 128px. The camera follows Nosh; the full starter
+   loft is not required to fit in one 1280×720 frame without
+   moving. (Earlier ~0.5 zoom cancelled the size gain.)
 4. **Characters follow next.** Current Nosh motion (~48×96 cells)
    is temporarily scaled ×2 in the loft so silhouettes match the
    new tile. A later art pass regenerates crew at the 128 world
