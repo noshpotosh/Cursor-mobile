@@ -209,15 +209,15 @@ function drawCoffeePlaceholder(context, centerX, centerY) {
   context.fillStyle = FurnitureFill[FurnitureKind.COFFEE];
   context.strokeStyle = INK;
   context.lineWidth = 1;
-  context.fillRect(centerX - 10, centerY - 6, 20, 12);
-  context.strokeRect(centerX - 10, centerY - 6, 20, 12);
+  context.fillRect(centerX - 12, centerY - 4, 24, 14);
+  context.strokeRect(centerX - 12, centerY - 4, 24, 14);
 
   context.fillStyle = COFFEE_POT_FILL;
-  context.fillRect(centerX - 6, centerY - 22, 12, 16);
-  context.strokeRect(centerX - 6, centerY - 22, 12, 16);
+  context.fillRect(centerX - 7, centerY - 26, 14, 20);
+  context.strokeRect(centerX - 7, centerY - 26, 14, 20);
 
   context.fillStyle = COFFEE_BREW_FILL;
-  context.fillRect(centerX - 4, centerY - 18, 8, 8);
+  context.fillRect(centerX - 5, centerY - 20, 10, 10);
 
   context.strokeStyle = INK;
   context.beginPath();
