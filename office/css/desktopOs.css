@@ -7,21 +7,26 @@
   color: var(--ink);
   background:
     radial-gradient(
-      circle at 18% 22%,
-      rgba(217, 119, 6, 0.1),
-      transparent 42%
+      circle at 16% 18%,
+      rgba(217, 119, 6, 0.14),
+      transparent 38%
     ),
     radial-gradient(
-      circle at 82% 68%,
-      rgba(107, 143, 113, 0.12),
-      transparent 40%
+      circle at 84% 72%,
+      rgba(107, 143, 113, 0.14),
+      transparent 36%
+    ),
+    linear-gradient(
+      160deg,
+      rgba(196, 164, 132, 0.18),
+      transparent 42%
     ),
     repeating-linear-gradient(
-      0deg,
-      rgba(26, 23, 20, 0.035) 0,
-      rgba(26, 23, 20, 0.035) 1px,
+      -18deg,
+      rgba(26, 23, 20, 0.04) 0,
+      rgba(26, 23, 20, 0.04) 1px,
       transparent 1px,
-      transparent 12px
+      transparent 14px
     ),
     var(--bone);
 }
@@ -70,6 +75,72 @@
   border-radius: 0.35rem;
   font-size: 1.1rem;
   font-weight: 800;
+}
+
+.icon-pictogram {
+  display: block;
+  width: 1.15rem;
+  height: 1.15rem;
+  border: 2px solid currentColor;
+  box-sizing: border-box;
+}
+
+.icon-chat {
+  border-radius: 0.2rem 0.2rem 0.55rem 0.2rem;
+  background:
+    linear-gradient(
+      currentColor,
+      currentColor
+    ) 20% 35% / 60% 2px no-repeat,
+    linear-gradient(
+      currentColor,
+      currentColor
+    ) 20% 55% / 45% 2px no-repeat;
+}
+
+.icon-people {
+  border: 0;
+  background:
+    radial-gradient(
+      circle at 35% 32%,
+      currentColor 0 28%,
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 68% 38%,
+      currentColor 0 22%,
+      transparent 24%
+    ),
+    radial-gradient(
+      ellipse at 35% 88%,
+      currentColor 0 34%,
+      transparent 36%
+    ),
+    radial-gradient(
+      ellipse at 70% 92%,
+      currentColor 0 28%,
+      transparent 30%
+    );
+}
+
+.icon-flag {
+  border: 0;
+  background:
+    linear-gradient(
+      currentColor,
+      currentColor
+    ) 18% 10% / 2px 80% no-repeat,
+    linear-gradient(
+      currentColor,
+      currentColor
+    ) 28% 18% / 58% 38% no-repeat;
+}
+
+.icon-loft {
+  border-radius: 0.15rem 0.15rem 0 0;
+  clip-path: polygon(50% 0, 100% 28%, 100% 100%, 0 100%, 0 28%);
+  background: currentColor;
+  opacity: 0.92;
 }
 
 .teams-glyph {
@@ -516,6 +587,77 @@
   padding: 0.7rem 0.8rem;
   border: 2px solid var(--clay);
   background: rgba(244, 239, 230, 0.9);
+}
+
+.loft-shop-row {
+  display: grid;
+  grid-template-columns: 3.2rem 1fr;
+  gap: 0.7rem;
+  align-items: start;
+}
+
+.loft-swatch {
+  width: 3.2rem;
+  height: 3.2rem;
+  border: 2px solid var(--ink);
+  border-radius: 0.25rem;
+  background: var(--clay);
+}
+
+.loft-swatch-desk-plants {
+  background:
+    radial-gradient(
+      circle at 50% 38%,
+      var(--sage) 0 28%,
+      transparent 30%
+    ),
+    linear-gradient(
+      var(--wood),
+      var(--wood)
+    ) 35% 70% / 30% 22% no-repeat,
+    #efe6d8;
+}
+
+.loft-swatch-desk-lamps {
+  background:
+    radial-gradient(
+      circle at 58% 42%,
+      rgba(255, 214, 102, 0.85) 0 22%,
+      transparent 24%
+    ),
+    linear-gradient(
+      #d4a017,
+      #d4a017
+    ) 48% 55% / 8% 28% no-repeat,
+    #efe6d8;
+}
+
+.loft-swatch-better-chairs {
+  background:
+    linear-gradient(
+      #5c4033,
+      #5c4033
+    ) 28% 55% / 44% 28% no-repeat,
+    linear-gradient(
+      #5c4033,
+      #5c4033
+    ) 28% 38% / 44% 12% no-repeat,
+    #efe6d8;
+}
+
+.loft-swatch-amber-neon {
+  background:
+    linear-gradient(
+      90deg,
+      transparent 10%,
+      var(--amber) 10% 90%,
+      transparent 90%
+    ) center / 80% 18% no-repeat,
+    #1a1714;
+}
+
+.loft-card-copy {
+  min-width: 0;
 }
 
 .loft-card.is-owned {

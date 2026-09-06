@@ -131,7 +131,44 @@ import {
   WHITEBOARD_PAD_WIDTH_PX,
   WHITEBOARD_TOP_OFFSET_PX,
   WHITEBOARD_WIDTH_PX,
+  FLOOR_AISLE_FILL,
+  FLOOR_ISLAND_FILL,
+  DESK_SHADOW_FILL,
+  DESK_LEG_FILL,
+  DESK_EDGE_FILL,
+  MONITOR_BEZEL_FILL,
+  MONITOR_STAND_FILL,
+  NOSH_DESK_MAT_FILL,
+  CHAIR_LEG_WIDTH_PX,
+  CHAIR_LEG_HEIGHT_PX,
+  CHAIR_LEG_INSET_PX,
+  DESK_LEG_HALF_WIDTH_PX,
+  DESK_LEG_WIDTH_PX,
+  DESK_LEG_HEIGHT_PX,
+  DESK_LEG_Y_OFFSET_PX,
+  DESK_THICKNESS_Y_PX,
+  MONITOR_STAND_HALF_WIDTH_PX,
+  MONITOR_STAND_WIDTH_PX,
+  MONITOR_STAND_HEIGHT_PX,
+  MONITOR_STAND_Y_OFFSET_PX,
+  MONITOR_BEZEL_INSET_PX,
+  NOSH_MAT_HALF_WIDTH_PX,
+  NOSH_MAT_WIDTH_PX,
+  NOSH_MAT_HEIGHT_PX,
+  NOSH_MAT_Y_OFFSET_PX,
+  DESK_SHADOW_HALF_WIDTH_PX,
+  DESK_SHADOW_TOP_OFFSET_PX,
+  DESK_SHADOW_SIDE_Y_PX,
+  DESK_SHADOW_BOTTOM_OFFSET_PX,
+  LAMP_GLOW_PULSE_AMPLITUDE,
+  LAMP_GLOW_PULSE_RATE,
+  COFFEE_STEAM_WAVE_PX,
+  COFFEE_STEAM_WAVE_RATE,
 } from "./constants.js";
+import {
+  drawNoshSilhouette,
+  drawNpcSilhouette,
+} from "./drawCharacters.js";
 import { buildRoomOrigin, gridToScreen } from "./isoMath.js";
 import {
   isPlayerMoving,
@@ -164,7 +201,19 @@ function isBorderTile(gridX, gridY, gridWidth, gridHeight) {
   return onLeft || onRight || onTop || onBottom;
 }
 
-function tileFillForCell(office, gridX, gridY) {
+function deskTileKeys(office) {
+  const keys = new Set();
+
+  for (const piece of office.furniture) {
+    if (piece.kind === FurnitureKind.DESK) {
+      keys.add(piece.gridX + "," + piece.gridY);
+    }
+  }
+
+  return keys;
+}
+
+function tileFillForCell(office, gridX, gridY, deskKeys) {
   const onBorder = isBorderTile(
     gridX,
     gridY,
@@ -176,16 +225,27 @@ function tileFillForCell(office, gridX, gridY) {
     return FloorFill[FloorTileKind.WOOD];
   }
 
-  return FloorFill[FloorTileKind.CARPET];
+  if (deskKeys.has(gridX + "," + gridY)) {
+    return FLOOR_ISLAND_FILL;
+  }
+
+  return FLOOR_AISLE_FILL;
 }
 
 function drawFloor(context, office, originX, originY) {
+  const deskKeys = deskTileKeys(office);
+
   for (let gridY = 0; gridY < office.gridHeight; gridY += 1) {
     for (let gridX = 0; gridX < office.gridWidth; gridX += 1) {
       const { screenX, screenY } = gridToScreen(gridX, gridY);
       const centerX = originX + screenX;
       const centerY = originY + screenY;
-      const fill = tileFillForCell(office, gridX, gridY);
+      const fill = tileFillForCell(
+        office,
+        gridX,
+        gridY,
+        deskKeys
+      );
 
       drawDiamond(context, centerX, centerY, fill);
     }
@@ -222,7 +282,13 @@ function drawDeskPlant(context, centerX, centerY) {
   context.stroke();
 }
 
-function drawDeskLamp(context, centerX, centerY) {
+function drawDeskLamp(
+  context,
+  centerX,
+  centerY,
+  animSeconds,
+  reduceMotion
+) {
   context.fillStyle = DESK_LAMP_FILL;
   context.strokeStyle = INK;
   context.lineWidth = 1;
@@ -252,12 +318,16 @@ function drawDeskLamp(context, centerX, centerY) {
     centerY - LAMP_ARM_Y_OFFSET_PX
   );
   context.stroke();
+  const glowPulse = reduceMotion
+    ? 1
+    : 1 + Math.sin(animSeconds * LAMP_GLOW_PULSE_RATE)
+      * LAMP_GLOW_PULSE_AMPLITUDE;
   context.fillStyle = DESK_LAMP_GLOW_FILL;
   context.beginPath();
   context.arc(
     centerX - LAMP_GLOW_X_OFFSET_PX,
     centerY - LAMP_GLOW_Y_OFFSET_PX,
-    LAMP_GLOW_RADIUS_PX,
+    LAMP_GLOW_RADIUS_PX * glowPulse,
     0,
     Math.PI * 2
   );
@@ -273,26 +343,52 @@ function drawDeskChair(
   const chairFill = betterChairs
     ? BETTER_CHAIR_FILL
     : CHAIR_FILL;
+  const half = betterChairs
+    ? BETTER_CHAIR_HALF_WIDTH_PX
+    : CHAIR_HALF_WIDTH_PX;
+  const width = betterChairs
+    ? BETTER_CHAIR_WIDTH_PX
+    : CHAIR_WIDTH_PX;
+  const height = betterChairs
+    ? BETTER_CHAIR_HEIGHT_PX
+    : CHAIR_HEIGHT_PX;
+  const yOffset = betterChairs
+    ? BETTER_CHAIR_Y_OFFSET_PX
+    : CHAIR_Y_OFFSET_PX;
+
+  context.fillStyle = DESK_LEG_FILL;
+  context.fillRect(
+    centerX - half + CHAIR_LEG_INSET_PX,
+    centerY + yOffset + height,
+    CHAIR_LEG_WIDTH_PX,
+    CHAIR_LEG_HEIGHT_PX
+  );
+  context.fillRect(
+    centerX + half - CHAIR_LEG_INSET_PX - CHAIR_LEG_WIDTH_PX,
+    centerY + yOffset + height,
+    CHAIR_LEG_WIDTH_PX,
+    CHAIR_LEG_HEIGHT_PX
+  );
 
   context.fillStyle = chairFill;
   context.strokeStyle = INK;
   context.lineWidth = 1;
+  context.fillRect(
+    centerX - half,
+    centerY + yOffset,
+    width,
+    height
+  );
+  context.strokeRect(
+    centerX - half,
+    centerY + yOffset,
+    width,
+    height
+  );
 
   if (betterChairs) {
     context.fillRect(
       centerX - BETTER_CHAIR_HALF_WIDTH_PX,
-      centerY + BETTER_CHAIR_Y_OFFSET_PX,
-      BETTER_CHAIR_WIDTH_PX,
-      BETTER_CHAIR_HEIGHT_PX
-    );
-    context.strokeRect(
-      centerX - BETTER_CHAIR_HALF_WIDTH_PX,
-      centerY + BETTER_CHAIR_Y_OFFSET_PX,
-      BETTER_CHAIR_WIDTH_PX,
-      BETTER_CHAIR_HEIGHT_PX
-    );
-    context.fillRect(
-      centerX - BETTER_CHAIR_HALF_WIDTH_PX,
       centerY + BETTER_CHAIR_BACK_Y_OFFSET_PX,
       BETTER_CHAIR_WIDTH_PX,
       BETTER_CHAIR_BACK_HEIGHT_PX
@@ -303,21 +399,7 @@ function drawDeskChair(
       BETTER_CHAIR_WIDTH_PX,
       BETTER_CHAIR_BACK_HEIGHT_PX
     );
-    return;
   }
-
-  context.fillRect(
-    centerX - CHAIR_HALF_WIDTH_PX,
-    centerY + CHAIR_Y_OFFSET_PX,
-    CHAIR_WIDTH_PX,
-    CHAIR_HEIGHT_PX
-  );
-  context.strokeRect(
-    centerX - CHAIR_HALF_WIDTH_PX,
-    centerY + CHAIR_Y_OFFSET_PX,
-    CHAIR_WIDTH_PX,
-    CHAIR_HEIGHT_PX
-  );
 }
 
 function drawDeskPlaceholder(
@@ -325,17 +407,83 @@ function drawDeskPlaceholder(
   centerX,
   centerY,
   isPlayerDesk,
-  loftUpgrades
+  loftUpgrades,
+  animSeconds,
+  reduceMotion
 ) {
   const deskFill = FurnitureFill[FurnitureKind.DESK];
   const betterChairs = loftUpgrades[UpgradeId.BETTER_CHAIRS];
   const deskPlants = loftUpgrades[UpgradeId.DESK_PLANTS];
   const deskLamps = loftUpgrades[UpgradeId.DESK_LAMPS];
 
-  // Desk top
-  context.fillStyle = deskFill;
+  context.fillStyle = DESK_SHADOW_FILL;
+  context.beginPath();
+  context.moveTo(
+    centerX,
+    centerY - DESK_SHADOW_TOP_OFFSET_PX
+  );
+  context.lineTo(
+    centerX + DESK_SHADOW_HALF_WIDTH_PX,
+    centerY + DESK_SHADOW_SIDE_Y_PX
+  );
+  context.lineTo(
+    centerX,
+    centerY + DESK_SHADOW_BOTTOM_OFFSET_PX
+  );
+  context.lineTo(
+    centerX - DESK_SHADOW_HALF_WIDTH_PX,
+    centerY + DESK_SHADOW_SIDE_Y_PX
+  );
+  context.closePath();
+  context.fill();
+
+  context.fillStyle = DESK_LEG_FILL;
+  context.fillRect(
+    centerX - DESK_LEG_HALF_WIDTH_PX,
+    centerY + DESK_LEG_Y_OFFSET_PX,
+    DESK_LEG_WIDTH_PX,
+    DESK_LEG_HEIGHT_PX
+  );
+  context.fillRect(
+    centerX + DESK_LEG_HALF_WIDTH_PX - DESK_LEG_WIDTH_PX,
+    centerY + DESK_LEG_Y_OFFSET_PX,
+    DESK_LEG_WIDTH_PX,
+    DESK_LEG_HEIGHT_PX
+  );
+
+  context.fillStyle = DESK_EDGE_FILL;
   context.strokeStyle = INK;
   context.lineWidth = 1;
+  context.beginPath();
+  context.moveTo(
+    centerX - DESK_TOP_HALF_WIDTH_PX,
+    centerY - DESK_TOP_SIDE_Y_PX
+  );
+  context.lineTo(
+    centerX,
+    centerY + DESK_TOP_BOTTOM_OFFSET_PX
+  );
+  context.lineTo(
+    centerX + DESK_TOP_HALF_WIDTH_PX,
+    centerY - DESK_TOP_SIDE_Y_PX
+  );
+  context.lineTo(
+    centerX + DESK_TOP_HALF_WIDTH_PX,
+    centerY - DESK_TOP_SIDE_Y_PX + DESK_THICKNESS_Y_PX
+  );
+  context.lineTo(
+    centerX,
+    centerY + DESK_TOP_BOTTOM_OFFSET_PX + DESK_THICKNESS_Y_PX
+  );
+  context.lineTo(
+    centerX - DESK_TOP_HALF_WIDTH_PX,
+    centerY - DESK_TOP_SIDE_Y_PX + DESK_THICKNESS_Y_PX
+  );
+  context.closePath();
+  context.fill();
+  context.stroke();
+
+  context.fillStyle = deskFill;
   context.beginPath();
   context.moveTo(
     centerX,
@@ -359,7 +507,38 @@ function drawDeskPlaceholder(
 
   drawDeskChair(context, centerX, centerY, betterChairs);
 
-  // Monitor
+  if (isPlayerDesk) {
+    context.fillStyle = NOSH_DESK_MAT_FILL;
+    context.fillRect(
+      centerX - NOSH_MAT_HALF_WIDTH_PX,
+      centerY - NOSH_MAT_Y_OFFSET_PX,
+      NOSH_MAT_WIDTH_PX,
+      NOSH_MAT_HEIGHT_PX
+    );
+    context.strokeStyle = INK;
+    context.strokeRect(
+      centerX - NOSH_MAT_HALF_WIDTH_PX,
+      centerY - NOSH_MAT_Y_OFFSET_PX,
+      NOSH_MAT_WIDTH_PX,
+      NOSH_MAT_HEIGHT_PX
+    );
+  }
+
+  context.fillStyle = MONITOR_STAND_FILL;
+  context.fillRect(
+    centerX - MONITOR_STAND_HALF_WIDTH_PX,
+    centerY - MONITOR_STAND_Y_OFFSET_PX,
+    MONITOR_STAND_WIDTH_PX,
+    MONITOR_STAND_HEIGHT_PX
+  );
+
+  context.fillStyle = MONITOR_BEZEL_FILL;
+  context.fillRect(
+    centerX - MONITOR_HALF_WIDTH_PX - MONITOR_BEZEL_INSET_PX,
+    centerY - MONITOR_TOP_OFFSET_PX - MONITOR_BEZEL_INSET_PX,
+    MONITOR_WIDTH_PX + MONITOR_BEZEL_INSET_PX * 2,
+    MONITOR_HEIGHT_PX + MONITOR_BEZEL_INSET_PX * 2
+  );
   context.fillStyle = SCREEN_FILL;
   context.fillRect(
     centerX - MONITOR_HALF_WIDTH_PX,
@@ -367,11 +546,12 @@ function drawDeskPlaceholder(
     MONITOR_WIDTH_PX,
     MONITOR_HEIGHT_PX
   );
+  context.strokeStyle = INK;
   context.strokeRect(
-    centerX - MONITOR_HALF_WIDTH_PX,
-    centerY - MONITOR_TOP_OFFSET_PX,
-    MONITOR_WIDTH_PX,
-    MONITOR_HEIGHT_PX
+    centerX - MONITOR_HALF_WIDTH_PX - MONITOR_BEZEL_INSET_PX,
+    centerY - MONITOR_TOP_OFFSET_PX - MONITOR_BEZEL_INSET_PX,
+    MONITOR_WIDTH_PX + MONITOR_BEZEL_INSET_PX * 2,
+    MONITOR_HEIGHT_PX + MONITOR_BEZEL_INSET_PX * 2
   );
 
   if (isPlayerDesk) {
@@ -389,7 +569,13 @@ function drawDeskPlaceholder(
   }
 
   if (deskLamps) {
-    drawDeskLamp(context, centerX, centerY);
+    drawDeskLamp(
+      context,
+      centerX,
+      centerY,
+      animSeconds,
+      reduceMotion
+    );
   }
 }
 
@@ -441,7 +627,13 @@ function drawBubblerPlaceholder(context, centerX, centerY) {
   context.stroke();
 }
 
-function drawCoffeePlaceholder(context, centerX, centerY) {
+function drawCoffeePlaceholder(
+  context,
+  centerX,
+  centerY,
+  animSeconds = 0,
+  reduceMotion = false
+) {
   // Warm carafe + steam cue so it reads apart from the bubbler.
   context.fillStyle = FurnitureFill[FurnitureKind.COFFEE];
   context.strokeStyle = INK;
@@ -481,6 +673,11 @@ function drawCoffeePlaceholder(context, centerX, centerY) {
     COFFEE_BREW_HEIGHT_PX
   );
 
+  const steamWave = reduceMotion
+    ? 0
+    : Math.sin(animSeconds * COFFEE_STEAM_WAVE_RATE)
+      * COFFEE_STEAM_WAVE_PX;
+
   context.strokeStyle = INK;
   context.beginPath();
   context.moveTo(
@@ -488,9 +685,9 @@ function drawCoffeePlaceholder(context, centerX, centerY) {
     centerY - COFFEE_STEAM_BASE_Y_PX
   );
   context.quadraticCurveTo(
-    centerX - COFFEE_STEAM_X_SPREAD_PX,
+    centerX - COFFEE_STEAM_X_SPREAD_PX + steamWave,
     centerY - COFFEE_STEAM_MID_Y_PX,
-    centerX - 1,
+    centerX - 1 + steamWave * 0.5,
     centerY - COFFEE_STEAM_TOP_Y_PX
   );
   context.moveTo(
@@ -498,9 +695,9 @@ function drawCoffeePlaceholder(context, centerX, centerY) {
     centerY - COFFEE_STEAM_BASE_Y_PX
   );
   context.quadraticCurveTo(
-    centerX + COFFEE_STEAM_X_SPREAD_PX,
+    centerX + COFFEE_STEAM_X_SPREAD_PX - steamWave,
     centerY - COFFEE_STEAM_MID_Y_PX,
-    centerX + 1,
+    centerX + 1 - steamWave * 0.5,
     centerY - COFFEE_STEAM_TOP_Y_PX
   );
   context.stroke();
@@ -618,161 +815,15 @@ function drawPathTarget(
   context.stroke();
 }
 
-// Amber jacket is the player cue until real sprites land.
-function drawNoshPlaceholder(
-  context,
-  centerX,
-  centerY,
-  walkBobPhase
-) {
-  const bobOffset =
-    Math.sin(walkBobPhase) * NOSH_WALK_BOB_AMPLITUDE_PX;
-  const feetY = centerY + NOSH_FEET_Y_OFFSET_PX;
-  const bodyY =
-    centerY - NOSH_BODY_Y_OFFSET_PX + bobOffset;
-
-  context.fillStyle = PLAYER_SHOE_FILL;
-  context.fillRect(
-    centerX - CHAR_SHOE_HALF_GAP_PX,
-    feetY,
-    CHAR_SHOE_WIDTH_PX,
-    CHAR_SHOE_HEIGHT_PX
-  );
-  context.fillRect(
-    centerX + CHAR_SHOE_INNER_X_PX,
-    feetY,
-    CHAR_SHOE_WIDTH_PX,
-    CHAR_SHOE_HEIGHT_PX
-  );
-
-  context.fillStyle = PLAYER_PANTS_FILL;
-  context.fillRect(
-    centerX - CHAR_PANTS_HALF_WIDTH_PX,
-    bodyY + CHAR_PANTS_Y_OFFSET_PX,
-    CHAR_PANTS_WIDTH_PX,
-    CHAR_PANTS_HEIGHT_PX
-  );
-
-  context.fillStyle = PLAYER_JACKET_FILL;
-  context.fillRect(
-    centerX - CHAR_TORSO_HALF_WIDTH_PX,
-    bodyY - CHAR_TORSO_Y_OFFSET_PX,
-    CHAR_TORSO_WIDTH_PX,
-    CHAR_TORSO_HEIGHT_PX
-  );
-  context.strokeStyle = INK;
-  context.lineWidth = 1;
-  context.strokeRect(
-    centerX - CHAR_TORSO_HALF_WIDTH_PX,
-    bodyY - CHAR_TORSO_Y_OFFSET_PX,
-    CHAR_TORSO_WIDTH_PX,
-    CHAR_TORSO_HEIGHT_PX
-  );
-
-  context.fillStyle = PLAYER_SKIN_FILL;
-  context.beginPath();
-  context.arc(
-    centerX,
-    bodyY - CHAR_HEAD_Y_OFFSET_PX,
-    CHAR_HEAD_RADIUS_PX,
-    0,
-    Math.PI * 2
-  );
-  context.fill();
-  context.stroke();
-
-  context.fillStyle = PLAYER_HAIR_FILL;
-  context.beginPath();
-  context.arc(
-    centerX,
-    bodyY - CHAR_HAIR_Y_OFFSET_PX,
-    CHAR_HEAD_RADIUS_PX,
-    Math.PI,
-    0
-  );
-  context.fill();
-}
-
-
-function drawNpcPlaceholder(
-  context,
-  centerX,
-  centerY,
-  jacketFill
-) {
-  // Seated cue: slightly lower than a standing walker.
-  const feetY = centerY + NPC_FEET_Y_OFFSET_PX;
-  const bodyY = centerY - NPC_BODY_Y_OFFSET_PX;
-
-  context.fillStyle = NPC_SHOE_FILL;
-  context.fillRect(
-    centerX - CHAR_SHOE_HALF_GAP_PX,
-    feetY,
-    CHAR_SHOE_WIDTH_PX,
-    CHAR_SHOE_HEIGHT_PX
-  );
-  context.fillRect(
-    centerX + CHAR_SHOE_INNER_X_PX,
-    feetY,
-    CHAR_SHOE_WIDTH_PX,
-    CHAR_SHOE_HEIGHT_PX
-  );
-
-  context.fillStyle = NPC_PANTS_FILL;
-  context.fillRect(
-    centerX - CHAR_PANTS_HALF_WIDTH_PX,
-    bodyY + CHAR_PANTS_Y_OFFSET_PX,
-    CHAR_PANTS_WIDTH_PX,
-    CHAR_PANTS_HEIGHT_PX
-  );
-
-  context.fillStyle = jacketFill;
-  context.fillRect(
-    centerX - CHAR_TORSO_HALF_WIDTH_PX,
-    bodyY - CHAR_TORSO_Y_OFFSET_PX,
-    CHAR_TORSO_WIDTH_PX,
-    CHAR_TORSO_HEIGHT_PX
-  );
-  context.strokeStyle = INK;
-  context.lineWidth = 1;
-  context.strokeRect(
-    centerX - CHAR_TORSO_HALF_WIDTH_PX,
-    bodyY - CHAR_TORSO_Y_OFFSET_PX,
-    CHAR_TORSO_WIDTH_PX,
-    CHAR_TORSO_HEIGHT_PX
-  );
-
-  context.fillStyle = NPC_SKIN_FILL;
-  context.beginPath();
-  context.arc(
-    centerX,
-    bodyY - CHAR_HEAD_Y_OFFSET_PX,
-    CHAR_HEAD_RADIUS_PX,
-    0,
-    Math.PI * 2
-  );
-  context.fill();
-  context.stroke();
-
-  context.fillStyle = NPC_HAIR_FILL;
-  context.beginPath();
-  context.arc(
-    centerX,
-    bodyY - CHAR_HAIR_Y_OFFSET_PX,
-    CHAR_HEAD_RADIUS_PX,
-    Math.PI,
-    0
-  );
-  context.fill();
-}
-
 function drawFurniturePiece(
   context,
   piece,
   staffLookup,
   centerX,
   centerY,
-  loftUpgrades
+  loftUpgrades,
+  animSeconds,
+  reduceMotion
 ) {
   if (piece.kind === FurnitureKind.BUBBLER) {
     drawBubblerPlaceholder(context, centerX, centerY);
@@ -781,7 +832,13 @@ function drawFurniturePiece(
   }
 
   if (piece.kind === FurnitureKind.COFFEE) {
-    drawCoffeePlaceholder(context, centerX, centerY);
+    drawCoffeePlaceholder(
+      context,
+      centerX,
+      centerY,
+      animSeconds,
+      reduceMotion
+    );
     drawNameplate(context, centerX, centerY, "Coffee");
     return;
   }
@@ -801,7 +858,9 @@ function drawFurniturePiece(
     centerX,
     centerY,
     Boolean(piece.isPlayerDesk),
-    loftUpgrades
+    loftUpgrades,
+    animSeconds,
+    reduceMotion
   );
 
   const person = staffLookup[piece.staffId];
@@ -818,7 +877,9 @@ function drawWorldEntities(
   npcs,
   originX,
   originY,
-  loftUpgrades
+  loftUpgrades,
+  animSeconds,
+  reduceMotion
 ) {
   const drawables = [];
 
@@ -840,7 +901,9 @@ function drawWorldEntities(
           staffLookup,
           centerX,
           centerY,
-          loftUpgrades
+          loftUpgrades,
+          animSeconds,
+          reduceMotion
         );
       },
     });
@@ -858,11 +921,14 @@ function drawWorldEntities(
     drawables.push({
       depth,
       draw() {
-        drawNpcPlaceholder(
+        drawNpcSilhouette(
           context,
           centerX,
           centerY,
-          npc.jacketFill
+          npc.staffId,
+          npc.jacketFill,
+          animSeconds,
+          reduceMotion
         );
       },
     });
@@ -882,7 +948,7 @@ function drawWorldEntities(
   drawables.push({
     depth: playerDepth,
     draw() {
-      drawNoshPlaceholder(
+      drawNoshSilhouette(
         context,
         playerCenterX,
         playerCenterY,
@@ -915,7 +981,8 @@ export function drawOffice(
   npcs,
   viewWidth,
   viewHeight,
-  loftUpgrades
+  loftUpgrades,
+  animSeconds = 0
 ) {
   const context = canvas.getContext("2d");
   const width = viewWidth || canvas.width;
@@ -962,7 +1029,9 @@ export function drawOffice(
     npcs,
     originX,
     originY,
-    upgrades
+    upgrades,
+    animSeconds,
+    reduceMotion
   );
 
   return { originX, originY };

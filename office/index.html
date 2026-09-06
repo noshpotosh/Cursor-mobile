@@ -12,19 +12,27 @@
   </head>
   <body>
     <main class="stage" id="office-stage">
-      <h1 class="office-title">Warewolf · Starter Loft</h1>
-      <p class="bucks-hud" id="bucks-hud" aria-live="polite">
-        0 bucks
-      </p>
-      <button
-        type="button"
-        class="mute-button"
-        id="mute-button"
-        aria-pressed="false"
-        aria-label="Toggle mute"
-      >
-        Mute
-      </button>
+      <header class="loft-chrome">
+        <h1 class="office-title">Warewolf · Starter Loft</h1>
+        <div class="loft-chrome-actions">
+          <p
+            class="bucks-hud"
+            id="bucks-hud"
+            aria-live="polite"
+          >
+            0 bucks
+          </p>
+          <button
+            type="button"
+            class="mute-button"
+            id="mute-button"
+            aria-pressed="false"
+            aria-label="Toggle mute"
+          >
+            Mute
+          </button>
+        </div>
+      </header>
       <canvas
         id="office-canvas"
         aria-label="Isometric starter office"
@@ -48,9 +56,12 @@
             class="desktop-icon"
             data-app="teams"
           >
-            <span class="desktop-icon-glyph teams-glyph"
-              >T</span
+            <span
+              class="desktop-icon-glyph teams-glyph"
+              aria-hidden="true"
             >
+              <span class="icon-pictogram icon-chat"></span>
+            </span>
             <span class="desktop-icon-label">Teams</span>
           </button>
           <button
@@ -60,8 +71,10 @@
           >
             <span
               class="desktop-icon-glyph directory-glyph"
-              >D</span
+              aria-hidden="true"
             >
+              <span class="icon-pictogram icon-people"></span>
+            </span>
             <span class="desktop-icon-label"
               >Directory</span
             >
@@ -71,9 +84,12 @@
             class="desktop-icon"
             data-app="goals"
           >
-            <span class="desktop-icon-glyph goals-glyph"
-              >G</span
+            <span
+              class="desktop-icon-glyph goals-glyph"
+              aria-hidden="true"
             >
+              <span class="icon-pictogram icon-flag"></span>
+            </span>
             <span class="desktop-icon-label">Goals</span>
           </button>
           <button
@@ -81,9 +97,12 @@
             class="desktop-icon"
             data-app="loft"
           >
-            <span class="desktop-icon-glyph loft-glyph"
-              >L</span
+            <span
+              class="desktop-icon-glyph loft-glyph"
+              aria-hidden="true"
             >
+              <span class="icon-pictogram icon-loft"></span>
+            </span>
             <span class="desktop-icon-label">Loft</span>
           </button>
         </div>

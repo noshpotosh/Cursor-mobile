@@ -350,7 +350,8 @@ function startRenderLoop(shell) {
       shell.npcs,
       shell.stage.clientWidth,
       shell.stage.clientHeight,
-      loftUpgradesFromEconomy(shell.economy)
+      loftUpgradesFromEconomy(shell.economy),
+      nowMs / 1000
     );
 
     window.requestAnimationFrame(renderFrame);
