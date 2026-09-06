@@ -4,10 +4,12 @@ Internal isometric pixel office for Warewolf.
 
 ## Status
 
-**On hold** (2026-09-06): active product priority is the honest AI
-studio tycoon thesis —
-[`../docs/decisions/007-honest-ai-studio-tycoon.md`](../docs/decisions/007-honest-ai-studio-tycoon.md).
-Loft remains runnable; no new office feature work until reopened.
+**Active shipping web client** (2026-09-06): honest AI studio
+tycoon under
+[`../docs/decisions/007-honest-ai-studio-tycoon.md`](../docs/decisions/007-honest-ai-studio-tycoon.md);
+vehicle is Phaser 3 on this folder per
+[`../docs/decisions/008-ai-studio-product-contract.md`](../docs/decisions/008-ai-studio-product-contract.md).
+Desk OS stays DOM; loft canvas migrates to Phaser.
 
 Plan complete through Phase 6 polish:
 
