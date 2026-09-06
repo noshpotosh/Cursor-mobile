@@ -1,0 +1,60 @@
+# Maeve — P1 Godot loft vertical slice brief
+
+**Date:** 2026-09-06  
+**Owner:** Maeve Quinn (product / design)  
+**Branch:** `cursor/p1-loft-slice-art-0ece`  
+**Contract:** [ADR 008](../decisions/008-ai-studio-product-contract.md)  
+**Density call:** [2026-09-06-maeve-loft-pixel-density.md](2026-09-06-maeve-loft-pixel-density.md)
+
+## User job
+
+Stand in one cozy loft at 1280×720, walk with click/tap, and use
+**one desk**. Feel chunky pixel grammar — not soft AI mush, not a
+menu tour.
+
+## Slice locks
+
+| Lock | Choice |
+| --- | --- |
+| Loft | Starter only (10×8) — not pack loft |
+| Player | Nosh (internal demo cast) |
+| Furniture | One desk + one chair |
+| Interaction | **Use desk** → stub “Desk” panel |
+| Art | Loft atlases (`desk-crt`, `loft-props`, `crew-idle`) + authored floor tiles |
+
+## Success moment
+
+Room reads as pixels. Path to the desk is obvious. Opening the
+desk panel is the only management chrome — no deskOS, no bubbler
+side quest, no hire/fire.
+
+## Art pack
+
+See [`game/assets/MANIFEST.md`](../../game/assets/MANIFEST.md).
+
+**Atlases:** Nosh locked P1 on the parked loft’s atlases —
+`desk-crt.png`, `loft-props.png`, and `crew-idle.png` (copied
+into `game/assets/`). Crops match `office/js/sprites.js` (desk,
+chair, nosh). Parity with the living web loft, not hard 1×
+pipeline cuts.
+
+**Floor:** authored 64×32 carpet + wood-border diamonds (no tile
+folder on `main` yet).
+
+Density note: soft atlases drawn small still fail the “reads as
+pixels like deskOS” bar. P1 ships them anyway per Nosh; a later
+hard cut can replace without changing Dex’s crop API.
+
+## Non-goals (Dex: do not build)
+
+- Other crew, pack loft, portraits, upgrade overlays
+- deskOS / SVG desktop migration
+- Management loop, economy, save (P2)
+- Reopening web `office/` features
+- Hard 1× pipeline cuts (`desk-basic`, `nosh-idle`, etc.) —
+  deferred; P1 uses `desk-crt` / `loft-props` / `crew-idle` per Nosh
+
+## Handoff to Dex (PR B)
+
+Godot 4.7.2 project in `game/`, consume this pack, walk-to-desk
+proof. No `GameState` / save / task provider yet.
